@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">NushLibrary</string>
+    <string name="node">Node</string>
+    <string name="log_in">Log In</string>
 </resources>
