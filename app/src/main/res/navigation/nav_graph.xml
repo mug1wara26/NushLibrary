@@ -9,5 +9,12 @@
     android:id="@+id/activityFragment"
     android:name="com.example.nushlibrary.MainFragment"
     android:label="mainFragment">
+        <action
+            android:id="@+id/action_activityFragment_to_adminFragment"
+            app:destination="@id/adminFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/adminFragment"
+        android:name="com.example.nushlibrary.AdminFragment"
+        android:label="AdminFragment" />
 </navigation>
