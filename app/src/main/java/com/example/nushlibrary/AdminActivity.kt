@@ -34,7 +34,7 @@ class AdminActivity: AppCompatActivity() {
         // Setup drawer view
         setupDrawerContent(navigationView)
         // Set default menu item to be Home
-        selectDrawerItem(navigationView.menu[0])
+        selectDrawerItem(navigationView.menu[1])
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -58,7 +58,7 @@ class AdminActivity: AppCompatActivity() {
 
     private fun selectDrawerItem(menuItem: MenuItem) {
         // placeholders
-        var fragment: Fragment
+        val fragment: Fragment
 
         // Matches menu item id with the corresponding fragment class, default will be home fragment
         val fragmentClass: Class<*> = when(menuItem.itemId) {
