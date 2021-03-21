@@ -5,6 +5,7 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
+import androidx.core.view.get
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -32,6 +33,8 @@ class AdminActivity: AppCompatActivity() {
         val navigationView: NavigationView = findViewById(R.id.nvView)
         // Setup drawer view
         setupDrawerContent(navigationView)
+        // Set default menu item to be Home
+        selectDrawerItem(navigationView.menu[0])
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -56,10 +59,9 @@ class AdminActivity: AppCompatActivity() {
     private fun selectDrawerItem(menuItem: MenuItem) {
         // placeholders
         var fragment: Fragment
-        val fragmentClass: Class<*>
 
         // Matches menu item id with the corresponding fragment class, default will be home fragment
-        fragmentClass = when(menuItem.itemId) {
+        val fragmentClass: Class<*> = when(menuItem.itemId) {
             R.id.home -> AdminHomeFragment::class.java
             R.id.search -> AdminSearchFragment::class.java
             R.id.users -> AdminUsersFragment::class.java
