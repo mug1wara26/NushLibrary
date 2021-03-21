@@ -3,18 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/activityFragment">
+    app:startDestination="@id/adminFragment">
 
     <fragment
-    android:id="@+id/activityFragment"
-    android:name="com.example.nushlibrary.MainFragment"
-    android:label="mainFragment">
-        <action
-            android:id="@+id/action_activityFragment_to_adminFragment"
-            app:destination="@id/adminFragment" />
-    </fragment>
-    <fragment
         android:id="@+id/adminFragment"
-        android:name="com.example.nushlibrary.AdminFragment"
+        android:name="com.example.nushlibrary.AdminHomeFragment"
         android:label="AdminFragment" />
 </navigation>
