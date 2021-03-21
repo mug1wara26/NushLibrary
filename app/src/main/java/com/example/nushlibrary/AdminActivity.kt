@@ -1,5 +1,6 @@
 package com.example.nushlibrary
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
@@ -10,6 +11,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.navigation.NavigationView
+import com.google.firebase.auth.FirebaseAuth
 
 
 class AdminActivity: AppCompatActivity() {
@@ -34,7 +36,7 @@ class AdminActivity: AppCompatActivity() {
         // Setup drawer view
         setupDrawerContent(navigationView)
         // Set default menu item to be Home
-        selectDrawerItem(navigationView.menu[1])
+        selectDrawerItem(navigationView.menu[0])
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -50,7 +52,14 @@ class AdminActivity: AppCompatActivity() {
 
     private fun setupDrawerContent(navigationView: NavigationView) {
         navigationView.setNavigationItemSelectedListener { menuItem ->
-            selectDrawerItem(menuItem)
+            if (menuItem.itemId == R.id.logOut) {
+                // Sign out user
+                FirebaseAuth.getInstance().signOut()
+
+                val intent = Intent(applicationContext, MainActivity::class.java)
+                startActivity(intent)
+            }
+            else selectDrawerItem(menuItem)
             // I didn't know you could just return true like this what
             true
         }
@@ -67,7 +76,6 @@ class AdminActivity: AppCompatActivity() {
             R.id.users -> AdminUsersFragment::class.java
             R.id.books -> AdminBooksFragment::class.java
             R.id.settings -> AdminSettingsFragment::class.java
-            R.id.logOut -> AdminLogOutFragment::class.java
             else -> AdminHomeFragment::class.java
         }
 
