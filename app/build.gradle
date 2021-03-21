@@ -47,6 +47,10 @@ dependencies {
     // When using the BoM, you don't specify versions in Firebase library dependencies
     implementation 'com.google.firebase:firebase-database-ktx'
 
+    // Declare the dependency for the Cloud Functions library
+    // When using the BoM, you don't specify versions in Firebase library dependencies
+    implementation 'com.google.firebase:firebase-functions-ktx'
+
 
     // Kotlin
     implementation 'androidx.navigation:navigation-fragment-ktx:2.3.4'
