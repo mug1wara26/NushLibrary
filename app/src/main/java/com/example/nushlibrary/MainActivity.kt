@@ -1,15 +1,14 @@
 package com.example.nushlibrary
 
 import android.annotation.SuppressLint
-import android.app.ActionBar
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
+import android.os.AsyncTask
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
-import android.widget.TextView
+import android.widget.ProgressBar
 import android.widget.Toast
-import android.widget.Toolbar
+import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.OAuthProvider
 import com.google.firebase.database.DataSnapshot
@@ -17,6 +16,8 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import java.net.HttpURLConnection
+import java.net.URL
 
 val database = Firebase.database.getReferenceFromUrl("https://nush-library-default-rtdb.firebaseio.com/")
 val userReference = database.child("users")
@@ -26,10 +27,12 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+
         // Start log in on click
         val logInBtn: Button = findViewById(R.id.logInButton)
         logInBtn.setOnClickListener {
             logInBtn.isEnabled = false
+            logInBtn.alpha = 0.6F
 
             // Set the provider to microsoft
             val provider: OAuthProvider.Builder = OAuthProvider.newBuilder("microsoft.com")
@@ -59,6 +62,10 @@ class MainActivity : AppCompatActivity() {
 
                                         // If user is admin, start AdminActivity, else start UserActivity
                                         if (snapshot.child("admin").getValue(Boolean::class.java)!!) {
+                                            // Re-enables the log in button in case user presses back button
+                                            logInBtn.isEnabled = true
+                                            logInBtn.alpha = 1F
+
                                             val intent = Intent(applicationContext, AdminActivity::class.java)
                                             startActivity(intent)
                                         }
@@ -72,8 +79,9 @@ class MainActivity : AppCompatActivity() {
                 .addOnFailureListener {e ->
                     Toast.makeText(this, "An unknown error occurred, try again", Toast.LENGTH_SHORT).show()
                     println("error: ${e.message}")
+                    logInBtn.isEnabled = true
+                    logInBtn.alpha = 1F
                 }
-            logInBtn.isEnabled = true
         }
     }
 }

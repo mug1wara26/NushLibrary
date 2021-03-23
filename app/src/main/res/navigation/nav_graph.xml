@@ -7,6 +7,6 @@
 
     <fragment
         android:id="@+id/adminFragment"
-        android:name="com.example.nushlibrary.AdminHomeFragment"
+        android:name="com.example.nushlibrary.AdminFragments.AdminHomeFragment"
         android:label="AdminFragment" />
 </navigation>
