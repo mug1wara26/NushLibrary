@@ -1,4 +1,4 @@
-package com.example.nushlibrary.AdminFragments
+package com.example.nushlibrary.adminFragments
 
 import android.os.AsyncTask
 import android.os.Bundle

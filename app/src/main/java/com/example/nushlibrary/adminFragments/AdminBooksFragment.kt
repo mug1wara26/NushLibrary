@@ -1,4 +1,4 @@
-package com.example.nushlibrary.AdminFragments
+package com.example.nushlibrary.adminFragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,10 +7,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.nushlibrary.R
 
-class AdminUsersFragment: Fragment() {
+class AdminBooksFragment: Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_admin_users, container, false)
+        val view = inflater.inflate(R.layout.fragment_admin_books, container, false)
 
         return view
     }

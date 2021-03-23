@@ -1,11 +1,8 @@
-package com.example.nushlibrary.AdminFragments
+package com.example.nushlibrary.adminFragments
 
 import android.app.AlertDialog
 import android.app.Dialog
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import androidx.cardview.widget.CardView
@@ -13,8 +10,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.children
 import androidx.fragment.app.DialogFragment
 import com.example.nushlibrary.R
-import com.google.android.material.textfield.TextInputEditText
-import java.lang.IllegalArgumentException
 
 
 class AddBookDialogFragment: DialogFragment() {
@@ -77,7 +72,7 @@ class AddBookDialogFragment: DialogFragment() {
                 // Add action buttons
                 .setPositiveButton("Create") { _, _ ->
                     if (view.findViewById<RadioButton>(R.id.isbn_radio_button).isChecked) {
-
+                        
                     }
                 }
                 .setNegativeButton("Cancel") { _, _ ->
