@@ -4,16 +4,14 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.AsyncTask
 import android.os.Bundle
 import android.transition.AutoTransition
 import android.transition.TransitionManager
 import android.view.View
-import android.widget.ImageButton
-import android.widget.RadioButton
-import android.widget.RadioGroup
-import android.widget.Toast
+import android.widget.*
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.children
@@ -32,7 +30,8 @@ import java.net.URL
 
 
 class AddBookDialogFragment: DialogFragment(), OnGenreClick {
-    val selectedGenres: ArrayList<String> = ArrayList()
+    private val selectedGenres: ArrayList<String> = ArrayList()
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let {
             val builder = AlertDialog.Builder(it)
@@ -94,17 +93,37 @@ class AddBookDialogFragment: DialogFragment(), OnGenreClick {
                         val isbnInput: TextInputEditText = view.findViewById(R.id.isbn_input)
                         val numberInput: TextInputEditText = view.findViewById(R.id.isbn_book_number_input)
 
-                        val isbn = isbnInput.text.toString().toLong()
-                        val number: Int = numberInput.text.toString().toInt()
+                        val isbn = isbnInput.text.toString()
+                        val number = numberInput.text.toString()
 
-                        GetBookByISBN(selectedGenres, isbn, number, object: GetBookByISBN.AsyncResponse {
-                            // onPostExecute result is transferred here
-                            // Memory leak pog
-                            override fun processFinish(output: Int) {
-                                if (output == 1) Toast.makeText(fragmentContext, "Success! Book has been created", Toast.LENGTH_SHORT).show()
-                                else Toast.makeText(fragmentContext, "Could not get data from ISBN, please use the manual option.", Toast.LENGTH_LONG).show()
-                            }
-                        }).execute()
+                        if (isbn.isNotEmpty() && number.isNotEmpty()) {
+                            GetBookByISBN(
+                                selectedGenres,
+                                isbn.toLong(),
+                                number.toInt(),
+                                object : GetBookByISBN.AsyncResponse {
+                                    // onPostExecute result is transferred here
+                                    // Memory leak pog
+                                    override fun processFinish(output: Int) {
+                                        if (output == 1) Toast.makeText(
+                                            fragmentContext,
+                                            "Success! Book has been created",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                        else Toast.makeText(
+                                            fragmentContext,
+                                            "Could not get data from ISBN, please use the manual option.",
+                                            Toast.LENGTH_LONG
+                                        ).show()
+                                    }
+                                }).execute()
+                        }
+                        else {
+                            Toast.makeText(
+                                fragmentContext,
+                                "Please fill in all required fields",
+                                Toast.LENGTH_LONG).show()
+                        }
                     }
                 }
                 .setNegativeButton("Cancel") { _, _ ->
