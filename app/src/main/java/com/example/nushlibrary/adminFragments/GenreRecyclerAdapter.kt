@@ -4,11 +4,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.nushlibrary.R
-import com.google.android.material.snackbar.Snackbar
 
-class GenreRecyclerAdapter : RecyclerView.Adapter<GenreRecyclerAdapter.ViewHolder>() {
+
+// Callback interface to be inplemented in dialog
+interface OnGenreClick {
+    fun onGenreClick(genre: String)
+}
+
+class GenreRecyclerAdapter(listener: OnGenreClick) : RecyclerView.Adapter<GenreRecyclerAdapter.ViewHolder>() {
+    val callback: OnGenreClick = listener
+
     private val genres = arrayOf(
         "Action and adventure",
         "Alternate history",
@@ -65,6 +73,8 @@ class GenreRecyclerAdapter : RecyclerView.Adapter<GenreRecyclerAdapter.ViewHolde
         "Young adult"
     )
 
+    val selectedGenres = ArrayList<String>()
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val v: View =
             LayoutInflater.from(parent.context).inflate(R.layout.card_layout, parent, false)
@@ -85,10 +95,24 @@ class GenreRecyclerAdapter : RecyclerView.Adapter<GenreRecyclerAdapter.ViewHolde
         init {
             itemView.setOnClickListener { view ->
                 val position = adapterPosition
-                Snackbar.make(
-                    view, "Click detected on item $position",
-                    Snackbar.LENGTH_LONG
-                ).setAction("Action", null).show()
+
+                val genre = genres[position]
+                val message: String
+                if (selectedGenres.contains(genre)) {
+                    // Set opacity of item to 100%, remove it from selected genres
+                    itemView.alpha = 1F
+                    message = "Removed $genre"
+                }
+                else {
+                    // Set opacity to 30%, add it to selected genres
+                    itemView.alpha = 0.3F
+                    message = "Added $genre"
+                }
+
+                // Add selectedGenres to onClick in interface
+                callback.onGenreClick(genre)
+
+                Toast.makeText(view.context!!, message, Toast.LENGTH_SHORT).show()
             }
         }
     }
