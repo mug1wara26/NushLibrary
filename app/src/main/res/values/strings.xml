@@ -12,8 +12,12 @@
     <string name="manual">Manual</string>
     <string name="number">Number</string>
     <string name="title">Title</string>
-    <string name="author">Author</string>
+    <string name="authors_separate">Authors (separate authors by ,)</string>
     <string name="description">Description</string>
     <string name="add_genres">Add genres</string>
     <string name="expand_collapse">Expand/Collapse</string>
+    <string name="publisher">Publisher (optional)</string>
+    <string name="recently_added">Recently added</string>
+    <string name="book_thumbnail">Book Thumbnail</string>
+    <string name="authors">Authors</string>
 </resources>

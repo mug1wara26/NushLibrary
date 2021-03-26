@@ -1,10 +1,12 @@
-package com.example.nushlibrary.adminFragments
+package com.example.nushlibrary.adminFragments.addBookDialogFragment
 
+import android.app.Activity
+import android.content.Intent
 import android.os.AsyncTask
-import com.beust.klaxon.JsonArray
-import com.beust.klaxon.JsonObject
-import com.beust.klaxon.Parser
+import com.beust.klaxon.*
 import com.example.nushlibrary.Book
+import com.example.nushlibrary.adminFragments.AdminHomeFragment
+import com.example.nushlibrary.adminFragments.BOOK_CREATED_RC
 import com.example.nushlibrary.database
 import java.net.HttpURLConnection
 import java.net.URL
@@ -16,21 +18,22 @@ open class GetBookByISBN(
     private val genre: ArrayList<String>,
     private val isbn: Long,
     private val number: Int,
-    private val delegate: AsyncResponse?
-): AsyncTask<Void, Void, Int>() {
+    private val listener: AsyncResponse
+): AsyncTask<Void, Void, Book?>() {
+    var book: Book? = null
 
     // Create an interface here and override the interface method in the AddBookDialogFragment class
     // This way, we can pass data from AsyncTask to the fragment class
     // Full details here https://stackoverflow.com/a/12575319/14403601
     interface AsyncResponse {
-        fun processFinish(output: Int)
+        fun processFinish(output: Book?)
     }
 
-    override fun onPostExecute(result: Int) {
-        delegate!!.processFinish(result)
+    override fun onPostExecute(result: Book?) {
+        listener.processFinish(result)
     }
 
-    override fun doInBackground(vararg params: Void?): Int {
+    override fun doInBackground(vararg params: Void?): Book? {
         var json = ""
         val url = URL("https://www.googleapis.com/books/v1/volumes?q=isbn:$isbn")
         with(url.openConnection() as HttpURLConnection) {
@@ -53,14 +56,15 @@ open class GetBookByISBN(
             val title = getValueFromPath(jsonObject, "items.volumeInfo.title") as String?
             val description = getValueFromPath(jsonObject, "items.volumeInfo.description") as String?
             val publisher = getValueFromPath(jsonObject, "items.volumeInfo.publisher") as String?
+            val thumbnail = getValueFromPath(jsonObject, "items.volumeInfo.imageLinks.thumbnail") as String?
 
             // Create book object and add it to database
-            val book = Book(authors, title, description, publisher, genre, number)
+            book = Book(authors, title, description, publisher, genre, thumbnail, number)
             database.child("books").child(isbn.toString()).setValue(book)
         }
 
         // Returns result
-        return jsonObject["totalItems"] as Int
+        return book
     }
 
     private fun getValueFromPath(jsonObject: JsonObject, path: String): Any? {

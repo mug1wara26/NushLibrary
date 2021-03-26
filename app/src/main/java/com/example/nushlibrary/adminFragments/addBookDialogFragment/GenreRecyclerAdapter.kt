@@ -1,4 +1,4 @@
-package com.example.nushlibrary.adminFragments
+package com.example.nushlibrary.adminFragments.addBookDialogFragment
 
 import android.view.LayoutInflater
 import android.view.View
@@ -9,13 +9,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.nushlibrary.R
 
 
-// Callback interface to be inplemented in dialog
+// Callback interface to be implemented in dialog
 interface OnGenreClick {
     fun onGenreClick(genre: String)
 }
 
-class GenreRecyclerAdapter(listener: OnGenreClick) : RecyclerView.Adapter<GenreRecyclerAdapter.ViewHolder>() {
-    val callback: OnGenreClick = listener
+class GenreRecyclerAdapter(val listener: OnGenreClick) : RecyclerView.Adapter<GenreRecyclerAdapter.ViewHolder>() {
 
     private val genres = arrayOf(
         "Action and adventure",
@@ -77,7 +76,7 @@ class GenreRecyclerAdapter(listener: OnGenreClick) : RecyclerView.Adapter<GenreR
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val v: View =
-            LayoutInflater.from(parent.context).inflate(R.layout.card_layout, parent, false)
+            LayoutInflater.from(parent.context).inflate(R.layout.card_layout_genre, parent, false)
         return ViewHolder(v)
     }
 
@@ -90,7 +89,7 @@ class GenreRecyclerAdapter(listener: OnGenreClick) : RecyclerView.Adapter<GenreR
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var genre: TextView = itemView.findViewById(R.id.genre)
+        val genre: TextView = itemView.findViewById(R.id.genre)
 
         init {
             itemView.setOnClickListener { view ->
@@ -110,7 +109,7 @@ class GenreRecyclerAdapter(listener: OnGenreClick) : RecyclerView.Adapter<GenreR
                 }
 
                 // Add selectedGenres to onClick in interface
-                callback.onGenreClick(genre)
+                listener.onGenreClick(genre)
 
                 Toast.makeText(view.context!!, message, Toast.LENGTH_SHORT).show()
             }

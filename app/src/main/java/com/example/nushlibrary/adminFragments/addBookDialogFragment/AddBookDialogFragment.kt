@@ -1,12 +1,11 @@
-package com.example.nushlibrary.adminFragments
+package com.example.nushlibrary.adminFragments.addBookDialogFragment
 
+import android.app.Activity
 import android.app.AlertDialog
 import android.app.Dialog
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
-import android.os.AsyncTask
 import android.os.Bundle
 import android.transition.AutoTransition
 import android.transition.TransitionManager
@@ -18,19 +17,24 @@ import androidx.core.view.children
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.beust.klaxon.JsonArray
-import com.beust.klaxon.JsonObject
-import com.beust.klaxon.Parser
+import com.beust.klaxon.Klaxon
 import com.example.nushlibrary.Book
 import com.example.nushlibrary.R
+import com.example.nushlibrary.adminFragments.AdminHomeFragment
+import com.example.nushlibrary.adminFragments.BOOK_CREATED_RC
 import com.example.nushlibrary.database
 import com.google.android.material.textfield.TextInputEditText
-import java.net.HttpURLConnection
-import java.net.URL
+import java.util.*
+import kotlin.collections.ArrayList
 
 
-class AddBookDialogFragment: DialogFragment(), OnGenreClick {
+class AddBookDialogFragment(private val listener: GetBookOnDismiss): DialogFragment(), OnGenreClick {
     private val selectedGenres: ArrayList<String> = ArrayList()
+    var book: Book? = null
+    // Callback interface on dismiss to use book object
+    interface GetBookOnDismiss {
+        fun onDismiss(book: Book?)
+    }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let {
@@ -96,34 +100,22 @@ class AddBookDialogFragment: DialogFragment(), OnGenreClick {
                         val isbn = isbnInput.text.toString()
                         val number = numberInput.text.toString()
 
-                        if (isbn.isNotEmpty() && number.isNotEmpty()) {
-                            GetBookByISBN(
-                                selectedGenres,
-                                isbn.toLong(),
-                                number.toInt(),
-                                object : GetBookByISBN.AsyncResponse {
-                                    // onPostExecute result is transferred here
-                                    // Memory leak pog
-                                    override fun processFinish(output: Int) {
-                                        if (output == 1) Toast.makeText(
-                                            fragmentContext,
-                                            "Success! Book has been created",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                        else Toast.makeText(
-                                            fragmentContext,
-                                            "Could not get data from ISBN, please use the manual option.",
-                                            Toast.LENGTH_LONG
-                                        ).show()
-                                    }
-                                }).execute()
-                        }
-                        else {
-                            Toast.makeText(
-                                fragmentContext,
-                                "Please fill in all required fields",
-                                Toast.LENGTH_LONG).show()
-                        }
+                        createBookWithISBN(isbn, number, fragmentContext)
+                    }
+                    else {
+                        val titleInput: TextInputEditText = view.findViewById(R.id.manual_title_input)
+                        val authorInput: TextInputEditText = view.findViewById(R.id.manual_author_input)
+                        val descriptionInput: TextInputEditText = view.findViewById(R.id.manual_description_input)
+                        val publisherInput: TextInputEditText = view.findViewById(R.id.manual_publisher_input)
+                        val numberInput: TextInputEditText = view.findViewById(R.id.manual_book_number_input)
+
+                        val title = titleInput.text.toString()
+                        val author = authorInput.text.toString()
+                        val description = descriptionInput.text.toString()
+                        val publisher = publisherInput.text.toString()
+                        val number = numberInput.text.toString()
+
+                        createBookManually(fragmentContext, title, author, description, publisher, number)
                     }
                 }
                 .setNegativeButton("Cancel") { _, _ ->
@@ -163,6 +155,87 @@ class AddBookDialogFragment: DialogFragment(), OnGenreClick {
         for (i in enabledConstraintLayout.children) i.isEnabled = true
         // Sets to opacity to 100%
         enabledCardView.alpha = 1F
+    }
+
+    private fun createBookWithISBN(isbn: String, number: String, context: Context?) {
+        if (isbn.isNotEmpty() && number.isNotEmpty()) {
+            GetBookByISBN(
+                selectedGenres,
+                isbn.toLong(),
+                number.toInt(),
+                object : GetBookByISBN.AsyncResponse {
+                    // onPostExecute result is transferred here
+                    // Memory leak pog
+                    override fun processFinish(output: Book?) {
+                        if (output != null) {
+                            Toast.makeText(
+                                context,
+                                "Success! Book has been created",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            book = output
+
+                            // Set book to listener
+                            listener.onDismiss(book)
+                        }
+                        else
+                            Toast.makeText(
+                            context,
+                            "Could not get data from ISBN, please use the manual option.",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                }).execute()
+        }
+        else {
+            Toast.makeText(
+                context,
+                "Please fill in all required fields",
+                Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun createBookManually(context: Context?, title: String, authors: String, description: String, publisher: String, number: String) {
+        val requiredFieldsFilled =
+            title.isNotEmpty() &&
+                    authors.isNotEmpty() &&
+                    description.isNotEmpty() &&
+                    number.isNotEmpty()
+
+        if (requiredFieldsFilled) {
+            // This checks that the number input is not too large, other wise overflow may occur
+            if (number.length <= 4) {
+                val authorsList: ArrayList<String> = ArrayList()
+                authors.split(",").forEach {
+                    authorsList.add(it)
+                }
+
+                book = Book(
+                    authorsList,
+                    title,
+                    description,
+                    // If user did not input publisher, set it to null otherwise it will store empty string in database
+                    publisher =
+                    if (publisher.isEmpty()) null
+                    else publisher
+                    ,
+                    selectedGenres,
+                    null,
+                    number.toInt()
+                )
+
+                database.child("books").child(UUID.randomUUID().toString()).setValue(book)
+
+                // Add book to intent
+
+                // Set book to listener
+                listener.onDismiss(book)
+
+                Toast.makeText(context, "Success! Book has been created", Toast.LENGTH_SHORT).show()
+            }
+            else Toast.makeText(context, "Number has to be smaller than 9999", Toast.LENGTH_LONG).show()
+        }
+        else Toast.makeText(context, "Please fill in all required fields", Toast.LENGTH_LONG).show()
     }
 
     override fun onGenreClick(genre: String) {
