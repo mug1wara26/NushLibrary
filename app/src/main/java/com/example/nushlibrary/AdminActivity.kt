@@ -17,6 +17,8 @@ import com.google.firebase.auth.FirebaseAuth
 
 class AdminActivity: AppCompatActivity() {
     lateinit var drawer: DrawerLayout
+
+    //
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_admin)

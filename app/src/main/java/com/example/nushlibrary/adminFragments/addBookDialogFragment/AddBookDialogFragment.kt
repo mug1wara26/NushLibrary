@@ -1,27 +1,24 @@
 package com.example.nushlibrary.adminFragments.addBookDialogFragment
 
-import android.app.Activity
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
-import android.content.DialogInterface
-import android.content.Intent
 import android.os.Bundle
 import android.transition.AutoTransition
 import android.transition.TransitionManager
 import android.view.View
-import android.widget.*
+import android.widget.ImageButton
+import android.widget.RadioButton
+import android.widget.RadioGroup
+import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.children
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.beust.klaxon.Klaxon
 import com.example.nushlibrary.Book
 import com.example.nushlibrary.R
-import com.example.nushlibrary.adminFragments.AdminHomeFragment
-import com.example.nushlibrary.adminFragments.BOOK_CREATED_RC
 import com.example.nushlibrary.database
 import com.google.android.material.textfield.TextInputEditText
 import java.util.*
@@ -47,43 +44,32 @@ class AddBookDialogFragment(private val listener: GetBookOnDismiss): DialogFragm
             val view = inflater.inflate(R.layout.dialog_add_book, null)
             val addBookRadioGroup: RadioGroup = view.findViewById(R.id.add_book_radio_group)
 
+            // Set default opacity of manual card view
+            val isbnCardView: CardView = view.findViewById(R.id.isbn_card_view)
+            val manualCardView: CardView = view.findViewById(R.id.manual_card_view)
+            manualCardView.alpha = 0.3F
+
             // Listener when a radio button is changed
             addBookRadioGroup.setOnCheckedChangeListener { _, checkedId ->
                 // checkedId is the RadioButton selected
-                val isbnCardView: CardView = view.findViewById(R.id.isbn_card_view)
-                val manualCardView: CardView = view.findViewById(R.id.manual_card_view)
-
                 // This function disables and greys out the card view that is not selected
                 switchCardViews(manualCardView, isbnCardView, checkedId)
             }
-
+            // Set default enabled and disabled card views
+            switchCardViews(manualCardView, isbnCardView, R.id.isbn_radio_button)
 
             // Initialize the RecyclerView of genres
             val genreRecyclerView: RecyclerView = view.findViewById(R.id.recycler_view_genre)
             // Set layout manager to be a grid of column 2
             genreRecyclerView.layoutManager = GridLayoutManager(context, 2)
-            val adapter = GenreRecyclerAdapter(this)
-            genreRecyclerView.adapter = adapter
+            val genreAdapter = GenreRecyclerAdapter(this)
+            genreRecyclerView.adapter = genreAdapter
 
             // Show/hide the recycler view on arrow button click
             val arrowButton: ImageButton = view.findViewById(R.id.arrow_button)
             val expandableCardViewGenre: CardView = view.findViewById(R.id.expandable_card_view_genre)
 
-            arrowButton.setOnClickListener {
-                TransitionManager.beginDelayedTransition(
-                    expandableCardViewGenre,
-                    AutoTransition()
-                )
-
-                if (genreRecyclerView.visibility == View.VISIBLE) {
-                    genreRecyclerView.visibility = View.GONE
-                    arrowButton.setImageResource(R.drawable.icon_expand_arrow)
-                }
-                else {
-                    genreRecyclerView.visibility = View.VISIBLE
-                    arrowButton.setImageResource(R.drawable.icon_collapse_arrow)
-                }
-            }
+            setExpandableRecyclerView(arrowButton, expandableCardViewGenre, genreRecyclerView)
 
             // We are storing context here because the fragment is removed after the create button is pressed
             // However we need context to use Toast
@@ -211,6 +197,7 @@ class AddBookDialogFragment(private val listener: GetBookOnDismiss): DialogFragm
                 }
 
                 book = Book(
+                    UUID.randomUUID().toString(),
                     authorsList,
                     title,
                     description,
@@ -238,7 +225,29 @@ class AddBookDialogFragment(private val listener: GetBookOnDismiss): DialogFragm
         else Toast.makeText(context, "Please fill in all required fields", Toast.LENGTH_LONG).show()
     }
 
-    override fun onGenreClick(genre: String) {
+    override fun addGenre(genre: String) {
         selectedGenres.add(genre)
+    }
+
+    override fun removeGenre(genre: String) {
+        selectedGenres.remove(genre)
+    }
+}
+
+fun setExpandableRecyclerView(arrowButton: ImageButton, expandableCardView: CardView, recyclerView: RecyclerView) {
+    arrowButton.setOnClickListener {
+        TransitionManager.beginDelayedTransition(
+            expandableCardView,
+            AutoTransition()
+        )
+
+        if (recyclerView.visibility == View.VISIBLE) {
+            recyclerView.visibility = View.GONE
+            arrowButton.setImageResource(R.drawable.icon_expand_arrow)
+        }
+        else {
+            recyclerView.visibility = View.VISIBLE
+            arrowButton.setImageResource(R.drawable.icon_collapse_arrow)
+        }
     }
 }

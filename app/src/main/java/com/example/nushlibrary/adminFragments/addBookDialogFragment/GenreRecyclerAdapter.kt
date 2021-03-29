@@ -11,12 +11,14 @@ import com.example.nushlibrary.R
 
 // Callback interface to be implemented in dialog
 interface OnGenreClick {
-    fun onGenreClick(genre: String)
+    fun addGenre(genre: String)
+
+    fun removeGenre(genre: String)
 }
 
 class GenreRecyclerAdapter(val listener: OnGenreClick) : RecyclerView.Adapter<GenreRecyclerAdapter.ViewHolder>() {
 
-    private val genres = arrayOf(
+     val genres = arrayOf(
         "Action and adventure",
         "Alternate history",
         "Anthology",
@@ -82,6 +84,9 @@ class GenreRecyclerAdapter(val listener: OnGenreClick) : RecyclerView.Adapter<Ge
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.genre.text = genres[position]
+
+        // Set default opacity
+        if (selectedGenres.contains(genres[position])) holder.itemView.alpha = 0.3F
     }
 
     override fun getItemCount(): Int {
@@ -92,24 +97,25 @@ class GenreRecyclerAdapter(val listener: OnGenreClick) : RecyclerView.Adapter<Ge
         val genre: TextView = itemView.findViewById(R.id.genre)
 
         init {
+
             itemView.setOnClickListener { view ->
                 val position = adapterPosition
-
                 val genre = genres[position]
                 val message: String
                 if (selectedGenres.contains(genre)) {
                     // Set opacity of item to 100%, remove it from selected genres
                     itemView.alpha = 1F
                     message = "Removed $genre"
+                    selectedGenres.remove(genre)
+                    listener.removeGenre(genre)
                 }
                 else {
                     // Set opacity to 30%, add it to selected genres
                     itemView.alpha = 0.3F
                     message = "Added $genre"
+                    selectedGenres.add(genre)
+                    listener.addGenre(genre)
                 }
-
-                // Add selectedGenres to onClick in interface
-                listener.onGenreClick(genre)
 
                 Toast.makeText(view.context!!, message, Toast.LENGTH_SHORT).show()
             }

@@ -2,11 +2,8 @@ package com.example.nushlibrary
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.os.AsyncTask
 import android.os.Bundle
-import android.view.View
 import android.widget.Button
-import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
@@ -16,8 +13,6 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import java.net.HttpURLConnection
-import java.net.URL
 
 val database = Firebase.database.getReferenceFromUrl("https://nush-library-default-rtdb.firebaseio.com/")
 val userReference = database.child("users")
@@ -44,7 +39,7 @@ class MainActivity : AppCompatActivity() {
                     val user = FirebaseAuth.getInstance().currentUser
 
                     if (user != null) {
-                        if (user.email.endsWith("@nushigh.edu.sg") || user.email.endsWith("@nus.edu.sg")) {
+                        if (user.email!!.endsWith("@nushigh.edu.sg") || user.email!!.endsWith("@nus.edu.sg")) {
                             userReference.child(user.uid)
                                 .addListenerForSingleValueEvent(object : ValueEventListener {
                                     override fun onDataChange(snapshot: DataSnapshot) {

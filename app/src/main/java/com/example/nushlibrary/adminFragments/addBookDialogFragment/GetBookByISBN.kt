@@ -1,12 +1,10 @@
 package com.example.nushlibrary.adminFragments.addBookDialogFragment
 
-import android.app.Activity
-import android.content.Intent
 import android.os.AsyncTask
-import com.beust.klaxon.*
+import com.beust.klaxon.JsonArray
+import com.beust.klaxon.JsonObject
+import com.beust.klaxon.Parser
 import com.example.nushlibrary.Book
-import com.example.nushlibrary.adminFragments.AdminHomeFragment
-import com.example.nushlibrary.adminFragments.BOOK_CREATED_RC
 import com.example.nushlibrary.database
 import java.net.HttpURLConnection
 import java.net.URL
@@ -59,7 +57,7 @@ open class GetBookByISBN(
             val thumbnail = getValueFromPath(jsonObject, "items.volumeInfo.imageLinks.thumbnail") as String?
 
             // Create book object and add it to database
-            book = Book(authors, title, description, publisher, genre, thumbnail, number)
+            book = Book(isbn.toString(), authors, title, description, publisher, genre, thumbnail, number)
             database.child("books").child(isbn.toString()).setValue(book)
         }
 

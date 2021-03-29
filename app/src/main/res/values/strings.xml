@@ -20,4 +20,6 @@
     <string name="recently_added">Recently added</string>
     <string name="book_thumbnail">Book Thumbnail</string>
     <string name="authors">Authors</string>
+    <string name="leave_empty_if_no_changes">Leave empty if no changes</string>
+    <string name="edit">Edit</string>
 </resources>

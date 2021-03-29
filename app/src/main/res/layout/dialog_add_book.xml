@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<androidx.core.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -8,8 +8,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="20dp"
-        android:background="@drawable/dialog_bg">
+        android:padding="20dp" >
 
         <RadioGroup
             android:id="@+id/add_book_radio_group"
@@ -74,71 +73,10 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/isbn_card_view" />
 
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/manual_card_view"
+            <include
+                layout="@layout/layout_book_input_fields"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/manual_radio_button"
-                android:alpha="0.3">
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/manual_title_input"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/title"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        android:enabled="false" />
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/manual_author_input"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/authors_separate"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/manual_title_input"
-                        android:enabled="false" />
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/manual_description_input"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/description"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/manual_author_input"
-                        android:enabled="false" />
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/manual_publisher_input"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/publisher"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/manual_description_input"
-                        android:enabled="false" />
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/manual_book_number_input"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/number"
-                        android:inputType="number"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/manual_publisher_input"
-                        android:enabled="false" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-            </com.google.android.material.card.MaterialCardView>
+                android:layout_height="wrap_content"/>
         </RadioGroup>
 
         <include
@@ -150,4 +88,4 @@
             app:layout_constraintTop_toBottomOf="@+id/add_book_radio_group" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-</ScrollView>
+</androidx.core.widget.NestedScrollView>
