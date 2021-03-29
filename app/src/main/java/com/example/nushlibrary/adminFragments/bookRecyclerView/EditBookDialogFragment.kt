@@ -72,8 +72,11 @@ class EditBookDialogFragment(private val book: Book): DialogFragment(), OnGenreC
 
                     val title = getText(R.id.manual_title_input, book.title) as String?
 
-                    var authorsList = getText(R.id.manual_author_input, book.authors)
-                    if (authorsList is String) authorsList = authorsList.split(",")
+                    val authors = getText(R.id.manual_author_input, book.authors) as String?
+                    val authorsList: ArrayList<String> = ArrayList()
+                    authors?.split(",")?.forEach {
+                        authorsList.add(it)
+                    }
 
                     val description = getText(R.id.manual_description_input, book.description) as String?
                     val publisher = getText(R.id.manual_publisher_input, book.publisher) as String?
