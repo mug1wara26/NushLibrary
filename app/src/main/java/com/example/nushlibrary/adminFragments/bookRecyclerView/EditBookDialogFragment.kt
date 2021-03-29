@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.os.Bundle
 import android.widget.ImageButton
+import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.GridLayoutManager
@@ -11,15 +12,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.nushlibrary.Book
 import com.example.nushlibrary.R
 import com.example.nushlibrary.adminFragments.addBookDialogFragment.GenreRecyclerAdapter
-import com.example.nushlibrary.adminFragments.addBookDialogFragment.OnGenreClick
 import com.example.nushlibrary.adminFragments.addBookDialogFragment.setExpandableRecyclerView
 import com.example.nushlibrary.adminFragments.recentlyAddedBooksAdapter
 import com.example.nushlibrary.database
 import com.google.android.material.textfield.TextInputEditText
 
-class EditBookDialogFragment(private val book: Book): DialogFragment(), OnGenreClick {
-    private val selectedGenres: ArrayList<String> = ArrayList()
-
+class EditBookDialogFragment(private val book: Book): DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let { fragmentActivity ->
             val builder = AlertDialog.Builder(fragmentActivity)
@@ -32,7 +30,7 @@ class EditBookDialogFragment(private val book: Book): DialogFragment(), OnGenreC
             val genreRecyclerView: RecyclerView = view.findViewById(R.id.recycler_view_genre)
             // Set layout manager to be a grid of column 2
             genreRecyclerView.layoutManager = GridLayoutManager(context, 2)
-            val genreAdapter = GenreRecyclerAdapter(this)
+            val genreAdapter = GenreRecyclerAdapter()
 
             // Set default genres selected and opacity
             book.genre.forEach {
@@ -60,6 +58,8 @@ class EditBookDialogFragment(private val book: Book): DialogFragment(), OnGenreC
                     recentlyAddedBooksAdapter.notifyDataSetChanged()
 
                     database.child("books").child(id).removeValue()
+
+                    Toast.makeText(context, "Successfully deleted book", Toast.LENGTH_SHORT).show()
                 }
                 .setPositiveButton("Edit") { _, _ ->
                     // Function to make my life easier
@@ -72,10 +72,14 @@ class EditBookDialogFragment(private val book: Book): DialogFragment(), OnGenreC
 
                     val title = getText(R.id.manual_title_input, book.title) as String?
 
-                    val authors = getText(R.id.manual_author_input, book.authors) as String?
-                    val authorsList: ArrayList<String> = ArrayList()
-                    authors?.split(",")?.forEach {
-                        authorsList.add(it)
+                    var authors = getText(R.id.manual_author_input, book.authors)
+
+                    if (authors is String) {
+                        val authorsList: ArrayList<String> = ArrayList()
+                        authors.split(",").forEach {
+                            authorsList.add(it)
+                        }
+                        authors = authorsList
                     }
 
                     val description = getText(R.id.manual_description_input, book.description) as String?
@@ -84,11 +88,11 @@ class EditBookDialogFragment(private val book: Book): DialogFragment(), OnGenreC
 
                     val newBook = Book(
                         book.id,
-                        authorsList as ArrayList<*>,
+                        authors as ArrayList<*>,
                         title,
                         description,
                         publisher,
-                        selectedGenres,
+                        genreAdapter.selectedGenres,
                         book.thumbnail,
                         number)
 
@@ -98,17 +102,11 @@ class EditBookDialogFragment(private val book: Book): DialogFragment(), OnGenreC
 
                     // Change book in database
                     database.child("books").child(book.id).setValue(newBook)
+
+                    Toast.makeText(context, "Successfully edited book", Toast.LENGTH_SHORT).show()
                 }
 
             builder.create()
         } ?: throw IllegalStateException("Activity cannot be null")
-    }
-
-    override fun addGenre(genre: String) {
-        selectedGenres.add(genre)
-    }
-
-    override fun removeGenre(genre: String) {
-        selectedGenres.remove(genre)
     }
 }

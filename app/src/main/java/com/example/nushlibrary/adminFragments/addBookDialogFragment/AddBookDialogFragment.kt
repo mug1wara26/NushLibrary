@@ -25,8 +25,8 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
-class AddBookDialogFragment(private val listener: GetBookOnDismiss): DialogFragment(), OnGenreClick {
-    private val selectedGenres: ArrayList<String> = ArrayList()
+class AddBookDialogFragment(private val listener: GetBookOnDismiss): DialogFragment() {
+    private val genreAdapter = GenreRecyclerAdapter()
     var book: Book? = null
     // Callback interface on dismiss to use book object
     interface GetBookOnDismiss {
@@ -62,7 +62,6 @@ class AddBookDialogFragment(private val listener: GetBookOnDismiss): DialogFragm
             val genreRecyclerView: RecyclerView = view.findViewById(R.id.recycler_view_genre)
             // Set layout manager to be a grid of column 2
             genreRecyclerView.layoutManager = GridLayoutManager(context, 2)
-            val genreAdapter = GenreRecyclerAdapter(this)
             genreRecyclerView.adapter = genreAdapter
 
             // Show/hide the recycler view on arrow button click
@@ -146,7 +145,7 @@ class AddBookDialogFragment(private val listener: GetBookOnDismiss): DialogFragm
     private fun createBookWithISBN(isbn: String, number: String, context: Context?) {
         if (isbn.isNotEmpty() && number.isNotEmpty()) {
             GetBookByISBN(
-                selectedGenres,
+                genreAdapter.selectedGenres,
                 isbn.toLong(),
                 number.toInt(),
                 object : GetBookByISBN.AsyncResponse {
@@ -206,7 +205,7 @@ class AddBookDialogFragment(private val listener: GetBookOnDismiss): DialogFragm
                     if (publisher.isEmpty()) null
                     else publisher
                     ,
-                    selectedGenres,
+                    genreAdapter.selectedGenres,
                     null,
                     number.toInt()
                 )
@@ -223,14 +222,6 @@ class AddBookDialogFragment(private val listener: GetBookOnDismiss): DialogFragm
             else Toast.makeText(context, "Number has to be smaller than 9999", Toast.LENGTH_LONG).show()
         }
         else Toast.makeText(context, "Please fill in all required fields", Toast.LENGTH_LONG).show()
-    }
-
-    override fun addGenre(genre: String) {
-        selectedGenres.add(genre)
-    }
-
-    override fun removeGenre(genre: String) {
-        selectedGenres.remove(genre)
     }
 }
 

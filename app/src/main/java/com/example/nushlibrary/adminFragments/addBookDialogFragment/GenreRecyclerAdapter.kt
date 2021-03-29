@@ -9,15 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.nushlibrary.R
 
 
-// Callback interface to be implemented in dialog
-interface OnGenreClick {
-    fun addGenre(genre: String)
-
-    fun removeGenre(genre: String)
-}
-
-class GenreRecyclerAdapter(val listener: OnGenreClick) : RecyclerView.Adapter<GenreRecyclerAdapter.ViewHolder>() {
-
+class GenreRecyclerAdapter() : RecyclerView.Adapter<GenreRecyclerAdapter.ViewHolder>() {
      val genres = arrayOf(
         "Action and adventure",
         "Alternate history",
@@ -107,14 +99,12 @@ class GenreRecyclerAdapter(val listener: OnGenreClick) : RecyclerView.Adapter<Ge
                     itemView.alpha = 1F
                     message = "Removed $genre"
                     selectedGenres.remove(genre)
-                    listener.removeGenre(genre)
                 }
                 else {
                     // Set opacity to 30%, add it to selected genres
                     itemView.alpha = 0.3F
                     message = "Added $genre"
                     selectedGenres.add(genre)
-                    listener.addGenre(genre)
                 }
 
                 Toast.makeText(view.context!!, message, Toast.LENGTH_SHORT).show()
