@@ -75,7 +75,6 @@ class AdminActivity: AppCompatActivity() {
         // Matches menu item id with the corresponding fragment class, default will be home fragment
         val fragmentClass: Class<*> = when(menuItem.itemId) {
             R.id.home -> AdminHomeFragment::class.java
-            R.id.search -> AdminSearchFragment::class.java
             R.id.users -> AdminUsersFragment::class.java
             R.id.books -> AdminBooksFragment::class.java
             R.id.settings -> AdminSettingsFragment::class.java
