@@ -15,11 +15,10 @@ import com.example.nushlibrary.adminFragments.addBookDialogFragment.GenreRecycle
 import com.example.nushlibrary.adminFragments.addBookDialogFragment.setExpandableView
 import com.google.android.material.textfield.TextInputEditText
 
-class FilterDialogFragment(val listener: GetFilterOnDismiss): DialogFragment() {
+class FilterDialogFragment(private val listener: GetFilterOnDismiss): DialogFragment() {
     interface GetFilterOnDismiss {
-        fun onDismiss(genre: ArrayList<String>?, authors: ArrayList<String>)
+        fun onDismiss(genreFilter: ArrayList<String>, authorsFilter: ArrayList<String>)
     }
-
 
     @SuppressLint("SetTextI18n")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -45,13 +44,16 @@ class FilterDialogFragment(val listener: GetFilterOnDismiss): DialogFragment() {
 
             setExpandableView(arrowButton, expandableCardViewGenre, genreRecyclerView)
 
+            builder.setTitle("Filter")
             builder.setView(view)
                 .setPositiveButton("Filter") { _, _ ->
                     val authors: ArrayList<String> = arrayListOf()
-                    val authorsInput: TextInputEditText = view.findViewById(R.id.search_filter_author)
+                    val authorsText = view.findViewById<TextInputEditText>(R.id.search_filter_author).text.toString()
 
-                    authorsInput.text.toString().split(",").forEach {
-                        authors.add(it)
+                    if (authorsText.isNotEmpty()) {
+                        authorsText.split(",").forEach {
+                            authors.add(it)
+                        }
                     }
 
                     listener.onDismiss(genreAdapter.selectedGenres, authors)

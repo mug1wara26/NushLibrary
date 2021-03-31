@@ -1,11 +1,11 @@
 package com.example.nushlibrary.booksFragment
 
-import android.content.ClipData.Item
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
+import android.widget.ImageButton
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -29,31 +29,49 @@ class BooksFragment: Fragment() {
         val booksAdapter = BooksRecyclerAdapter(activity?.supportFragmentManager!!, user.admin)
         booksRecyclerView.adapter = booksAdapter
 
-        showBookByOrder(booksAdapter, "title")
+        var order = "title"
+        showBookByOrder(booksAdapter, order)
 
-        val genreFilter: ArrayList<String> = arrayListOf()
-        val authorsFilter: ArrayList<String> = arrayListOf()
-
-        val filterButton: Button = view.findViewById(R.id.filter_button)
+        val filterButton: ImageButton = view.findViewById(R.id.filter_button)
         filterButton.setOnClickListener {
             activity?.supportFragmentManager?.let {
                 FilterDialogFragment(object: FilterDialogFragment.GetFilterOnDismiss {
-                    override fun onDismiss(genre: ArrayList<String>?, authors: ArrayList<String>) {
-                        genre?.forEach { s ->
-                            genreFilter.add(s)
-                        }
+                    override fun onDismiss(genreFilter: ArrayList<String>, authorsFilter: ArrayList<String>) {
+                        showBookByOrder(booksAdapter, order, object: OnPostExecute{
+                            override fun onPostExecute() {
+                                genreFilter.forEach { genre ->
+                                    booksAdapter.books.removeIf { book ->
+                                        !book.genre.contains(genre)
+                                    }
+                                }
 
-                        authors.forEach { s ->
-                            authorsFilter.add(s)
-                        }
+                                authorsFilter.forEach { author ->
+                                    booksAdapter.books.removeIf { book ->
+                                        !book.authors.contains(author)
+                                    }
+                                }
+                            }
+                        })
                     }
                 }).show(it, "Filter")
             }
         }
+
+        val refreshButton: ImageButton = view.findViewById(R.id.refresh_button)
+        refreshButton.setOnClickListener {
+            showBookByOrder(booksAdapter, order)
+        }
+
         return view
     }
 
-    private fun showBookByOrder(booksAdapter: BooksRecyclerAdapter, value: String) {
+    private fun showBookByOrder(
+        booksAdapter: BooksRecyclerAdapter,
+        value: String,
+        listener: OnPostExecute = object: OnPostExecute{
+            override fun onPostExecute() {/* Do Nothing */}
+    }) {
+        booksAdapter.books.clear()
         database.child("books").orderByChild(value).addListenerForSingleValueEvent(object: ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                 snapshot.children.forEach {
@@ -79,13 +97,20 @@ class BooksFragment: Fragment() {
                         genre = genre ?: arrayListOf<String>(),
                         thumbnail,
                         number!!)
+
                     booksAdapter.books.add(book)
                 }
-
+                booksAdapter.notifyDataSetChanged()
+                listener.onPostExecute()
+            }
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(context, "Database error", Toast.LENGTH_SHORT).show()
                 booksAdapter.notifyDataSetChanged()
             }
-
-            override fun onCancelled(error: DatabaseError) {}
         })
+    }
+
+    interface OnPostExecute {
+        fun onPostExecute()
     }
 }

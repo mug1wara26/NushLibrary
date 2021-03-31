@@ -35,7 +35,7 @@ class EditBookDialogFragment(private val book: Book, private val booksAdapter: B
             genreRecyclerView.layoutManager = GridLayoutManager(context, 2)
             val genreAdapter = GenreRecyclerAdapter()
 
-            // Set default genres selected and opacity
+            // Set default genres selected
             book.genre.forEach {
                 genreAdapter.selectedGenres.add(it as String)
             }

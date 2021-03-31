@@ -1,12 +1,9 @@
 package com.example.nushlibrary.adminFragments.bookRecyclerView
 
-import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.Dialog
 import android.graphics.Bitmap
 import android.os.Bundle
-import android.transition.AutoTransition
-import android.transition.TransitionManager
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
