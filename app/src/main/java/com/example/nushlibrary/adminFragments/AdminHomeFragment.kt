@@ -14,8 +14,8 @@ import com.example.nushlibrary.adminFragments.addBookDialogFragment.AddBookDialo
 import com.example.nushlibrary.adminFragments.bookRecyclerView.BooksRecyclerAdapter
 import com.example.nushlibrary.user
 
-lateinit var recentlyAddedBooksAdapter: BooksRecyclerAdapter
 class AdminHomeFragment: Fragment() {
+    lateinit var recentlyAddedBooksAdapter: BooksRecyclerAdapter
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_admin_home, container, false)
 

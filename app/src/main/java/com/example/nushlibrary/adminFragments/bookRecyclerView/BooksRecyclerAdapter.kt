@@ -16,7 +16,7 @@ import com.example.nushlibrary.R
 import java.net.URL
 
 
-class BooksRecyclerAdapter(val supportFragmentManager: FragmentManager, val admin: Boolean): RecyclerView.Adapter<BooksRecyclerAdapter.ViewHolder>() {
+class BooksRecyclerAdapter(val supportFragmentManager: FragmentManager, private val admin: Boolean): RecyclerView.Adapter<BooksRecyclerAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val v: View =
             LayoutInflater.from(parent.context).inflate(R.layout.card_layout_book, parent, false)
@@ -38,7 +38,7 @@ class BooksRecyclerAdapter(val supportFragmentManager: FragmentManager, val admi
             }
             editBtn.setOnClickListener {
                 val book = books[adapterPosition]
-                EditBookDialogFragment(book).show(supportFragmentManager, "Edit book")
+                EditBookDialogFragment(book, this@BooksRecyclerAdapter).show(supportFragmentManager, "Edit book")
             }
         }
     }

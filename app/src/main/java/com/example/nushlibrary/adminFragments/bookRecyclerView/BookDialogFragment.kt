@@ -17,7 +17,6 @@ import com.example.nushlibrary.R
 import com.example.nushlibrary.adminFragments.addBookDialogFragment.setExpandableView
 
 class BookDialogFragment(val book: Book): DialogFragment() {
-    @SuppressLint("InflateParams")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let{ fragmentActivity ->
             val builder = AlertDialog.Builder(fragmentActivity)

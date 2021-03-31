@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.os.Bundle
 import android.widget.ImageButton
+import android.widget.TextView
 import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.DialogFragment
@@ -13,11 +14,10 @@ import com.example.nushlibrary.Book
 import com.example.nushlibrary.R
 import com.example.nushlibrary.adminFragments.addBookDialogFragment.GenreRecyclerAdapter
 import com.example.nushlibrary.adminFragments.addBookDialogFragment.setExpandableView
-import com.example.nushlibrary.adminFragments.recentlyAddedBooksAdapter
 import com.example.nushlibrary.database
 import com.google.android.material.textfield.TextInputEditText
 
-class EditBookDialogFragment(private val book: Book): DialogFragment() {
+class EditBookDialogFragment(private val book: Book, private val booksAdapter: BooksRecyclerAdapter): DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let { fragmentActivity ->
             val builder = AlertDialog.Builder(fragmentActivity)
@@ -25,6 +25,9 @@ class EditBookDialogFragment(private val book: Book): DialogFragment() {
             val inflater = requireActivity().layoutInflater
             val view = inflater.inflate(R.layout.dialog_edit_book, null)
 
+            // Set text on the expandable card view genre
+            val genreTextView: TextView = view.findViewById(R.id.genre_text_view)
+            genreTextView.text = resources.getString(R.string.add_genres)
 
             // Initialize the RecyclerView of genres
             val genreRecyclerView: RecyclerView = view.findViewById(R.id.recycler_view_genre)
@@ -52,10 +55,10 @@ class EditBookDialogFragment(private val book: Book): DialogFragment() {
                 .setNeutralButton("Delete") { _, _ ->
                     // Delete book from all recycler adapter
                     val id = book.id
-                    recentlyAddedBooksAdapter.books.removeIf {
+                    booksAdapter.books.removeIf {
                         it.id == book.id
                     }
-                    recentlyAddedBooksAdapter.notifyDataSetChanged()
+                    booksAdapter.notifyDataSetChanged()
 
                     database.child("books").child(id).removeValue()
 
@@ -97,8 +100,8 @@ class EditBookDialogFragment(private val book: Book): DialogFragment() {
                         number)
 
                     // Change book arraylist
-                    recentlyAddedBooksAdapter.books[recentlyAddedBooksAdapter.books.indexOf(book)] = newBook
-                    recentlyAddedBooksAdapter.notifyDataSetChanged()
+                    booksAdapter.books[booksAdapter.books.indexOf(book)] = newBook
+                    booksAdapter.notifyDataSetChanged()
 
                     // Change book in database
                     database.child("books").child(book.id).setValue(newBook)

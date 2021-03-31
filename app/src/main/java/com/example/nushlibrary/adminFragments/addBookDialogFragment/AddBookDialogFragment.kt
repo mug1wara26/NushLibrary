@@ -7,10 +7,7 @@ import android.os.Bundle
 import android.transition.AutoTransition
 import android.transition.TransitionManager
 import android.view.View
-import android.widget.ImageButton
-import android.widget.RadioButton
-import android.widget.RadioGroup
-import android.widget.Toast
+import android.widget.*
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.children
@@ -43,6 +40,10 @@ class AddBookDialogFragment(private val listener: GetBookOnDismiss): DialogFragm
             // Pass null as the parent view because its going in the dialog layout
             val view = inflater.inflate(R.layout.dialog_add_book, null)
             val addBookRadioGroup: RadioGroup = view.findViewById(R.id.add_book_radio_group)
+
+            // Set text on the expandable card view genre
+            val genreTextView: TextView = view.findViewById(R.id.genre_text_view)
+            genreTextView.text = resources.getString(R.string.add_genres)
 
             // Set default opacity of manual card view
             val isbnCardView: CardView = view.findViewById(R.id.isbn_card_view)
