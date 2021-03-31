@@ -29,6 +29,5 @@
     <string name="filter">Filter</string>
     <string name="leave_empty_if_no_filter">Leave empty if no filter</string>
     <string name="show_only">Show only</string>
-    <string name="order_by">Order by</string>
     <string name="refresh">Refresh</string>
 </resources>

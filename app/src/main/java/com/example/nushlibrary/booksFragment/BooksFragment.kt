@@ -18,6 +18,8 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.GenericTypeIndicator
 import com.google.firebase.database.ValueEventListener
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class BooksFragment: Fragment() {
@@ -30,49 +32,46 @@ class BooksFragment: Fragment() {
         booksRecyclerView.adapter = booksAdapter
 
         var order = "title"
-        showBookByOrder(booksAdapter, order)
+        showBook(booksAdapter)
 
         val filterButton: ImageButton = view.findViewById(R.id.filter_button)
         filterButton.setOnClickListener {
-            activity?.supportFragmentManager?.let {
-                FilterDialogFragment(object: FilterDialogFragment.GetFilterOnDismiss {
-                    override fun onDismiss(genreFilter: ArrayList<String>, authorsFilter: ArrayList<String>) {
-                        showBookByOrder(booksAdapter, order, object: OnPostExecute{
-                            override fun onPostExecute() {
-                                genreFilter.forEach { genre ->
-                                    booksAdapter.books.removeIf { book ->
-                                        !book.genre.contains(genre)
-                                    }
-                                }
-
-                                authorsFilter.forEach { author ->
-                                    booksAdapter.books.removeIf { book ->
-                                        !book.authors.contains(author)
-                                    }
+            FilterDialogFragment(object: FilterDialogFragment.GetFilterOnDismiss {
+                override fun onDismiss(genreFilter: ArrayList<String>, authorsFilter: ArrayList<String>) {
+                    showBook(booksAdapter, object: OnPostExecute{
+                        override fun onPostExecute() {
+                            genreFilter.forEach { genre ->
+                                booksAdapter.books.removeIf { book ->
+                                    !book.genre.contains(genre)
                                 }
                             }
-                        })
-                    }
-                }).show(it, "Filter")
-            }
+
+                            authorsFilter.forEach { author ->
+                                booksAdapter.books.removeIf { book ->
+                                    !book.authors.contains(author)
+                                }
+                            }
+                        }
+                    })
+                }
+            }).show(requireActivity().supportFragmentManager, "Filter")
         }
 
         val refreshButton: ImageButton = view.findViewById(R.id.refresh_button)
         refreshButton.setOnClickListener {
-            showBookByOrder(booksAdapter, order)
+            showBook(booksAdapter)
         }
 
         return view
     }
 
-    private fun showBookByOrder(
+    private fun showBook(
         booksAdapter: BooksRecyclerAdapter,
-        value: String,
         listener: OnPostExecute = object: OnPostExecute{
             override fun onPostExecute() {/* Do Nothing */}
     }) {
         booksAdapter.books.clear()
-        database.child("books").orderByChild(value).addListenerForSingleValueEvent(object: ValueEventListener{
+        database.child("books").orderByChild("title").addListenerForSingleValueEvent(object: ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                 snapshot.children.forEach {
                     // val book = it.getValue(Book::class.java)
