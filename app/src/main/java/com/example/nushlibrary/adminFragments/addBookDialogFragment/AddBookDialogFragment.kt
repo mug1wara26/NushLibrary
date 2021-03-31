@@ -65,10 +65,10 @@ class AddBookDialogFragment(private val listener: GetBookOnDismiss): DialogFragm
             genreRecyclerView.adapter = genreAdapter
 
             // Show/hide the recycler view on arrow button click
-            val arrowButton: ImageButton = view.findViewById(R.id.arrow_button)
+            val arrowButton: ImageButton = view.findViewById(R.id.arrow_button_genre)
             val expandableCardViewGenre: CardView = view.findViewById(R.id.expandable_card_view_genre)
 
-            setExpandableRecyclerView(arrowButton, expandableCardViewGenre, genreRecyclerView)
+            setExpandableView(arrowButton, expandableCardViewGenre, genreRecyclerView)
 
             // We are storing context here because the fragment is removed after the create button is pressed
             // However we need context to use Toast
@@ -225,19 +225,19 @@ class AddBookDialogFragment(private val listener: GetBookOnDismiss): DialogFragm
     }
 }
 
-fun setExpandableRecyclerView(arrowButton: ImageButton, expandableCardView: CardView, recyclerView: RecyclerView) {
+fun setExpandableView(arrowButton: ImageButton, expandableCardView: CardView, view: View) {
     arrowButton.setOnClickListener {
         TransitionManager.beginDelayedTransition(
             expandableCardView,
             AutoTransition()
         )
 
-        if (recyclerView.visibility == View.VISIBLE) {
-            recyclerView.visibility = View.GONE
+        if (view.visibility == View.VISIBLE) {
+            view.visibility = View.GONE
             arrowButton.setImageResource(R.drawable.icon_expand_arrow)
         }
         else {
-            recyclerView.visibility = View.VISIBLE
+            view.visibility = View.VISIBLE
             arrowButton.setImageResource(R.drawable.icon_collapse_arrow)
         }
     }

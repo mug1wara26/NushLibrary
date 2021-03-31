@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.nushlibrary.Book
 import com.example.nushlibrary.R
 import com.example.nushlibrary.adminFragments.addBookDialogFragment.GenreRecyclerAdapter
-import com.example.nushlibrary.adminFragments.addBookDialogFragment.setExpandableRecyclerView
+import com.example.nushlibrary.adminFragments.addBookDialogFragment.setExpandableView
 import com.example.nushlibrary.adminFragments.recentlyAddedBooksAdapter
 import com.example.nushlibrary.database
 import com.google.android.material.textfield.TextInputEditText
@@ -39,10 +39,10 @@ class EditBookDialogFragment(private val book: Book): DialogFragment() {
             genreRecyclerView.adapter = genreAdapter
 
             // Show/hide the recycler view on arrow button click
-            val arrowButton: ImageButton = view.findViewById(R.id.arrow_button)
+            val arrowButton: ImageButton = view.findViewById(R.id.arrow_button_genre)
             val expandableCardViewGenre: CardView = view.findViewById(R.id.expandable_card_view_genre)
 
-            setExpandableRecyclerView(arrowButton, expandableCardViewGenre, genreRecyclerView)
+            setExpandableView(arrowButton, expandableCardViewGenre, genreRecyclerView)
 
             builder.setTitle("Edit Book")
             builder.setView(view)

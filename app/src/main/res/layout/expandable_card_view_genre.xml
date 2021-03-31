@@ -22,7 +22,7 @@
                 that lie within the fixed portion of the CardView
                 can be constrained to this layout.-->
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/fixed_layout"
+            android:id="@+id/fixed_genre_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
@@ -40,7 +40,7 @@
                 app:layout_constraintBottom_toBottomOf="parent" />
 
             <ImageButton
-                android:id="@+id/arrow_button"
+                android:id="@+id/arrow_button_genre"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/icon_expand_arrow"
@@ -62,7 +62,7 @@
             android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/fixed_layout"
+            app:layout_constraintTop_toBottomOf="@id/fixed_genre_layout"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />

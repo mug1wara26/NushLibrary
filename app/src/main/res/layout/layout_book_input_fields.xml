@@ -48,7 +48,7 @@
             android:id="@+id/manual_publisher_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/publisher"
+            android:hint="@string/publisher_optional"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/manual_description_input"

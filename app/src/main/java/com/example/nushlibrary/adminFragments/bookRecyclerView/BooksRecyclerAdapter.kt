@@ -33,6 +33,8 @@ class BooksRecyclerAdapter(val supportFragmentManager: FragmentManager): Recycle
 
         init {
             itemView.setOnClickListener {
+                val book = books[adapterPosition]
+                BookDialogFragment(book).show(supportFragmentManager, "Book")
             }
             editBtn.setOnClickListener {
                 val book = books[adapterPosition]
