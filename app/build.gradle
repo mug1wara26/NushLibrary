@@ -38,25 +38,25 @@ dependencies {
     // Import the Firebase BoM
     implementation platform('com.google.firebase:firebase-bom:26.7.0')
 
-    // Add the dependency for the Firebase SDK for Google Analytics
-    implementation 'com.google.firebase:firebase-analytics'
+    // When using the BoM, you don't specify versions in Firebase library dependencies
+    // Declare the dependency for the Cloud Functions library
+    implementation 'com.google.firebase:firebase-functions-ktx'
+    // Declare the dependency for the Realtime Database library
+    implementation 'com.google.firebase:firebase-database-ktx'
     // Declare the dependency for the Firebase Authentication library
     implementation 'com.google.firebase:firebase-auth'
+    // Add the dependency for the Firebase SDK for Google Analytics
+    implementation 'com.google.firebase:firebase-analytics'
 
-    // Declare the dependency for the Realtime Database library
-    // When using the BoM, you don't specify versions in Firebase library dependencies
-    implementation 'com.google.firebase:firebase-database-ktx'
 
-    // Declare the dependency for the Cloud Functions library
-    // When using the BoM, you don't specify versions in Firebase library dependencies
-    implementation 'com.google.firebase:firebase-functions-ktx'
-
+    // Fuzzy search
+    implementation 'me.xdrop:fuzzywuzzy:1.3.1'
 
     // Kotlin
     implementation 'androidx.navigation:navigation-fragment-ktx:2.3.4'
     implementation 'androidx.navigation:navigation-ui-ktx:2.3.4'
 
-    // JSON Parser implementation
+    // JSON Parser
     implementation 'com.beust:klaxon:5.5'
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"

@@ -23,7 +23,7 @@ class BooksRecyclerAdapter(val supportFragmentManager: FragmentManager, private 
         return ViewHolder(v)
     }
 
-    val books: ArrayList<Book> = ArrayList()
+    var books: ArrayList<Book> = ArrayList()
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val title: TextView = itemView.findViewById(R.id.card_layout_book_title)
