@@ -16,7 +16,7 @@ import com.example.nushlibrary.R
 import java.net.URL
 
 
-class BooksRecyclerAdapter(val supportFragmentManager: FragmentManager): RecyclerView.Adapter<BooksRecyclerAdapter.ViewHolder>() {
+class BooksRecyclerAdapter(val supportFragmentManager: FragmentManager, val admin: Boolean): RecyclerView.Adapter<BooksRecyclerAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val v: View =
             LayoutInflater.from(parent.context).inflate(R.layout.card_layout_book, parent, false)
@@ -29,7 +29,7 @@ class BooksRecyclerAdapter(val supportFragmentManager: FragmentManager): Recycle
         val title: TextView = itemView.findViewById(R.id.card_layout_book_title)
         val thumbnail: ImageView = itemView.findViewById(R.id.card_layout_book_thumbnail)
         val authors: TextView = itemView.findViewById(R.id.card_layout_book_authors)
-        private val editBtn: Button = itemView.findViewById(R.id.edit_button)
+        val editBtn: Button = itemView.findViewById(R.id.edit_button)
 
         init {
             itemView.setOnClickListener {
@@ -45,6 +45,8 @@ class BooksRecyclerAdapter(val supportFragmentManager: FragmentManager): Recycle
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.title.text = books[position].title
+
+        if (admin) holder.editBtn.visibility = View.VISIBLE
 
         val thumbnail = books[position].thumbnail
         if (thumbnail != null)

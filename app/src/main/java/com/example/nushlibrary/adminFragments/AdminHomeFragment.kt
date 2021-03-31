@@ -12,13 +12,14 @@ import com.example.nushlibrary.Book
 import com.example.nushlibrary.R
 import com.example.nushlibrary.adminFragments.addBookDialogFragment.AddBookDialogFragment
 import com.example.nushlibrary.adminFragments.bookRecyclerView.BooksRecyclerAdapter
+import com.example.nushlibrary.user
 
 lateinit var recentlyAddedBooksAdapter: BooksRecyclerAdapter
 class AdminHomeFragment: Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_admin_home, container, false)
 
-        if (!::recentlyAddedBooksAdapter.isInitialized) recentlyAddedBooksAdapter = BooksRecyclerAdapter(activity?.supportFragmentManager!!)
+        if (!::recentlyAddedBooksAdapter.isInitialized) recentlyAddedBooksAdapter = BooksRecyclerAdapter(activity?.supportFragmentManager!!, user.admin)
 
         // Open dialog on button click
         val addBookButton: Button = view.findViewById(R.id.add_book_button)

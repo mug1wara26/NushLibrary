@@ -14,7 +14,7 @@ import com.example.nushlibrary.adminFragments.*
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 
-
+val user = User("email", "name", arrayListOf("book"), arrayListOf("book"), true)
 class AdminActivity: AppCompatActivity() {
     lateinit var drawer: DrawerLayout
 

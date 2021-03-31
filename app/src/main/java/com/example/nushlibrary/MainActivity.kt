@@ -48,8 +48,8 @@ class MainActivity : AppCompatActivity() {
                                             val userClass = User(
                                                 user.email!!,
                                                 user.displayName!!,
-                                                "[]",
-                                                "[]",
+                                                null,
+                                                null,
                                                 false
                                             )
                                             userReference.child(user.uid).setValue(userClass)
