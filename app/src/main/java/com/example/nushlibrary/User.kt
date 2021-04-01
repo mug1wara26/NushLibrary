@@ -4,7 +4,7 @@ data class User(
     val id: String = "",
     val email: String = "",
     val displayName: String = "",
-    val booksBorrowed: ArrayList<*>? = arrayListOf<String>(),
-    val toReadList: ArrayList<*>? = arrayListOf<String>(),
+    val booksBorrowed: ArrayList<String> = arrayListOf(),
+    val toReadList: ArrayList<String> = arrayListOf(),
     val admin: Boolean = false) {
 }

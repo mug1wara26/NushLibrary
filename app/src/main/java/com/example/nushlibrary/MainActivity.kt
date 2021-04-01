@@ -16,7 +16,7 @@ import com.google.firebase.ktx.Firebase
 
 val database = Firebase.database.getReferenceFromUrl("https://nush-library-default-rtdb.firebaseio.com/")
 val userReference = database.child("users")
-lateinit var user: User
+val bookReference = database.child("books")
 class MainActivity : AppCompatActivity() {
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,8 +50,8 @@ class MainActivity : AppCompatActivity() {
                                                 firebaseUser.uid,
                                                 firebaseUser.email!!,
                                                 firebaseUser.displayName!!,
-                                                null,
-                                                null,
+                                                arrayListOf(),
+                                                arrayListOf(),
                                                 false
                                             )
                                             userReference.child(firebaseUser.uid).setValue(user)

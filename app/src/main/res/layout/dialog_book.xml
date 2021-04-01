@@ -117,5 +117,28 @@
             app:layout_constraintTop_toBottomOf="@id/dialog_book_expandable_description"
             android:visibility="gone"/>
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/borrow_book_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/borrow"
+            android:backgroundTint="@color/white"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/dialog_book_description"
+            android:visibility="gone" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/to_read_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/to_read"
+            android:backgroundTint="@color/white"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toStartOf="@id/borrow_book_button"
+            app:layout_constraintTop_toBottomOf="@id/dialog_book_description"
+            android:layout_marginEnd="5dp"
+            android:visibility="gone"/>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

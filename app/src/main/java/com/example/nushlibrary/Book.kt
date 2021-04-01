@@ -8,5 +8,5 @@ data class Book(
     val publisher: String?,
     val genre: ArrayList<*>,
     val thumbnail: String?,
-    val number: Int
+    var number: Int
 )

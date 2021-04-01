@@ -1,19 +1,23 @@
 package com.example.nushlibrary.adminFragments.bookRecyclerView
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.Dialog
 import android.graphics.Bitmap
 import android.os.Bundle
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.TextView
+import android.view.View
+import android.widget.*
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.DialogFragment
-import com.example.nushlibrary.Book
-import com.example.nushlibrary.R
+import com.example.nushlibrary.*
 import com.example.nushlibrary.adminFragments.addBookDialogFragment.setExpandableView
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
 
+@SuppressLint("SetTextI18n")
 class BookDialogFragment(val book: Book): DialogFragment() {
+    var isBorrowBookThreadLocked = false
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let{ fragmentActivity ->
             val builder = AlertDialog.Builder(fragmentActivity)
@@ -83,6 +87,40 @@ class BookDialogFragment(val book: Book): DialogFragment() {
 
             setExpandableView(arrowButton, expandableCardView, descriptionTextView)
 
+            // Set borrow button and to read button to visible if user is non admin
+            if (!user.admin) {
+                val borrowButton: Button = view.findViewById(R.id.borrow_book_button)
+                val toReadButton: Button = view.findViewById(R.id.to_read_button)
+
+                borrowButton.visibility = View.VISIBLE
+                toReadButton.visibility = View.VISIBLE
+
+                // Disable the button if user has already borrowed the book
+                if (user.booksBorrowed.contains(book.id)) {
+                    borrowButton.isEnabled = false
+                    borrowButton.alpha = 0.3F
+                }
+
+                borrowButton.setOnClickListener {
+                    borrowButtonOnClick(view, borrowButton)
+                }
+                toReadButton.setOnClickListener {
+                    if (!user.toReadList.contains(book.id)) {
+                        user.toReadList.add(book.id)
+                        toReadButton.alpha = 0.3F
+                        Toast.makeText(context, "Added to your to read list", Toast.LENGTH_SHORT).show()
+                    }
+                    else {
+                        user.toReadList.remove(book.id)
+                        toReadButton.alpha = 1F
+                        Toast.makeText(context, "Removed from your to read list", Toast.LENGTH_SHORT).show()
+                    }
+
+
+                    userReference.child(user.id).child("toReadList").setValue(user.toReadList)
+                }
+            }
+
             builder.setView(view)
                 .setNeutralButton("Back") { dialog, _ ->
                     dialog.dismiss()
@@ -90,5 +128,32 @@ class BookDialogFragment(val book: Book): DialogFragment() {
 
             builder.create()
         } ?: throw IllegalStateException("Activity cannot be null")
+    }
+
+    private fun borrowButtonOnClick(view: View, borrowButton: Button) {
+        // Lock thread to avoid race condition
+        if (!isBorrowBookThreadLocked) {
+            isBorrowBookThreadLocked = true
+            if (book.number > 0) {
+                if (!user.booksBorrowed.contains(book.id)) {
+                    user.booksBorrowed.add(book.id)
+                    userReference.child(user.id).child("booksBorrowed")
+                        .setValue(user.booksBorrowed)
+
+                    // Decrease book number
+                    book.number--
+                    view.findViewById<TextView>(R.id.dialog_book_number).text =
+                        "Number of books left: ${book.number}"
+                    bookReference.child(book.id).child("number").setValue(book.number)
+                    Toast.makeText(context, "Successfully borrowed book", Toast.LENGTH_SHORT)
+                        .show()
+
+                    // Disable the button
+                    borrowButton.isEnabled = false
+                    borrowButton.alpha = 0.3F
+                }
+            } else Toast.makeText(context, "No books left", Toast.LENGTH_SHORT).show()
+        }
+        isBorrowBookThreadLocked = false
     }
 }
