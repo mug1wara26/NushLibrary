@@ -62,7 +62,7 @@ class BooksFragment: Fragment() {
             }).show(requireActivity().supportFragmentManager, "Filter")
         }
 
-        val searchInput: TextInputEditText = view.findViewById(R.id.book_input_search)
+        val searchInput: TextInputEditText = view.findViewById(R.id.input_search)
 
         val refreshButton: ImageButton = view.findViewById(R.id.refresh_button)
         refreshButton.setOnClickListener {
@@ -74,7 +74,7 @@ class BooksFragment: Fragment() {
             })
         }
 
-        val searchButton: ImageButton = view.findViewById(R.id.book_fragment_search_button)
+        val searchButton: ImageButton = view.findViewById(R.id.search_layout_search_button)
         searchButton.setOnClickListener {
             val title = searchInput.text.toString()
             if (title.isNotEmpty()) {

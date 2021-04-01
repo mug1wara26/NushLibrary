@@ -25,9 +25,10 @@
     <string name="edit">Edit</string>
     <string name="genres">Genres</string>
     <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus id metus in urna vestibulum luctus. Quisque pretium enim lectus, quis sagittis purus fermentum et. Aenean bibendum velit nec lacus laoreet semper. Duis et sapien dignissim, efficitur augue ut, pulvinar tortor. Vestibulum suscipit, mi sit amet pharetra auctor, turpis ipsum convallis metus, in porttitor sem lectus et ipsum. Nam sit amet fermentum lorem. Quisque nec suscipit nibh. Curabitur faucibus hendrerit tortor ac fringilla. Etiam et lorem eu lacus aliquet congue sed eu nunc. Donec porta, purus in tincidunt lobortis, nisl elit feugiat lorem, et mollis eros diam et ex. Nunc nibh sapien, venenatis eget mollis malesuada, tincidunt vitae augue. Vestibulum rhoncus mi vitae ultricies varius. Curabitur laoreet tortor felis, quis dictum lectus lobortis sit amet. Sed cursus lectus at dui molestie, eu vulputate nisl blandit. Pellentesque dignissim dolor sodales neque pharetra feugiat. Aenean vitae diam lobortis, aliquet erat scelerisque, malesuada magna. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Donec et justo tellus. Vivamus tortor eros, interdum ac elit a, laoreet sodales elit. Duis viverra interdum purus, quis consectetur ante finibus sed. Vivamus condimentum est turpis, ac dignissim ipsum mattis vel. Suspendisse quis commodo libero, a semper diam.</string>
-    <string name="search_hint">Search for book</string>
+    <string name="search_hint">Search</string>
     <string name="filter">Filter</string>
     <string name="leave_empty_if_no_filter">Leave empty if no filter</string>
     <string name="show_only">Show only</string>
     <string name="refresh">Refresh</string>
+    <string name="to_read_list">To Read List</string>
 </resources>

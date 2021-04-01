@@ -14,16 +14,19 @@ import com.example.nushlibrary.adminFragments.AdminHomeFragment
 import com.example.nushlibrary.adminFragments.AdminSettingsFragment
 import com.example.nushlibrary.adminFragments.AdminUsersFragment
 import com.example.nushlibrary.booksFragment.BooksFragment
+import com.example.nushlibrary.userFragments.UserHomeFragment
+import com.example.nushlibrary.userFragments.UserSettingsFragment
+import com.example.nushlibrary.userFragments.UserToReadFragment
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 
-class AdminActivity: AppCompatActivity() {
-    private lateinit var drawer: DrawerLayout
+class UserActivity: AppCompatActivity() {
+    lateinit var drawer: DrawerLayout
 
     //
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_admin)
+        setContentView(R.layout.activity_user)
 
         // Set a Toolbar to replace the ActionBar
         val toolbar: Toolbar = findViewById(R.id.toolbar)
@@ -71,15 +74,15 @@ class AdminActivity: AppCompatActivity() {
     }
 
     private fun selectDrawerItem(menuItem: MenuItem) {
-        // placeholders
+        // placeholder
         val fragment: Fragment
 
         // Matches menu item id with the corresponding fragment class, default will be home fragment
         val fragmentClass: Class<*> = when(menuItem.itemId) {
-            R.id.home -> AdminHomeFragment::class.java
-            R.id.users -> AdminUsersFragment::class.java
+            R.id.home -> UserHomeFragment::class.java
             R.id.books -> BooksFragment::class.java
-            R.id.settings -> AdminSettingsFragment::class.java
+            R.id.toRead -> UserToReadFragment::class.java
+            R.id.settings -> UserSettingsFragment::class.java
             else -> AdminHomeFragment::class.java
         }
 

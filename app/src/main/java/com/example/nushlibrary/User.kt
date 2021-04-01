@@ -1,9 +1,10 @@
 package com.example.nushlibrary
 
 data class User(
-    val email: String,
-    val displayName: String,
-    val booksBorrowed: ArrayList<*>?,
-    val toReadList: ArrayList<*>?,
-    val admin: Boolean) {
+    val id: String = "",
+    val email: String = "",
+    val displayName: String = "",
+    val booksBorrowed: ArrayList<*>? = arrayListOf<String>(),
+    val toReadList: ArrayList<*>? = arrayListOf<String>(),
+    val admin: Boolean = false) {
 }

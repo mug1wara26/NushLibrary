@@ -16,6 +16,7 @@ import com.google.firebase.ktx.Firebase
 
 val database = Firebase.database.getReferenceFromUrl("https://nush-library-default-rtdb.firebaseio.com/")
 val userReference = database.child("users")
+lateinit var user: User
 class MainActivity : AppCompatActivity() {
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,33 +37,53 @@ class MainActivity : AppCompatActivity() {
             FirebaseAuth.getInstance()
                 .startActivityForSignInWithProvider(this, provider.build())
                 .addOnSuccessListener {
-                    val user = FirebaseAuth.getInstance().currentUser
+                    val firebaseUser = FirebaseAuth.getInstance().currentUser
 
-                    if (user != null) {
-                        if (user.email!!.endsWith("@nushigh.edu.sg") || user.email!!.endsWith("@nus.edu.sg")) {
-                            userReference.child(user.uid)
+                    if (firebaseUser != null) {
+                        if (firebaseUser.email!!.endsWith("@nushigh.edu.sg") || firebaseUser.email!!.endsWith("@nus.edu.sg")) {
+                            userReference.child(firebaseUser.uid)
                                 .addListenerForSingleValueEvent(object : ValueEventListener {
                                     override fun onDataChange(snapshot: DataSnapshot) {
                                         // Check if user exists in database
                                         if (!snapshot.exists()) {
-                                            val userClass = User(
-                                                user.email!!,
-                                                user.displayName!!,
+                                            user = User(
+                                                firebaseUser.uid,
+                                                firebaseUser.email!!,
+                                                firebaseUser.displayName!!,
                                                 null,
                                                 null,
                                                 false
                                             )
-                                            userReference.child(user.uid).setValue(userClass)
-                                        }
+                                            userReference.child(firebaseUser.uid).setValue(user)
 
-                                        // If user is admin, start AdminActivity, else start UserActivity
-                                        if (snapshot.child("admin").getValue(Boolean::class.java)!!) {
+
+                                            // Immediately go to UserActivity since user is definitely not admin
+                                            val intent = Intent(applicationContext, UserActivity::class.java)
+                                            startActivity(intent)
                                             // Re-enables the log in button in case user presses back button
                                             logInBtn.isEnabled = true
                                             logInBtn.alpha = 1F
-
-                                            val intent = Intent(applicationContext, AdminActivity::class.java)
-                                            startActivity(intent)
+                                        }
+                                        // User exists
+                                        else {
+                                            user = snapshot.getValue(User::class.java)!!
+                                            // If user is admin, start AdminActivity, else start UserActivity
+                                            if (user.admin) {
+                                                val intent = Intent(
+                                                    applicationContext,
+                                                    AdminActivity::class.java
+                                                )
+                                                startActivity(intent)
+                                            } else {
+                                                val intent = Intent(
+                                                    applicationContext,
+                                                    UserActivity::class.java
+                                                )
+                                                startActivity(intent)
+                                            }
+                                            // Re-enables the log in button in case user presses back button
+                                            logInBtn.isEnabled = true
+                                            logInBtn.alpha = 1F
                                         }
                                     }
 
