@@ -49,6 +49,14 @@
             app:layout_constraintTop_toBottomOf="@id/card_layout_book_title"
             app:layout_constraintStart_toStartOf="parent"/>
 
+        <TextView
+            android:id="@+id/card_layout_book_due_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            app:layout_constraintTop_toBottomOf="@id/card_layout_book_authors"
+            app:layout_constraintStart_toStartOf="parent"/>
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/edit_button"
             android:layout_width="wrap_content"

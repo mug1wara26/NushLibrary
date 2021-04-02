@@ -1,5 +1,6 @@
 package com.example.nushlibrary.adminFragments.bookRecyclerView
 
+import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.AsyncTask
@@ -13,10 +14,15 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.nushlibrary.Book
 import com.example.nushlibrary.R
+import com.example.nushlibrary.user
 import java.net.URL
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
-
-class BooksRecyclerAdapter(val supportFragmentManager: FragmentManager, private val admin: Boolean): RecyclerView.Adapter<BooksRecyclerAdapter.ViewHolder>() {
+// 14 weeks in milliseconds
+const val DUE_TIME = 1209600000
+class BooksRecyclerAdapter(val supportFragmentManager: FragmentManager): RecyclerView.Adapter<BooksRecyclerAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val v: View =
             LayoutInflater.from(parent.context).inflate(R.layout.card_layout_book, parent, false)
@@ -29,6 +35,7 @@ class BooksRecyclerAdapter(val supportFragmentManager: FragmentManager, private 
         val title: TextView = itemView.findViewById(R.id.card_layout_book_title)
         val thumbnail: ImageView = itemView.findViewById(R.id.card_layout_book_thumbnail)
         val authors: TextView = itemView.findViewById(R.id.card_layout_book_authors)
+        val dueDate: TextView = itemView.findViewById(R.id.card_layout_book_due_date)
         val editBtn: Button = itemView.findViewById(R.id.edit_button)
 
         init {
@@ -43,10 +50,11 @@ class BooksRecyclerAdapter(val supportFragmentManager: FragmentManager, private 
         }
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.title.text = books[position].title
 
-        if (admin) holder.editBtn.visibility = View.VISIBLE
+        if (user.admin) holder.editBtn.visibility = View.VISIBLE
 
         val thumbnail = books[position].thumbnail
         if (thumbnail != null)
@@ -69,6 +77,13 @@ class BooksRecyclerAdapter(val supportFragmentManager: FragmentManager, private 
         }
         
         holder.authors.text = authorsString
+        val borrowedTime = books[position].borrowedTime
+        if (!user.admin && borrowedTime != null && borrowedTime != 0L) {
+            val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH)
+
+            val dueDate = Date(borrowedTime + DUE_TIME)
+            holder.dueDate.text = "Due on ${sdf.format(dueDate)}"
+        }
     }
 
     override fun getItemCount(): Int {

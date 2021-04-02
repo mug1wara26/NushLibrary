@@ -147,6 +147,8 @@ class BookDialogFragment(val book: Book): DialogFragment() {
                     view.findViewById<TextView>(R.id.dialog_book_number).text =
                         "Number of books left: ${book.number}"
                     bookReference.child(book.id).child("number").setValue(book.number)
+                    bookReference.child(book.id).child("borrowedTime").setValue(System.currentTimeMillis())
+
                     Toast.makeText(context, "Successfully borrowed book", Toast.LENGTH_SHORT)
                         .show()
 

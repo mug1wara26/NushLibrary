@@ -34,4 +34,6 @@
     <string name="borrow">Borrow</string>
     <string name="to_read">To Read</string>
     <string name="borrowed_books">Borrowed books</string>
+    <string name="reorder">Reorder</string>
+    <string name="no_books_borrowed">Borrowed books will appear here</string>
 </resources>

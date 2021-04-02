@@ -97,7 +97,9 @@ class EditBookDialogFragment(private val book: Book, private val booksAdapter: B
                         publisher,
                         genreAdapter.selectedGenres,
                         book.thumbnail,
-                        number)
+                        number,
+                        0
+                    )
 
                     // Change book arraylist
                     booksAdapter.books[booksAdapter.books.indexOf(book)] = newBook

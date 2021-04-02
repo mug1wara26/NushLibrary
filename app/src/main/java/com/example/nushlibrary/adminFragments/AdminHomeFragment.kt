@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.nushlibrary.Book
 import com.example.nushlibrary.R
-import com.example.nushlibrary.User
 import com.example.nushlibrary.adminFragments.addBookDialogFragment.AddBookDialogFragment
 import com.example.nushlibrary.adminFragments.bookRecyclerView.BooksRecyclerAdapter
 import com.example.nushlibrary.user
@@ -21,7 +20,7 @@ class AdminHomeFragment: Fragment() {
         val view = inflater.inflate(R.layout.fragment_admin_home, container, false)
 
         if (!::recentlyAddedBooksAdapter.isInitialized)
-            recentlyAddedBooksAdapter = BooksRecyclerAdapter(requireActivity().supportFragmentManager, user.admin)
+            recentlyAddedBooksAdapter = BooksRecyclerAdapter(requireActivity().supportFragmentManager)
 
         // Open dialog on button click
         val addBookButton: Button = view.findViewById(R.id.add_book_button)

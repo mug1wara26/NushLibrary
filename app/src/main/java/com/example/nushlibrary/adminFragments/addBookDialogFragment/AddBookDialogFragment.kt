@@ -166,10 +166,10 @@ class AddBookDialogFragment(private val listener: GetBookOnDismiss): DialogFragm
                         }
                         else
                             Toast.makeText(
-                            context,
-                            "Could not get data from ISBN, please use the manual option.",
-                            Toast.LENGTH_LONG
-                        ).show()
+                                context,
+                                "Could not get data from ISBN, please use the manual option.",
+                                Toast.LENGTH_LONG
+                            ).show()
                     }
                 }).execute()
         }

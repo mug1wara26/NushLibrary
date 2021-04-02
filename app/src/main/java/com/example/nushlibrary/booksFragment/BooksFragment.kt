@@ -31,7 +31,7 @@ class BooksFragment: Fragment() {
 
         val booksRecyclerView: RecyclerView = view.findViewById(R.id.recycler_view_books)
         booksRecyclerView.layoutManager = LinearLayoutManager(context)
-        val booksAdapter = BooksRecyclerAdapter(activity?.supportFragmentManager!!, user.admin)
+        val booksAdapter = BooksRecyclerAdapter(requireActivity().supportFragmentManager)
         booksRecyclerView.adapter = booksAdapter
 
         showBook(booksAdapter)
@@ -138,7 +138,8 @@ class BooksFragment: Fragment() {
                                 publisher,
                                 genre = genre ?: arrayListOf<String>(),
                                 thumbnail,
-                                number!!
+                                number!!,
+                                0
                             )
 
                             books.add(book)
