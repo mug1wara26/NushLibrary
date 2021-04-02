@@ -21,9 +21,6 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 
 class UserHomeFragment: Fragment() {
-    interface GetBooksOnPostExecute{
-        fun onPostExecute(books: ArrayList<Book>)
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_user_home, container, false)
@@ -70,16 +67,16 @@ class UserHomeFragment: Fragment() {
             }).show(requireActivity().supportFragmentManager, "Reorder")
         }
 
-        val refreshButton: ImageButton =  view.findViewById(R.id.user_home_refresh_button)
+        val searchInput: TextInputEditText = view.findViewById(R.id.input_search)
+        val refreshButton: TextInputEditText =  view.findViewById(R.id.user_home_refresh_button)
         refreshButton.setOnClickListener {
             bookAdapter.books.clear()
             showBooks(bookAdapter)
             checkedId = R.id.reorder_due_date_ascending
+            searchInput.text = null
         }
 
         // Implement search
-        val searchInput: TextInputEditText = view.findViewById(R.id.input_search)
-
         val searchButton: ImageButton = view.findViewById(R.id.search_layout_search_button)
         searchButton.setOnClickListener {
             val title = searchInput.text.toString()
@@ -104,20 +101,24 @@ class UserHomeFragment: Fragment() {
 
     }
 
-    private fun getBooksById(idArrayList: ArrayList<String>, listener: GetBooksOnPostExecute) {
-        val books = arrayListOf<Book>()
-        bookReference.addListenerForSingleValueEvent(object: ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                idArrayList.forEach { id ->
-                    val book = snapshot.child(id).getValue(Book::class.java)
-                    if (book != null) {
-                        books.add(book)
-                    }
-                }
-                listener.onPostExecute(books)
-            }
+}
+interface GetBooksOnPostExecute{
+    fun onPostExecute(books: ArrayList<Book>)
+}
 
-            override fun onCancelled(error: DatabaseError) {}
-        })
-    }
+fun getBooksById(idArrayList: ArrayList<String>, listener: GetBooksOnPostExecute) {
+    val books = arrayListOf<Book>()
+    bookReference.addListenerForSingleValueEvent(object: ValueEventListener {
+        override fun onDataChange(snapshot: DataSnapshot) {
+            idArrayList.forEach { id ->
+                val book = snapshot.child(id).getValue(Book::class.java)
+                if (book != null) {
+                    books.add(book)
+                }
+            }
+            listener.onPostExecute(books)
+        }
+
+        override fun onCancelled(error: DatabaseError) {}
+    })
 }

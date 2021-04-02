@@ -136,16 +136,23 @@ class BookDialogFragment(val book: Book): DialogFragment() {
             isBorrowBookThreadLocked = true
             if (book.number > 0) {
                 if (!user.booksBorrowed.contains(book.id)) {
+                    val timeStamp = System.currentTimeMillis()
+                    // Add book to user books borrowed
                     user.booksBorrowed.add(book.id)
                     userReference.child(user.id).child("booksBorrowed")
                         .setValue(user.booksBorrowed)
+                    // Add book borrowed timestamp to user
+                    user.booksBorrowedTimeStamp.add(timeStamp)
 
                     // Decrease book number
                     book.number--
                     view.findViewById<TextView>(R.id.dialog_book_number).text =
                         "Number of books left: ${book.number}"
                     bookReference.child(book.id).child("number").setValue(book.number)
-                    bookReference.child(book.id).child("borrowedTime").setValue(System.currentTimeMillis())
+
+                    // Set book timestamp
+                    book.borrowedTime = timeStamp
+                    bookReference.child(book.id).child("borrowedTime").setValue(book.borrowedTime)
 
                     Toast.makeText(context, "Successfully borrowed book", Toast.LENGTH_SHORT)
                         .show()

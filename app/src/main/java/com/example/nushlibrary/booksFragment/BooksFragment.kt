@@ -9,11 +9,8 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.nushlibrary.Book
-import com.example.nushlibrary.R
+import com.example.nushlibrary.*
 import com.example.nushlibrary.adminFragments.bookRecyclerView.BooksRecyclerAdapter
-import com.example.nushlibrary.database
-import com.example.nushlibrary.user
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -110,39 +107,15 @@ class BooksFragment: Fragment() {
         if (!isThreadLocked) {
             isThreadLocked = true
             val books = arrayListOf<Book>()
-            database.child("books").orderByChild("title")
+            bookReference.orderByChild("title")
                 .addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         snapshot.children.forEach {
-                            // val book = it.getValue(Book::class.java)
-                            // The above line doesn't work for some reason so we have to manually get all values :(
-                            val id = it.child("id").getValue(String::class.java)
-                            val title = it.child("title").getValue(String::class.java)
-                            val description = it.child("description").getValue(String::class.java)
-                            val publisher = it.child("publisher").getValue(String::class.java)
-                            val thumbnail = it.child("thumbnail").getValue(String::class.java)
-                            val number = it.child("number").getValue(Int::class.java)
+                             val book = it.getValue(Book::class.java)
 
-                            // Firebase just requires this i guess
-                            val genericTypeIndicatorArrayListString =
-                                object : GenericTypeIndicator<ArrayList<String>>() {}
-                            val authors =
-                                it.child("authors").getValue(genericTypeIndicatorArrayListString)
-                            val genre =
-                                it.child("genre").getValue(genericTypeIndicatorArrayListString)
-
-                            val book = Book(
-                                id!!,
-                                authors = authors ?: arrayListOf<String>(),
-                                title, description,
-                                publisher,
-                                genre = genre ?: arrayListOf<String>(),
-                                thumbnail,
-                                number!!,
-                                0
-                            )
-
-                            books.add(book)
+                            if (book != null) {
+                                books.add(book)
+                            }
                         }
                         booksAdapter.books = books
                         listener.onPostExecute()

@@ -12,6 +12,36 @@
 
         <include layout="@layout/layout_search_bar" />
 
+        <ImageButton
+            android:id="@+id/admin_users_filter_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/white"
+            android:src="@drawable/icon_filter"
+            android:contentDescription="@string/filter"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/search_bar_card_view" />
+
+        <ImageButton
+            android:id="@+id/admin_users_reorder_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/white"
+            android:src="@drawable/icon_reorder"
+            android:contentDescription="@string/reorder"
+            app:layout_constraintStart_toEndOf="@id/admin_users_filter_button"
+            app:layout_constraintTop_toBottomOf="@id/search_bar_card_view" />
+
+        <ImageButton
+            android:id="@+id/admin_users_refresh_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/white"
+            android:src="@drawable/icon_refresh"
+            android:contentDescription="@string/refresh"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/search_bar_card_view" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view_users"
             android:layout_width="match_parent"
@@ -19,7 +49,7 @@
             android:nestedScrollingEnabled="false"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/admin_users_filter_button" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

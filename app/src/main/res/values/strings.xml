@@ -38,4 +38,7 @@
     <string name="no_books_borrowed">Borrowed books will appear here</string>
     <string name="due_date_ascending">Due date (ascending)</string>
     <string name="due_date_descending">Due date (descending)</string>
+    <string name="display_name">Display name</string>
+    <string name="email">Email</string>
+    <string name="number_of_books_borrowed">Number of books borrowed</string>
 </resources>

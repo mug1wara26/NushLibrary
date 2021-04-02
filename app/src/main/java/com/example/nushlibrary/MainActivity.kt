@@ -17,13 +17,12 @@ import com.google.firebase.ktx.Firebase
 val database = Firebase.database.getReferenceFromUrl("https://nush-library-default-rtdb.firebaseio.com/")
 val userReference = database.child("users")
 val bookReference = database.child("books")
-lateinit var user: User
+var user = User(admin = true)
 class MainActivity : AppCompatActivity() {
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
 
         // Start log in on click
         val logInBtn: Button = findViewById(R.id.logInButton)
