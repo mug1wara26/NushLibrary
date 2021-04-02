@@ -52,6 +52,7 @@ class MainActivity : AppCompatActivity() {
                                                 firebaseUser.displayName!!,
                                                 arrayListOf(),
                                                 arrayListOf(),
+                                                arrayListOf(),
                                                 false
                                             )
                                             userReference.child(firebaseUser.uid).setValue(user)

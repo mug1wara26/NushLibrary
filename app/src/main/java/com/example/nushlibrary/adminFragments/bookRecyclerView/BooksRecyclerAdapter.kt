@@ -21,7 +21,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 // 14 weeks in milliseconds
-const val DUE_TIME = 1209600000
+const val DUE_TIME = 1000 * 60 * 60 * 24 * 14
 class BooksRecyclerAdapter(val supportFragmentManager: FragmentManager): RecyclerView.Adapter<BooksRecyclerAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val v: View =

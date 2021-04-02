@@ -143,6 +143,7 @@ class BookDialogFragment(val book: Book): DialogFragment() {
                         .setValue(user.booksBorrowed)
                     // Add book borrowed timestamp to user
                     user.booksBorrowedTimeStamp.add(timeStamp)
+                    userReference.child(user.id).child("booksBorrowedTimeStamp").setValue(user.booksBorrowedTimeStamp)
 
                     // Decrease book number
                     book.number--

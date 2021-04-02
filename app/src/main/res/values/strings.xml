@@ -41,4 +41,5 @@
     <string name="display_name">Display name</string>
     <string name="email">Email</string>
     <string name="number_of_books_borrowed">Number of books borrowed</string>
+    <string name="has_book_due_in">Has book due in</string>
 </resources>

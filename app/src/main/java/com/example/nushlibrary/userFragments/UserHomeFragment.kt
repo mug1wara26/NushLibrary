@@ -68,7 +68,7 @@ class UserHomeFragment: Fragment() {
         }
 
         val searchInput: TextInputEditText = view.findViewById(R.id.input_search)
-        val refreshButton: TextInputEditText =  view.findViewById(R.id.user_home_refresh_button)
+        val refreshButton: ImageButton =  view.findViewById(R.id.user_home_refresh_button)
         refreshButton.setOnClickListener {
             bookAdapter.books.clear()
             showBooks(bookAdapter)
