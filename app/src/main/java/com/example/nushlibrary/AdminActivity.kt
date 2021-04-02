@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.example.nushlibrary.adminFragments.AdminHomeFragment
 import com.example.nushlibrary.adminFragments.AdminSettingsFragment
-import com.example.nushlibrary.adminFragments.AdminUsersFragment
+import com.example.nushlibrary.adminFragments.usersFragment.AdminUsersFragment
 import com.example.nushlibrary.booksFragment.BooksFragment
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth

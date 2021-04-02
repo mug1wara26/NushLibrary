@@ -1,4 +1,4 @@
-package com.example.nushlibrary.adminFragments
+package com.example.nushlibrary.adminFragments.usersFragment
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
@@ -35,28 +35,30 @@ class UserRecyclerAdapter(val supportFragmentManager: FragmentManager): Recycler
         holder.email.text = users[position].email
         holder.booksBorrowed.text = "Number of books borrowed: ${users[position].booksBorrowed.size}"
 
-        if (users[position].booksBorrowed.size != 0) {
-            // Sorts a list that stores time stamps of when the user borrowed a book and get the earliest one
-            val earliestTimeStamp = users[position].booksBorrowedTimeStamp.sortedWith(
-                compareBy { it })[0]
-
-            // Get number of milliseconds from the due time stamp
-            val dueTimeStamp = earliestTimeStamp + DUE_TIME
-            val millisFromDue = dueTimeStamp - System.currentTimeMillis()
-
-            // Check if book is overdue or not
-            if (millisFromDue >= 0) {
-                val daysFromDue = millisFromDue / DAYS_IN_MILLIS
-                holder.daysFromDue.text = "Days from book due: $daysFromDue"
-            }
-            else {
-                val daysOverdue = (millisFromDue * -1) / DAYS_IN_MILLIS
-                holder.daysFromDue.text = "Days overdue: $daysOverdue"
-            }
+        val daysFromDue = getDaysFromDue(users[position])
+        if (daysFromDue != null) {
+            if (daysFromDue >= 0) holder.daysFromDue.text = "Days from book due: $daysFromDue"
+            else holder.daysFromDue.text = "Days overdue: ${daysFromDue * -1}"
         }
     }
 
     override fun getItemCount(): Int {
         return users.size
     }
+}
+
+fun getDaysFromDue(user: User): Long? {
+    return if (user.booksBorrowed.size != 0) {
+        // Sorts a list that stores time stamps of when the user borrowed a book and get the earliest one
+        val earliestTimeStamp = user.booksBorrowedTimeStamp.sortedWith(
+            compareBy { it })[0]
+
+        // Get number of milliseconds from the due time stamp
+        val dueTimeStamp = earliestTimeStamp + DUE_TIME
+        val millisFromDue = dueTimeStamp - System.currentTimeMillis()
+
+        // Check if book is overdue or not
+        millisFromDue / DAYS_IN_MILLIS
+    }
+    else null
 }

@@ -16,7 +16,7 @@ class ReorderDialogFragment(private val checkedId: Int, private val listener: Ge
         val builder = AlertDialog.Builder(requireActivity())
 
         val inflater = requireActivity().layoutInflater
-        val view = inflater.inflate(R.layout.dialog_reorder, null)
+        val view = inflater.inflate(R.layout.dialog_reorder_book, null)
 
         println(checkedId)
         println(R.id.reorder_due_date_ascending)

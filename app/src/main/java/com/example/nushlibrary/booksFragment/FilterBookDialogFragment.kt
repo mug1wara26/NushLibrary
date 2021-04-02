@@ -19,7 +19,7 @@ import com.example.nushlibrary.adminFragments.addBookDialogFragment.setExpandabl
 import com.example.nushlibrary.user
 import com.google.android.material.textfield.TextInputEditText
 
-class FilterDialogFragment(private val listener: GetFilterOnDismiss): DialogFragment() {
+class FilterBookDialogFragment(private val listener: GetFilterOnDismiss): DialogFragment() {
     interface GetFilterOnDismiss {
         fun onDismiss(
             genreFilter: ArrayList<String>,
@@ -34,7 +34,7 @@ class FilterDialogFragment(private val listener: GetFilterOnDismiss): DialogFrag
         val builder = AlertDialog.Builder(requireActivity())
 
         val inflater = requireActivity().layoutInflater
-        val view = inflater.inflate(R.layout.dialog_filter, null)
+        val view = inflater.inflate(R.layout.dialog_filter_book, null)
 
         val genreTextView: TextView = view.findViewById(R.id.genre_text_view)
         genreTextView.text = "Filter by genre"
@@ -70,8 +70,8 @@ class FilterDialogFragment(private val listener: GetFilterOnDismiss): DialogFrag
                     }
                 }
 
-                val borrowedBooksCheckBox: CheckBox = view.findViewById(R.id.borrowed_books_checked_box)
-                val toReadCheckBox: CheckBox = view.findViewById(R.id.to_read_checked_box)
+                val borrowedBooksCheckBox: CheckBox = view.findViewById(R.id.filter_user_borrowed_books)
+                val toReadCheckBox: CheckBox = view.findViewById(R.id.filter_user_to_read)
 
                 listener.onDismiss(
                     genreAdapter.selectedGenres,

@@ -14,7 +14,6 @@ import com.example.nushlibrary.adminFragments.bookRecyclerView.BooksRecyclerAdap
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.GenericTypeIndicator
 import com.google.firebase.database.ValueEventListener
 import me.xdrop.fuzzywuzzy.FuzzySearch
 import kotlin.collections.ArrayList
@@ -36,7 +35,7 @@ class BooksFragment: Fragment() {
         var searchableBooks = arrayListOf<Book>()
         val filterButton: ImageButton = view.findViewById(R.id.filter_button)
         filterButton.setOnClickListener {
-            FilterDialogFragment(object: FilterDialogFragment.GetFilterOnDismiss {
+            FilterBookDialogFragment(object: FilterBookDialogFragment.GetFilterOnDismiss {
                 override fun onDismiss(
                     genreFilter: ArrayList<String>,
                     authorsFilter: ArrayList<String>,
@@ -52,12 +51,18 @@ class BooksFragment: Fragment() {
                                 }
 
                                 authorsFilter.forEach { author ->
-                                    if (book.authors.contains(author)) newBooksList.add(book)
+                                    if (book.authors.contains(author) && !newBooksList.contains(book)) newBooksList.add(book)
                                 }
 
-                                if (isBooksBorrowedChecked && user.booksBorrowed.contains(book.id)) newBooksList.add(book)
+                                // Checks if the checkbox is checked, if user has borrowed the book and the current book list does not already contain the book
+                                if (isBooksBorrowedChecked
+                                    && user.booksBorrowed.contains(book.id)
+                                    && !newBooksList.contains(book)) newBooksList.add(book)
 
-                                if (isToReadChecked && user.toReadList.contains(book.id)) newBooksList.add(book)
+                                // Checks if the checkbox is checked, if user has added the book to their to read list and the current book list does not already contain the book
+                                if (isToReadChecked
+                                    && user.toReadList.contains(book.id)
+                                    && !newBooksList.contains(book)) newBooksList.add(book)
                             }
 
                             // Sort books by title

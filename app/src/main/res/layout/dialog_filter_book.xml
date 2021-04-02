@@ -28,7 +28,7 @@
             app:layout_constraintEnd_toEndOf="parent"/>
 
         <include
-            layout="@layout/layout_filter_user"
+            layout="@layout/layout_filter_user_books"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/search_filter_author"
