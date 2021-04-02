@@ -17,7 +17,12 @@ import com.google.firebase.ktx.Firebase
 val database = Firebase.database.getReferenceFromUrl("https://nush-library-default-rtdb.firebaseio.com/")
 val userReference = database.child("users")
 val bookReference = database.child("books")
-lateinit var user: User
+var user = User(id = "hpCDaKverVWEYukAhAcM8NU6SP73", admin = false, booksBorrowed = arrayListOf(
+    "9780393341768",
+    "9781482287325",
+    "9781000218466",
+    "9781408315484"
+))
 class MainActivity : AppCompatActivity() {
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {

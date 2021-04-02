@@ -4,20 +4,29 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.Dialog
 import android.os.Bundle
+import android.view.View
+import android.widget.CheckBox
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.nushlibrary.R
 import com.example.nushlibrary.adminFragments.addBookDialogFragment.GenreRecyclerAdapter
 import com.example.nushlibrary.adminFragments.addBookDialogFragment.setExpandableView
+import com.example.nushlibrary.user
 import com.google.android.material.textfield.TextInputEditText
 
 class FilterDialogFragment(private val listener: GetFilterOnDismiss): DialogFragment() {
     interface GetFilterOnDismiss {
-        fun onDismiss(genreFilter: ArrayList<String>, authorsFilter: ArrayList<String>)
+        fun onDismiss(
+            genreFilter: ArrayList<String>,
+            authorsFilter: ArrayList<String>,
+            isBooksBorrowedChecked: Boolean,
+            isToReadChecked: Boolean
+        )
     }
 
     @SuppressLint("SetTextI18n")
@@ -44,6 +53,12 @@ class FilterDialogFragment(private val listener: GetFilterOnDismiss): DialogFrag
 
             setExpandableView(arrowButton, expandableCardViewGenre, genreRecyclerView)
 
+            if (!user.admin){
+                // set the checkbox to visible is user is non admin
+                val filterUserLayout: ConstraintLayout = view.findViewById(R.id.layout_filter_user)
+                filterUserLayout.visibility = View.VISIBLE
+            }
+
             builder.setTitle("Filter")
             builder.setView(view)
                 .setPositiveButton("Filter") { _, _ ->
@@ -56,7 +71,15 @@ class FilterDialogFragment(private val listener: GetFilterOnDismiss): DialogFrag
                         }
                     }
 
-                    listener.onDismiss(genreAdapter.selectedGenres, authors)
+                    val borrowedBooksCheckBox: CheckBox = view.findViewById(R.id.borrowed_books_checked_box)
+                    val toReadCheckBox: CheckBox = view.findViewById(R.id.to_read_checked_box)
+
+                    listener.onDismiss(
+                        genreAdapter.selectedGenres,
+                        authors,
+                        borrowedBooksCheckBox.isChecked,
+                        toReadCheckBox.isChecked
+                    )
                 }
                 .setNegativeButton("Cancel") { dialog, _ ->
                     dialog.dismiss()

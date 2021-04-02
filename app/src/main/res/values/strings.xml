@@ -33,4 +33,5 @@
     <string name="to_read_list">To Read List</string>
     <string name="borrow">Borrow</string>
     <string name="to_read">To Read</string>
+    <string name="borrowed_books">Borrowed books</string>
 </resources>

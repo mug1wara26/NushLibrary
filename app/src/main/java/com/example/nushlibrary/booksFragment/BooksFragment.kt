@@ -40,20 +40,36 @@ class BooksFragment: Fragment() {
         val filterButton: ImageButton = view.findViewById(R.id.filter_button)
         filterButton.setOnClickListener {
             FilterDialogFragment(object: FilterDialogFragment.GetFilterOnDismiss {
-                override fun onDismiss(genreFilter: ArrayList<String>, authorsFilter: ArrayList<String>) {
+                override fun onDismiss(
+                    genreFilter: ArrayList<String>,
+                    authorsFilter: ArrayList<String>,
+                    isBooksBorrowedChecked: Boolean,
+                    isToReadChecked: Boolean) {
                     showBook(booksAdapter, object: OnPostExecute{
                         override fun onPostExecute() {
-                            genreFilter.forEach { genre ->
-                                booksAdapter.books.removeIf { book ->
-                                    !book.genre.contains(genre)
+                            // Filter for users borrowed books or to read
+                            val newBooksList = arrayListOf<Book>()
+                            booksAdapter.books.forEach { book ->
+                                genreFilter.forEach { genre ->
+                                    if (book.genre.contains(genre)) newBooksList.add(book)
                                 }
+
+                                authorsFilter.forEach { author ->
+                                    if (book.authors.contains(author)) newBooksList.add(book)
+                                }
+
+                                if (isBooksBorrowedChecked && user.booksBorrowed.contains(book.id)) newBooksList.add(book)
+
+                                if (isToReadChecked && user.toReadList.contains(book.id)) newBooksList.add(book)
                             }
 
-                            authorsFilter.forEach { author ->
-                                booksAdapter.books.removeIf { book ->
-                                    !book.authors.contains(author)
-                                }
+                            // Sort books by title
+                            booksAdapter.books.clear()
+                            // Cant type cast for some reason bleh
+                            newBooksList.sortedWith(compareBy { it.title }).forEach {
+                                booksAdapter.books.add(it)
                             }
+                            booksAdapter.notifyDataSetChanged()
 
                             searchableBooks = booksAdapter.books
                         }

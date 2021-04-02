@@ -11,12 +11,9 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.example.nushlibrary.adminFragments.AdminHomeFragment
-import com.example.nushlibrary.adminFragments.AdminSettingsFragment
-import com.example.nushlibrary.adminFragments.AdminUsersFragment
 import com.example.nushlibrary.booksFragment.BooksFragment
 import com.example.nushlibrary.userFragments.UserHomeFragment
 import com.example.nushlibrary.userFragments.UserSettingsFragment
-import com.example.nushlibrary.userFragments.UserToReadFragment
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 
@@ -81,7 +78,6 @@ class UserActivity: AppCompatActivity() {
         val fragmentClass: Class<*> = when(menuItem.itemId) {
             R.id.home -> UserHomeFragment::class.java
             R.id.books -> BooksFragment::class.java
-            R.id.toRead -> UserToReadFragment::class.java
             R.id.settings -> UserSettingsFragment::class.java
             else -> AdminHomeFragment::class.java
         }

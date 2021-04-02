@@ -7,9 +7,6 @@
         <item android:id="@+id/books"
             android:title="@string/books"
             android:icon="@drawable/book_icon" />
-        <item android:id="@+id/toRead"
-            android:title="@string/to_read_list"
-            android:icon="@drawable/icon_bookmark" />
         <item android:id="@+id/settings"
             android:title="@string/settings"
             android:icon="@drawable/settings_icon" />
