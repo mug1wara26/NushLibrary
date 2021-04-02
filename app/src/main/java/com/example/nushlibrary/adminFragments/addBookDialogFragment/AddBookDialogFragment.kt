@@ -31,84 +31,82 @@ class AddBookDialogFragment(private val listener: GetBookOnDismiss): DialogFragm
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        return activity?.let {
-            val builder = AlertDialog.Builder(it)
-            // Get the layout inflater
-            val inflater = requireActivity().layoutInflater
+        val builder = AlertDialog.Builder(requireActivity())
+        // Get the layout inflater
+        val inflater = requireActivity().layoutInflater
 
-            // Inflate and set the layout for the dialog
-            // Pass null as the parent view because its going in the dialog layout
-            val view = inflater.inflate(R.layout.dialog_add_book, null)
-            val addBookRadioGroup: RadioGroup = view.findViewById(R.id.add_book_radio_group)
+        // Inflate and set the layout for the dialog
+        // Pass null as the parent view because its going in the dialog layout
+        val view = inflater.inflate(R.layout.dialog_add_book, null)
+        val addBookRadioGroup: RadioGroup = view.findViewById(R.id.add_book_radio_group)
 
-            // Set text on the expandable card view genre
-            val genreTextView: TextView = view.findViewById(R.id.genre_text_view)
-            genreTextView.text = resources.getString(R.string.add_genres)
+        // Set text on the expandable card view genre
+        val genreTextView: TextView = view.findViewById(R.id.genre_text_view)
+        genreTextView.text = resources.getString(R.string.add_genres)
 
-            // Set default opacity of manual card view
-            val isbnCardView: CardView = view.findViewById(R.id.isbn_card_view)
-            val manualCardView: CardView = view.findViewById(R.id.manual_card_view)
-            manualCardView.alpha = 0.3F
+        // Set default opacity of manual card view
+        val isbnCardView: CardView = view.findViewById(R.id.isbn_card_view)
+        val manualCardView: CardView = view.findViewById(R.id.manual_card_view)
+        manualCardView.alpha = 0.3F
 
-            // Listener when a radio button is changed
-            addBookRadioGroup.setOnCheckedChangeListener { _, checkedId ->
-                // checkedId is the RadioButton selected
-                // This function disables and greys out the card view that is not selected
-                switchCardViews(manualCardView, isbnCardView, checkedId)
+        // Listener when a radio button is changed
+        addBookRadioGroup.setOnCheckedChangeListener { _, checkedId ->
+            // checkedId is the RadioButton selected
+            // This function disables and greys out the card view that is not selected
+            switchCardViews(manualCardView, isbnCardView, checkedId)
+        }
+        // Set default enabled and disabled card views
+        switchCardViews(manualCardView, isbnCardView, R.id.isbn_radio_button)
+
+        // Initialize the RecyclerView of genres
+        val genreRecyclerView: RecyclerView = view.findViewById(R.id.recycler_view_genre)
+        // Set layout manager to be a grid of column 2
+        genreRecyclerView.layoutManager = GridLayoutManager(context, 2)
+        genreRecyclerView.adapter = genreAdapter
+
+        // Show/hide the recycler view on arrow button click
+        val arrowButton: ImageButton = view.findViewById(R.id.arrow_button_genre)
+        val expandableCardViewGenre: CardView = view.findViewById(R.id.expandable_card_view_genre)
+
+        setExpandableView(arrowButton, expandableCardViewGenre, genreRecyclerView)
+
+        // We are storing context here because the fragment is removed after the create button is pressed
+        // However we need context to use Toast
+        val fragmentContext = context
+
+        // Adds create and cancel buttons
+        builder.setView(view)
+            // Add action buttons
+            .setPositiveButton("Create") { _, _ ->
+                if (view.findViewById<RadioButton>(R.id.isbn_radio_button).isChecked) {
+                    val isbnInput: TextInputEditText = view.findViewById(R.id.isbn_input)
+                    val numberInput: TextInputEditText = view.findViewById(R.id.isbn_book_number_input)
+
+                    val isbn = isbnInput.text.toString()
+                    val number = numberInput.text.toString()
+
+                    createBookWithISBN(isbn, number, fragmentContext)
+                }
+                else {
+                    val titleInput: TextInputEditText = view.findViewById(R.id.manual_title_input)
+                    val authorInput: TextInputEditText = view.findViewById(R.id.manual_author_input)
+                    val descriptionInput: TextInputEditText = view.findViewById(R.id.manual_description_input)
+                    val publisherInput: TextInputEditText = view.findViewById(R.id.manual_publisher_input)
+                    val numberInput: TextInputEditText = view.findViewById(R.id.manual_book_number_input)
+
+                    val title = titleInput.text.toString()
+                    val author = authorInput.text.toString()
+                    val description = descriptionInput.text.toString()
+                    val publisher = publisherInput.text.toString()
+                    val number = numberInput.text.toString()
+
+                    createBookManually(fragmentContext, title, author, description, publisher, number)
+                }
             }
-            // Set default enabled and disabled card views
-            switchCardViews(manualCardView, isbnCardView, R.id.isbn_radio_button)
-
-            // Initialize the RecyclerView of genres
-            val genreRecyclerView: RecyclerView = view.findViewById(R.id.recycler_view_genre)
-            // Set layout manager to be a grid of column 2
-            genreRecyclerView.layoutManager = GridLayoutManager(context, 2)
-            genreRecyclerView.adapter = genreAdapter
-
-            // Show/hide the recycler view on arrow button click
-            val arrowButton: ImageButton = view.findViewById(R.id.arrow_button_genre)
-            val expandableCardViewGenre: CardView = view.findViewById(R.id.expandable_card_view_genre)
-
-            setExpandableView(arrowButton, expandableCardViewGenre, genreRecyclerView)
-
-            // We are storing context here because the fragment is removed after the create button is pressed
-            // However we need context to use Toast
-            val fragmentContext = context
-
-            // Adds create and cancel buttons
-            builder.setView(view)
-                // Add action buttons
-                .setPositiveButton("Create") { _, _ ->
-                    if (view.findViewById<RadioButton>(R.id.isbn_radio_button).isChecked) {
-                        val isbnInput: TextInputEditText = view.findViewById(R.id.isbn_input)
-                        val numberInput: TextInputEditText = view.findViewById(R.id.isbn_book_number_input)
-
-                        val isbn = isbnInput.text.toString()
-                        val number = numberInput.text.toString()
-
-                        createBookWithISBN(isbn, number, fragmentContext)
-                    }
-                    else {
-                        val titleInput: TextInputEditText = view.findViewById(R.id.manual_title_input)
-                        val authorInput: TextInputEditText = view.findViewById(R.id.manual_author_input)
-                        val descriptionInput: TextInputEditText = view.findViewById(R.id.manual_description_input)
-                        val publisherInput: TextInputEditText = view.findViewById(R.id.manual_publisher_input)
-                        val numberInput: TextInputEditText = view.findViewById(R.id.manual_book_number_input)
-
-                        val title = titleInput.text.toString()
-                        val author = authorInput.text.toString()
-                        val description = descriptionInput.text.toString()
-                        val publisher = publisherInput.text.toString()
-                        val number = numberInput.text.toString()
-
-                        createBookManually(fragmentContext, title, author, description, publisher, number)
-                    }
-                }
-                .setNegativeButton("Cancel") { _, _ ->
-                    dialog?.cancel()
-                }
-            builder.create()
-        } ?: throw IllegalStateException("Activity cannot be null")
+            .setNegativeButton("Cancel") { _, _ ->
+                dialog?.cancel()
+            }
+        return builder.create()
     }
 
     private fun switchCardViews(manualCardView: CardView, isbnCardView: CardView, checkedId: Int) {

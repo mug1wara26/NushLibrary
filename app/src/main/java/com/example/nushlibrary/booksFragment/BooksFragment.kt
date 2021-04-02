@@ -158,24 +158,24 @@ class BooksFragment: Fragment() {
         }
     }
 
-    private fun searchForBook(books: ArrayList<Book>, title: String): ArrayList<Book> {
-        val titles = arrayListOf<String>()
-
-        for (book in books) {
-            if (book.title != null) titles.add(book.title)
-        }
-
-        println(FuzzySearch.extractSorted(title, titles))
-        val sortedTitles = FuzzySearch.extractSorted(title, titles, 50)
-        val sortedBooks = arrayListOf<Book>()
-        sortedTitles.forEach {
-            sortedBooks.add(books[it.index])
-        }
-
-        return sortedBooks
-    }
-
     interface OnPostExecute {
         fun onPostExecute()
     }
+}
+
+fun searchForBook(books: ArrayList<Book>, title: String): ArrayList<Book> {
+    val titles = arrayListOf<String>()
+
+    for (book in books) {
+        if (book.title != null) titles.add(book.title)
+    }
+
+    println(FuzzySearch.extractSorted(title, titles))
+    val sortedTitles = FuzzySearch.extractSorted(title, titles, 50)
+    val sortedBooks = arrayListOf<Book>()
+    sortedTitles.forEach {
+        sortedBooks.add(books[it.index])
+    }
+
+    return sortedBooks
 }

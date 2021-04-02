@@ -31,61 +31,59 @@ class FilterDialogFragment(private val listener: GetFilterOnDismiss): DialogFrag
 
     @SuppressLint("SetTextI18n")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        return activity?.let { fragmentActivity ->
-            val builder = AlertDialog.Builder(fragmentActivity)
+        val builder = AlertDialog.Builder(requireActivity())
 
-            val inflater = requireActivity().layoutInflater
-            val view = inflater.inflate(R.layout.dialog_filter, null)
+        val inflater = requireActivity().layoutInflater
+        val view = inflater.inflate(R.layout.dialog_filter, null)
 
-            val genreTextView: TextView = view.findViewById(R.id.genre_text_view)
-            genreTextView.text = "Filter by genre"
+        val genreTextView: TextView = view.findViewById(R.id.genre_text_view)
+        genreTextView.text = "Filter by genre"
 
 
-            // Initialize the RecyclerView of genres
-            val genreRecyclerView: RecyclerView = view.findViewById(R.id.recycler_view_genre)
-            // Set layout manager to be a grid of column 2
-            genreRecyclerView.layoutManager = GridLayoutManager(context, 2)
-            val genreAdapter = GenreRecyclerAdapter()
-            genreRecyclerView.adapter = genreAdapter
+        // Initialize the RecyclerView of genres
+        val genreRecyclerView: RecyclerView = view.findViewById(R.id.recycler_view_genre)
+        // Set layout manager to be a grid of column 2
+        genreRecyclerView.layoutManager = GridLayoutManager(context, 2)
+        val genreAdapter = GenreRecyclerAdapter()
+        genreRecyclerView.adapter = genreAdapter
 
-            val arrowButton: ImageButton = view.findViewById(R.id.arrow_button_genre)
-            val expandableCardViewGenre: CardView = view.findViewById(R.id.expandable_card_view_genre)
+        val arrowButton: ImageButton = view.findViewById(R.id.arrow_button_genre)
+        val expandableCardViewGenre: CardView = view.findViewById(R.id.expandable_card_view_genre)
 
-            setExpandableView(arrowButton, expandableCardViewGenre, genreRecyclerView)
+        setExpandableView(arrowButton, expandableCardViewGenre, genreRecyclerView)
 
-            if (!user.admin){
-                // set the checkbox to visible is user is non admin
-                val filterUserLayout: ConstraintLayout = view.findViewById(R.id.layout_filter_user)
-                filterUserLayout.visibility = View.VISIBLE
+        if (!user.admin){
+            // set the checkbox to visible is user is non admin
+            val filterUserLayout: ConstraintLayout = view.findViewById(R.id.layout_filter_user)
+            filterUserLayout.visibility = View.VISIBLE
+        }
+
+        builder.setTitle("Filter")
+        builder.setView(view)
+            .setPositiveButton("Filter") { _, _ ->
+                val authors: ArrayList<String> = arrayListOf()
+                val authorsText = view.findViewById<TextInputEditText>(R.id.search_filter_author).text.toString()
+
+                if (authorsText.isNotEmpty()) {
+                    authorsText.split(",").forEach {
+                        authors.add(it)
+                    }
+                }
+
+                val borrowedBooksCheckBox: CheckBox = view.findViewById(R.id.borrowed_books_checked_box)
+                val toReadCheckBox: CheckBox = view.findViewById(R.id.to_read_checked_box)
+
+                listener.onDismiss(
+                    genreAdapter.selectedGenres,
+                    authors,
+                    borrowedBooksCheckBox.isChecked,
+                    toReadCheckBox.isChecked
+                )
+            }
+            .setNegativeButton("Cancel") { dialog, _ ->
+                dialog.dismiss()
             }
 
-            builder.setTitle("Filter")
-            builder.setView(view)
-                .setPositiveButton("Filter") { _, _ ->
-                    val authors: ArrayList<String> = arrayListOf()
-                    val authorsText = view.findViewById<TextInputEditText>(R.id.search_filter_author).text.toString()
-
-                    if (authorsText.isNotEmpty()) {
-                        authorsText.split(",").forEach {
-                            authors.add(it)
-                        }
-                    }
-
-                    val borrowedBooksCheckBox: CheckBox = view.findViewById(R.id.borrowed_books_checked_box)
-                    val toReadCheckBox: CheckBox = view.findViewById(R.id.to_read_checked_box)
-
-                    listener.onDismiss(
-                        genreAdapter.selectedGenres,
-                        authors,
-                        borrowedBooksCheckBox.isChecked,
-                        toReadCheckBox.isChecked
-                    )
-                }
-                .setNegativeButton("Cancel") { dialog, _ ->
-                    dialog.dismiss()
-                }
-
-            builder.create()
-        } ?: throw IllegalStateException("Activity cannot be null")
+        return builder.create()
     }
 }

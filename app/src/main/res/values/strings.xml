@@ -36,4 +36,6 @@
     <string name="borrowed_books">Borrowed books</string>
     <string name="reorder">Reorder</string>
     <string name="no_books_borrowed">Borrowed books will appear here</string>
+    <string name="due_date_ascending">Due date (ascending)</string>
+    <string name="due_date_descending">Due date (descending)</string>
 </resources>
