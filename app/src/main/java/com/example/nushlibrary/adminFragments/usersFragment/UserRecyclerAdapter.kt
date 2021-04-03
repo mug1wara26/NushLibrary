@@ -31,11 +31,15 @@ class UserRecyclerAdapter(val supportFragmentManager: FragmentManager): Recycler
 
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.displayName.text = users[position].displayName
-        holder.email.text = users[position].email
-        holder.booksBorrowed.text = "Number of books borrowed: ${users[position].booksBorrowed.size}"
+        val user = users[position]
 
-        val daysFromDue = getDaysFromDue(users[position])
+        holder.displayName.text = user.displayName
+        holder.email.text = user.email
+        holder.booksBorrowed.text = "Number of books borrowed: ${user.booksBorrowed.size}"
+        // Reset text on daysFromDue
+        holder.daysFromDue.text = null
+
+        val daysFromDue = getDaysFromDue(user)
         if (daysFromDue != null) {
             if (daysFromDue >= 0) holder.daysFromDue.text = "Days from book due: $daysFromDue"
             else holder.daysFromDue.text = "Days overdue: ${daysFromDue * -1}"

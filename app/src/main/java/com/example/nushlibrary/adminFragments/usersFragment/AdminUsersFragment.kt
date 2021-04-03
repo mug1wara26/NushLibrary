@@ -8,14 +8,13 @@ import android.widget.ImageButton
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.nushlibrary.R
-import com.example.nushlibrary.User
-import com.example.nushlibrary.userReference
+import com.example.nushlibrary.*
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 
 class AdminUsersFragment: Fragment() {
+    // This variable is used when searching
     private var allUsers = arrayListOf<User>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -74,7 +73,46 @@ class AdminUsersFragment: Fragment() {
             }).show(requireActivity().supportFragmentManager, "Filter users")
         }
 
+        // Set the default checked radio button
+        var checkedOrderId = R.id.reorder_display_name
+        var checkedDirectionId = R.id.reorder_users_ascending
 
+        val reorderButton: ImageButton = view.findViewById(R.id.admin_users_reorder_button)
+        reorderButton.setOnClickListener {
+            // I should have made this a function but I'm too lazy
+            ReorderUsersDialogFragment(checkedOrderId, checkedDirectionId, object: ReorderUsersDialogFragment.GetOrderOnDismiss{
+                override fun onDismiss(orderId: Int, ascending: Boolean) {
+                    val newUsers = arrayListOf<User>()
+                    // Set default checked radio button
+                    checkedOrderId = orderId
+                    checkedDirectionId =
+                        if (ascending) R.id.reorder_users_ascending
+                        else R.id.reorder_users_descending
+
+                    // Set whether the books are sorted ascending or descending
+                    val comparatorBorrowedBooksNumber =
+                        if (ascending) compareBy<User> { it.booksBorrowed.size }
+                        else compareByDescending { it.booksBorrowed.size }
+                    val comparatorDisplayName =
+                        if (ascending) compareBy<User> { it.displayName }
+                        else compareByDescending { it.displayName }
+
+                    // Determine the final comparator
+                    val userComparator =
+                        if (orderId == R.id.reorder_books_borrowed_number) comparatorBorrowedBooksNumber
+                        else comparatorDisplayName
+
+                    userAdapter.users.sortedWith(userComparator)
+                        .forEach { user ->
+                            newUsers.add(user)
+                        }
+
+                    // Set book adapter
+                    userAdapter.users = newUsers
+                    userAdapter.notifyDataSetChanged()
+                }
+            }).show(requireActivity().supportFragmentManager, "Reorder")
+        }
 
         return view
     }
@@ -89,8 +127,11 @@ class AdminUsersFragment: Fragment() {
                         users.add(user)
                     }
                 }
-                userAdapter.users = users
-                allUsers = users
+                // Sort users by display name
+                users.sortedWith(compareBy { it.displayName }).forEach { user ->
+                    userAdapter.users.add(user)
+                    allUsers.add(user)
+                }
                 userAdapter.notifyDataSetChanged()
             }
 

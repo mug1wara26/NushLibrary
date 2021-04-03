@@ -56,6 +56,8 @@ class BooksRecyclerAdapter(val supportFragmentManager: FragmentManager): Recycle
 
         if (user.admin) holder.editBtn.visibility = View.VISIBLE
 
+        // Set it to null first so it doesn't display wrong thumbnail
+        holder.thumbnail.setImageBitmap(null)
         val thumbnail = books[position].thumbnail
         if (thumbnail != null)
             ImageLoadTask(thumbnail, object : ImageLoadTask.AsyncResponse {

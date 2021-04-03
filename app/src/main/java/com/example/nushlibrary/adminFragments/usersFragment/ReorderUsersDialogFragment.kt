@@ -1,4 +1,4 @@
-package com.example.nushlibrary.userFragments
+package com.example.nushlibrary.adminFragments.usersFragment
 
 import android.app.AlertDialog
 import android.app.Dialog
@@ -8,7 +8,7 @@ import android.widget.RadioGroup
 import androidx.fragment.app.DialogFragment
 import com.example.nushlibrary.R
 
-class ReorderBooksDialogFragment(private val checkedOrderId: Int, private val checkedDirectionId: Int, private val listener: GetOrderOnDismiss): DialogFragment() {
+class ReorderUsersDialogFragment(private val checkedOrderId: Int, private val checkedDirectionId: Int, private val listener: GetOrderOnDismiss): DialogFragment() {
     interface GetOrderOnDismiss {
         fun onDismiss(orderId: Int, ascending: Boolean)
     }
@@ -16,7 +16,7 @@ class ReorderBooksDialogFragment(private val checkedOrderId: Int, private val ch
         val builder = AlertDialog.Builder(requireActivity())
 
         val inflater = requireActivity().layoutInflater
-        val view = inflater.inflate(R.layout.dialog_reorder_book, null)
+        val view = inflater.inflate(R.layout.dialog_reorder_user, null)
 
         view.findViewById<RadioButton>(checkedOrderId).isChecked = true
         view.findViewById<RadioButton>(checkedDirectionId).isChecked = true
@@ -24,11 +24,11 @@ class ReorderBooksDialogFragment(private val checkedOrderId: Int, private val ch
         builder.setTitle("Order by")
         builder.setView(view)
             .setPositiveButton("Order") { _, _ ->
-                val reorderRadioGroup: RadioGroup = view.findViewById(R.id.reorder_book_radio_group)
+                val reorderRadioGroup: RadioGroup = view.findViewById(R.id.reorder_users_radio_group)
                 val directionRadioGroup: RadioGroup = view.findViewById(R.id.reorder_direction_radio_group)
                 listener.onDismiss(
                     reorderRadioGroup.checkedRadioButtonId,
-                    directionRadioGroup.checkedRadioButtonId == R.id.reorder_book_ascending
+                    directionRadioGroup.checkedRadioButtonId == R.id.reorder_users_ascending
                 )
             }
             .setNeutralButton("Back") { dialog, _ ->

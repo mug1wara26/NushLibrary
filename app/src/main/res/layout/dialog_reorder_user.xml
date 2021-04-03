@@ -12,16 +12,16 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <RadioButton
-            android:id="@+id/reorder_books_borrowed_number"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/number_of_books_borrowed"/>
-
-        <RadioButton
             android:id="@+id/reorder_display_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/display_name"/>
+
+        <RadioButton
+            android:id="@+id/reorder_books_borrowed_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/number_of_books_borrowed"/>
     </RadioGroup>
 
     <RadioGroup

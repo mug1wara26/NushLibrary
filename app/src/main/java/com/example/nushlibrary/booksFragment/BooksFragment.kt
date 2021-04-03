@@ -30,9 +30,14 @@ class BooksFragment: Fragment() {
         val booksAdapter = BooksRecyclerAdapter(requireActivity().supportFragmentManager)
         booksRecyclerView.adapter = booksAdapter
 
-        showBook(booksAdapter)
-
         var searchableBooks = arrayListOf<Book>()
+
+        showBook(booksAdapter, object: OnPostExecute{
+            override fun onPostExecute() {
+                searchableBooks = booksAdapter.books
+            }
+        })
+
         val filterButton: ImageButton = view.findViewById(R.id.filter_button)
         filterButton.setOnClickListener {
             FilterBookDialogFragment(object: FilterBookDialogFragment.GetFilterOnDismiss {
