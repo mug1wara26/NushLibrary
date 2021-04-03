@@ -53,6 +53,10 @@ class UserDialogFragment(val user: User): DialogFragment() {
         with(builder) {
             setView(view)
 
+            setNeutralButton("Back") { dialog, _ ->
+                dialog.dismiss()
+            }
+
             return create()
         }
     }

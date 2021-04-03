@@ -5,14 +5,15 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.graphics.Bitmap
 import android.os.Bundle
-import android.text.Layout
 import android.view.View
 import android.widget.*
 import androidx.cardview.widget.CardView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.DialogFragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.nushlibrary.*
 import com.example.nushlibrary.adminFragments.addBookDialogFragment.setExpandableView
+import com.example.nushlibrary.adminFragments.usersFragment.UserRecyclerAdapter
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
@@ -45,7 +46,7 @@ class BookDialogFragment(val book: Book): DialogFragment() {
         }
 
         val genreString =
-            if (getStringFromArrayList(book.genre).isNullOrEmpty()) "No genres"
+            if (getStringFromArrayList(book.genre).isEmpty()) "No genres"
             else "Genres: ${getStringFromArrayList(book.genre)}"
         val publisherString =
             if (book.publisher.isNullOrEmpty()) "No publisher"
@@ -82,14 +83,34 @@ class BookDialogFragment(val book: Book): DialogFragment() {
                 }
             }).execute()
 
-        val arrowButton: ImageButton = view.findViewById(R.id.arrow_button_description)
-        val expandableCardView: CardView = view.findViewById(R.id.dialog_book_expandable_description)
+        val arrowButtonDescription: ImageButton = view.findViewById(R.id.arrow_button_description)
+        val expandableDescriptionCardView: CardView = view.findViewById(R.id.dialog_book_expandable_description)
         val descriptionTextView: TextView = view.findViewById(R.id.dialog_book_description)
 
-        setExpandableView(arrowButton, expandableCardView, descriptionTextView)
+        setExpandableView(arrowButtonDescription, expandableDescriptionCardView, descriptionTextView)
 
-        // Set borrow button and to read button to visible if user is non admin
-        if (!user.admin) {
+        if (user.admin) {
+            // Show a recycler view of users that borrowed this book
+            val arrowButtonUsers: ImageButton = view.findViewById(R.id.arrow_button_users)
+            val expandableUsersCardView: CardView = view.findViewById(R.id.dialog_book_expandable_users)
+            val borrowedByRecyclerView: RecyclerView = view.findViewById(R.id.recycler_view_borrowed_by)
+
+            expandableUsersCardView.visibility = View.VISIBLE
+            setExpandableView(arrowButtonUsers, expandableUsersCardView, borrowedByRecyclerView)
+
+            // Set recycler view users
+            borrowedByRecyclerView.layoutManager = LinearLayoutManager(context)
+            val usersAdapter = UserRecyclerAdapter(requireActivity().supportFragmentManager)
+
+            getUsersById(book.borrowedBy, object: GetUsersOnPostExecute{
+                override fun onPostExecute(users: ArrayList<User>) {
+                    usersAdapter.users = users
+                    borrowedByRecyclerView.adapter = usersAdapter
+                }
+            })
+        }
+        else {
+            // Show borrow and to read button to user
             val borrowButton: Button = view.findViewById(R.id.borrow_book_button)
             val toReadButton: Button = view.findViewById(R.id.to_read_button)
 
@@ -155,6 +176,10 @@ class BookDialogFragment(val book: Book): DialogFragment() {
                     book.borrowedTime = timeStamp
                     bookReference.child(book.id).child("borrowedTime").setValue(book.borrowedTime)
 
+                    // Add user to borrowedBy field in user
+                    book.borrowedBy.add(user.id)
+                    bookReference.child(book.id).child("borrowedBy").setValue(book.borrowedBy)
+
                     Toast.makeText(context, "Successfully borrowed book", Toast.LENGTH_SHORT)
                         .show()
 
@@ -165,5 +190,27 @@ class BookDialogFragment(val book: Book): DialogFragment() {
             } else Toast.makeText(context, "No books left", Toast.LENGTH_SHORT).show()
         }
         isBorrowBookThreadLocked = false
+    }
+
+    interface GetUsersOnPostExecute {
+        fun onPostExecute(users: ArrayList<User>)
+    }
+    private fun getUsersById(usersId: ArrayList<String>, listener: GetUsersOnPostExecute) {
+        val users = arrayListOf<User>()
+        userReference.addListenerForSingleValueEvent(object: ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                usersId.forEach { id ->
+                    val user = snapshot.child(id).getValue(User::class.java)
+                    if (user != null) {
+                        users.add(user)
+                    }
+                }
+                listener.onPostExecute(users)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+        })
     }
 }

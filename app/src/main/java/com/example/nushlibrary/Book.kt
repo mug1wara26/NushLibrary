@@ -9,5 +9,6 @@ data class Book(
     val genre: ArrayList<*> = arrayListOf<String>(),
     val thumbnail: String? = null,
     var number: Int = 0,
-    var borrowedTime: Long? = null
+    var borrowedTime: Long? = null,
+    val borrowedBy: ArrayList<String> = arrayListOf()
 )
