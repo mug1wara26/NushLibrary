@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.nushlibrary.R
 import com.example.nushlibrary.User
 import com.example.nushlibrary.adminFragments.bookRecyclerView.DUE_TIME
+import com.example.nushlibrary.user
 
 const val DAYS_IN_MILLIS = 1000 * 60 * 60 * 24
 class UserRecyclerAdapter(val supportFragmentManager: FragmentManager): RecyclerView.Adapter<UserRecyclerAdapter.ViewHolder>() {
@@ -27,6 +28,12 @@ class UserRecyclerAdapter(val supportFragmentManager: FragmentManager): Recycler
         val email: TextView = itemView.findViewById(R.id.user_email)
         val booksBorrowed: TextView = itemView.findViewById(R.id.user_borrowed_books)
         val daysFromDue: TextView = itemView.findViewById(R.id.user_days_from_due)
+
+        init {
+            itemView.setOnClickListener {
+                UserDialogFragment(users[adapterPosition]).show(supportFragmentManager, "User")
+            }
+        }
     }
 
     @SuppressLint("SetTextI18n")
@@ -54,8 +61,7 @@ class UserRecyclerAdapter(val supportFragmentManager: FragmentManager): Recycler
 fun getDaysFromDue(user: User): Long? {
     return if (user.booksBorrowed.size != 0) {
         // Sorts a list that stores time stamps of when the user borrowed a book and get the earliest one
-        val earliestTimeStamp = user.booksBorrowedTimeStamp.sortedWith(
-            compareBy { it })[0]
+        val earliestTimeStamp = user.booksBorrowedTimeStamp.sorted()[0]
 
         // Get number of milliseconds from the due time stamp
         val dueTimeStamp = earliestTimeStamp + DUE_TIME

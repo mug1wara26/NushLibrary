@@ -5,6 +5,7 @@ import com.beust.klaxon.JsonArray
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
 import com.example.nushlibrary.Book
+import com.example.nushlibrary.bookReference
 import com.example.nushlibrary.database
 import java.net.HttpURLConnection
 import java.net.URL
@@ -14,7 +15,7 @@ import java.net.URL
 // 9780751565355 - Some Harry Potter Book (Multiple Authors)
 open class GetBookByISBN(
     private val genre: ArrayList<String>,
-    private val isbn: Long,
+    private val isbn: String,
     private val number: Int,
     private val listener: AsyncResponse
 ): AsyncTask<Void, Void, Book?>() {
@@ -57,8 +58,8 @@ open class GetBookByISBN(
             val thumbnail = getValueFromPath(jsonObject, "items.volumeInfo.imageLinks.thumbnail") as String?
 
             // Create book object and add it to database
-            book = Book(isbn.toString(), authors, title, description, publisher, genre, thumbnail, number)
-            database.child("books").child(isbn.toString()).setValue(book)
+            book = Book(isbn, authors, title, description, publisher, genre, thumbnail, number)
+            bookReference.child(isbn).setValue(book)
         }
 
         // Returns result

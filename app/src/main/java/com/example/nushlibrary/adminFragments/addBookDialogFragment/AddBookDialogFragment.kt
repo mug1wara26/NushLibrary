@@ -145,7 +145,7 @@ class AddBookDialogFragment(private val listener: GetBookOnDismiss): DialogFragm
         if (isbn.isNotEmpty() && number.isNotEmpty()) {
             GetBookByISBN(
                 genreAdapter.selectedGenres,
-                isbn.toLong(),
+                isbn,
                 number.toInt(),
                 object : GetBookByISBN.AsyncResponse {
                     // onPostExecute result is transferred here

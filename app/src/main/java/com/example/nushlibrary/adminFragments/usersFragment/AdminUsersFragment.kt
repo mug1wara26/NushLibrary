@@ -9,9 +9,12 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.nushlibrary.*
+import com.example.nushlibrary.booksFragment.searchForBook
+import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
+import me.xdrop.fuzzywuzzy.FuzzySearch
 
 class AdminUsersFragment: Fragment() {
     // This variable is used when searching
@@ -114,12 +117,36 @@ class AdminUsersFragment: Fragment() {
             }).show(requireActivity().supportFragmentManager, "Reorder")
         }
 
+        val searchInput: TextInputEditText = view.findViewById(R.id.input_search)
+
+        val refreshButton: ImageButton = view.findViewById(R.id.admin_users_refresh_button)
+        refreshButton.setOnClickListener {
+            showUsers(userAdapter, object: OnPostExecute{
+                override fun onPostExecute() {
+                    searchInput.text = null
+                }
+            })
+        }
+
+        val searchButton: ImageButton = view.findViewById(R.id.search_layout_search_button)
+        searchButton.setOnClickListener {
+            val displayName = searchInput.text.toString()
+            if (displayName.isNotEmpty()) {
+                userAdapter.users = searchForUser(allUsers, displayName)
+                userAdapter.notifyDataSetChanged()
+            }
+        }
+
         return view
     }
 
-    private fun showUsers(userAdapter: UserRecyclerAdapter) {
+    private fun showUsers(
+        userAdapter: UserRecyclerAdapter,
+        listener: OnPostExecute = object : OnPostExecute {
+            override fun onPostExecute() { /* Do nothing */ }
+        }) {
         val users = arrayListOf<User>()
-        userReference.orderByChild("display_name").addListenerForSingleValueEvent(object: ValueEventListener{
+        userReference.orderByChild("displayName").addListenerForSingleValueEvent(object: ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                 snapshot.children.forEach { childSnapshot ->
                     val user = childSnapshot.getValue(User::class.java)
@@ -133,9 +160,32 @@ class AdminUsersFragment: Fragment() {
                     allUsers.add(user)
                 }
                 userAdapter.notifyDataSetChanged()
+                listener.onPostExecute()
             }
 
             override fun onCancelled(error: DatabaseError) {}
         })
+    }
+
+    private fun searchForUser(users: ArrayList<User>, displayName: String): ArrayList<User> {
+        val displayNames = arrayListOf<String>()
+
+        for (user in users) {
+            displayNames.add(user.displayName)
+        }
+
+        println(FuzzySearch.extractSorted(displayName, displayNames))
+        val sortedNames = FuzzySearch.extractSorted(displayName, displayNames, 50)
+        val sortedUsers = arrayListOf<User>()
+
+        sortedNames.forEach {
+            sortedUsers.add(users[it.index])
+        }
+
+        return sortedUsers
+    }
+
+    interface OnPostExecute {
+        fun onPostExecute()
     }
 }
