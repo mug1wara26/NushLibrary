@@ -34,33 +34,40 @@ class UserHomeFragment: Fragment() {
         val noBooksTextView: TextView = view.findViewById(R.id.no_books_borrowed_textview)
         if (user.booksBorrowed.size == 0) noBooksTextView.visibility = View.VISIBLE
 
-        val reorderButton: ImageButton = view.findViewById(R.id.user_home_reorder_button)
         // Set the default checked radio button
-        var checkedId = R.id.reorder_due_date_ascending
+        var checkedOrderId = R.id.reorder_book_due_date
+        var checkedDirectionId = R.id.reorder_book_ascending
+
+        val reorderButton: ImageButton = view.findViewById(R.id.user_home_reorder_button)
         reorderButton.setOnClickListener {
-            ReorderDialogFragment(checkedId, object: ReorderDialogFragment.GetOrderOnDismiss{
-                override fun onDismiss(orderId: Int) {
+            ReorderBooksDialogFragment(checkedOrderId, checkedDirectionId, object: ReorderBooksDialogFragment.GetOrderOnDismiss{
+                override fun onDismiss(orderId: Int, ascending: Boolean) {
                     val newBooks = arrayListOf<Book>()
-                    checkedId = orderId
-                    when (orderId) {
-                        R.id.reorder_due_date_ascending -> {
-                            bookAdapter.books.sortedWith(compareBy { it.borrowedTime }).forEach { book ->
-                                newBooks.add(book)
-                            }
+                    // Set default checked radio button
+                    checkedOrderId = orderId
+                    checkedDirectionId =
+                        if (ascending) R.id.reorder_book_ascending
+                        else R.id.reorder_book_descending
+
+                    // Set whether the books are sorted ascending or descending
+                    val comparatorDueDate =
+                        if (ascending) compareBy<Book> { it.borrowedTime }
+                        else compareByDescending { it.borrowedTime }
+                    val comparatorTitle =
+                        if (ascending) compareBy<Book> { it.title }
+                        else compareByDescending { it.title }
+
+                    // Determine the final comparator
+                    val bookComparator =
+                        if (orderId == R.id.reorder_book_due_date) comparatorDueDate
+                        else comparatorTitle
+
+                    bookAdapter.books.sortedWith(bookComparator)
+                        .forEach { book ->
+                            newBooks.add(book)
                         }
 
-                        R.id.reorder_due_date_descending -> {
-                            bookAdapter.books.sortedWith(compareByDescending { it.borrowedTime }).forEach { book ->
-                                newBooks.add(book)
-                            }
-                        }
-
-                        R.id.reorder_title -> {
-                            bookAdapter.books.sortedWith(compareBy { it.title }).forEach { book ->
-                                newBooks.add(book)
-                            }
-                        }
-                    }
+                    // Set book adapter
                     bookAdapter.books = newBooks
                     bookAdapter.notifyDataSetChanged()
                 }
@@ -70,9 +77,10 @@ class UserHomeFragment: Fragment() {
         val searchInput: TextInputEditText = view.findViewById(R.id.input_search)
         val refreshButton: ImageButton =  view.findViewById(R.id.user_home_refresh_button)
         refreshButton.setOnClickListener {
-            bookAdapter.books.clear()
             showBooks(bookAdapter)
-            checkedId = R.id.reorder_due_date_ascending
+            // Set default checked radio buttons
+            checkedOrderId = R.id.reorder_book_due_date
+            checkedDirectionId = R.id.reorder_book_ascending
             searchInput.text = null
         }
 
@@ -90,6 +98,7 @@ class UserHomeFragment: Fragment() {
     }
 
     private fun showBooks(bookAdapter: BooksRecyclerAdapter) {
+        bookAdapter.books.clear()
         getBooksById(user.booksBorrowed, object: GetBooksOnPostExecute{
             override fun onPostExecute(books: ArrayList<Book>) {
                 books.sortedWith(compareBy { it.borrowedTime }).forEach { book ->
