@@ -17,15 +17,16 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 
 class AddUserDialogFragment(private val book: Book): DialogFragment() {
-    @SuppressLint("InflateParams")
+
     lateinit var dialogContext: Context
+    @SuppressLint("InflateParams")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val builder = AlertDialog.Builder(requireActivity())
 
         val inflater = requireActivity().layoutInflater
         val view = inflater.inflate(R.layout.dialog_add_book_to_user, null)
 
-        dialogContext = context!!
+        dialogContext = requireContext()
 
         with(builder) {
             setTitle("Add to a user's borrowed book list")
@@ -58,6 +59,9 @@ class AddUserDialogFragment(private val book: Book): DialogFragment() {
                         }
                     })
                 }
+            }
+            setNeutralButton("Back") { dialog, _ ->
+                dialog.dismiss()
             }
 
             return create()

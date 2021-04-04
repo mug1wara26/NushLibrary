@@ -25,7 +25,7 @@ class AdminUsersFragment: Fragment() {
 
         val userRecyclerView: RecyclerView = view.findViewById(R.id.recycler_view_users)
         userRecyclerView.layoutManager = LinearLayoutManager(context)
-        val userAdapter = UserRecyclerAdapter(requireActivity().supportFragmentManager)
+        val userAdapter = UserRecyclerAdapter(requireActivity().supportFragmentManager, requireContext())
         userRecyclerView.adapter = userAdapter
 
         showUsers(userAdapter)

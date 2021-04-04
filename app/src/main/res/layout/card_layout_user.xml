@@ -47,7 +47,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/user_borrowed_books" />
+            app:layout_constraintTop_toBottomOf="@+id/user_borrowed_books"
+            android:visibility="gone"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/copy_id_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/copy_id"
+            android:textColor="@color/black"
+            android:backgroundTint="@color/white"
+            app:drawableLeftCompat="@drawable/icon_copy"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/user_days_from_due"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

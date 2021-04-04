@@ -101,7 +101,7 @@ class BookDialogFragment(val book: Book): DialogFragment() {
 
             // Set recycler view users
             borrowedByRecyclerView.layoutManager = LinearLayoutManager(context)
-            val usersAdapter = UserRecyclerAdapter(requireActivity().supportFragmentManager)
+            val usersAdapter = UserRecyclerAdapter(requireActivity().supportFragmentManager, requireContext())
 
             getUsersById(book.borrowedBy, object: GetUsersOnPostExecute{
                 override fun onPostExecute(users: ArrayList<User>) {
