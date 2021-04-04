@@ -14,6 +14,7 @@ import android.widget.Toast
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.nushlibrary.*
+import com.example.nushlibrary.adminFragments.usersFragment.AdminUsersFragment
 import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.*
@@ -21,7 +22,7 @@ import kotlin.collections.ArrayList
 
 // 14 weeks in milliseconds
 const val DUE_TIME = 1000 * 60 * 60 * 24 * 14
-class BooksRecyclerAdapter(val supportFragmentManager: FragmentManager, private val user: User? = null): RecyclerView.Adapter<BooksRecyclerAdapter.ViewHolder>() {
+class BooksRecyclerAdapter(val supportFragmentManager: FragmentManager, private val user: User? = null, private val inBookFragment: Boolean = false): RecyclerView.Adapter<BooksRecyclerAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val v: View =
             LayoutInflater.from(parent.context).inflate(R.layout.card_layout_book, parent, false)
@@ -37,6 +38,7 @@ class BooksRecyclerAdapter(val supportFragmentManager: FragmentManager, private 
         val dueDate: TextView = itemView.findViewById(R.id.card_layout_book_due_date)
         val editBtn: Button = itemView.findViewById(R.id.edit_button)
         val removeBtn: Button = itemView.findViewById(R.id.remove_button)
+        val addBtn: Button = itemView.findViewById(R.id.add_button)
 
         init {
             itemView.setOnClickListener {
@@ -49,7 +51,7 @@ class BooksRecyclerAdapter(val supportFragmentManager: FragmentManager, private 
             }
             removeBtn.setOnClickListener {
                 val book = books[adapterPosition]
-                // We know   user is not null if remove button is visible
+                // We know user is not null if remove button is visible
                 user!!
 
                 // Remove the book from the recycler view
@@ -64,11 +66,15 @@ class BooksRecyclerAdapter(val supportFragmentManager: FragmentManager, private 
                 // Remove the user from the book
                 book.borrowedBy.remove(user.id)
                 book.borrowedTime = null
+                book.number++
                 // Update book in database
                 bookReference.child(book.id).setValue(book)
 
                 // Notify user
                 Toast.makeText(itemView.context, "Removed ${book.title} from ${user.displayName} borrowed books list", Toast.LENGTH_LONG).show()
+            }
+            addBtn.setOnClickListener {
+                AddUserDialogFragment(books[adapterPosition]).show(supportFragmentManager, "Add user to book")
             }
         }
     }
@@ -80,6 +86,8 @@ class BooksRecyclerAdapter(val supportFragmentManager: FragmentManager, private 
         if (mainUser.admin) holder.editBtn.visibility = View.VISIBLE
         // This value is only passed if the recycler view is in a user dialog fragment
         if (user != null) holder.removeBtn.visibility = View.VISIBLE
+        // This value tells us if we are in BookFragment
+        if (inBookFragment) holder.addBtn.visibility = View.VISIBLE
 
         // Set it to null first so it doesn't display wrong thumbnail
         holder.thumbnail.setImageBitmap(null)

@@ -27,7 +27,7 @@ class BooksFragment: Fragment() {
 
         val booksRecyclerView: RecyclerView = view.findViewById(R.id.recycler_view_books)
         booksRecyclerView.layoutManager = LinearLayoutManager(context)
-        val booksAdapter = BooksRecyclerAdapter(requireActivity().supportFragmentManager)
+        val booksAdapter = BooksRecyclerAdapter(requireActivity().supportFragmentManager, inBookFragment = true)
         booksRecyclerView.adapter = booksAdapter
 
         var searchableBooks = arrayListOf<Book>()

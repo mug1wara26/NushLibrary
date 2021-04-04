@@ -19,8 +19,9 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 
 @SuppressLint("SetTextI18n")
+var isBorrowBookThreadLocked = false
 class BookDialogFragment(val book: Book): DialogFragment() {
-    var isBorrowBookThreadLocked = false
+    @SuppressLint("SetTextI18n")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val builder = AlertDialog.Builder(requireActivity())
 
@@ -124,7 +125,19 @@ class BookDialogFragment(val book: Book): DialogFragment() {
             }
 
             borrowButton.setOnClickListener {
-                borrowButtonOnClick(view, borrowButton)
+                val result = borrowBook(book, mainUser)
+                if (result) {
+                    Toast.makeText(context, "Successfully borrowed book", Toast.LENGTH_SHORT).show()
+
+                    // Update number of books left and borrow button
+                    view.findViewById<TextView>(R.id.dialog_book_number).text =
+                        "Number of books left: ${book.number}"
+                    borrowButton.isEnabled = false
+                    borrowButton.alpha = 0.3F
+                }
+                else {
+                    Toast.makeText(context, "Unable to borrow book", Toast.LENGTH_SHORT).show()
+                }
             }
             toReadButton.setOnClickListener {
                 if (!mainUser.toReadList.contains(book.id)) {
@@ -151,47 +164,6 @@ class BookDialogFragment(val book: Book): DialogFragment() {
         return builder.create()
     }
 
-    private fun borrowButtonOnClick(view: View, borrowButton: Button) {
-        // Lock thread to avoid race condition
-        if (!isBorrowBookThreadLocked) {
-            isBorrowBookThreadLocked = true
-            if (book.number > 0) {
-                if (!mainUser.booksBorrowed.contains(book.id)) {
-                    val timeStamp = System.currentTimeMillis()
-                    // Add book to user books borrowed
-                    mainUser.booksBorrowed.add(book.id)
-                    userReference.child(mainUser.id).child("booksBorrowed")
-                        .setValue(mainUser.booksBorrowed)
-                    // Add book borrowed timestamp to user
-                    mainUser.booksBorrowedTimeStamp.add(timeStamp)
-                    userReference.child(mainUser.id).child("booksBorrowedTimeStamp").setValue(mainUser.booksBorrowedTimeStamp)
-
-                    // Decrease book number
-                    book.number--
-                    view.findViewById<TextView>(R.id.dialog_book_number).text =
-                        "Number of books left: ${book.number}"
-                    bookReference.child(book.id).child("number").setValue(book.number)
-
-                    // Set book timestamp
-                    book.borrowedTime = timeStamp
-                    bookReference.child(book.id).child("borrowedTime").setValue(book.borrowedTime)
-
-                    // Add user to borrowedBy field in user
-                    book.borrowedBy.add(mainUser.id)
-                    bookReference.child(book.id).child("borrowedBy").setValue(book.borrowedBy)
-
-                    Toast.makeText(context, "Successfully borrowed book", Toast.LENGTH_SHORT)
-                        .show()
-
-                    // Disable the button
-                    borrowButton.isEnabled = false
-                    borrowButton.alpha = 0.3F
-                }
-            } else Toast.makeText(context, "No books left", Toast.LENGTH_SHORT).show()
-        }
-        isBorrowBookThreadLocked = false
-    }
-
     interface GetUsersOnPostExecute {
         fun onPostExecute(users: ArrayList<User>)
     }
@@ -213,4 +185,36 @@ class BookDialogFragment(val book: Book): DialogFragment() {
             }
         })
     }
+}
+
+@SuppressLint("SetTextI18n")
+fun borrowBook(book: Book, user: User): Boolean {
+    // Lock thread to avoid race condition
+    if (!isBorrowBookThreadLocked) {
+        isBorrowBookThreadLocked = true
+        if (book.number > 0) {
+            if (!user.booksBorrowed.contains(book.id)) {
+                val timeStamp = System.currentTimeMillis()
+
+                // Add book to user
+                user.booksBorrowed.add(book.id)
+                user.booksBorrowedTimeStamp.add(timeStamp)
+                // Update user in database
+                userReference.child(user.id).setValue(user)
+
+                // Add user to book
+                book.number--
+                book.borrowedTime = timeStamp
+                book.borrowedBy.add(user.id)
+                // Update book in database
+                bookReference.child(book.id).setValue(book)
+
+                // Unlock thread
+                isBorrowBookThreadLocked = false
+
+                return true
+            }
+        }
+    }
+    return false
 }
