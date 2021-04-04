@@ -85,7 +85,6 @@ class AdminUsersFragment: Fragment() {
             // I should have made this a function but I'm too lazy
             ReorderUsersDialogFragment(checkedOrderId, checkedDirectionId, object: ReorderUsersDialogFragment.GetOrderOnDismiss{
                 override fun onDismiss(orderId: Int, ascending: Boolean) {
-                    val newUsers = arrayListOf<User>()
                     // Set default checked radio button
                     checkedOrderId = orderId
                     checkedDirectionId =
@@ -105,10 +104,7 @@ class AdminUsersFragment: Fragment() {
                         if (orderId == R.id.reorder_books_borrowed_number) comparatorBorrowedBooksNumber
                         else comparatorDisplayName
 
-                    userAdapter.users.sortedWith(userComparator)
-                        .forEach { user ->
-                            newUsers.add(user)
-                        }
+                    val newUsers = ArrayList(userAdapter.users.sortedWith(userComparator))
 
                     // Set book adapter
                     userAdapter.users = newUsers
@@ -145,20 +141,19 @@ class AdminUsersFragment: Fragment() {
         listener: OnPostExecute = object : OnPostExecute {
             override fun onPostExecute() { /* Do nothing */ }
         }) {
-        val users = arrayListOf<User>()
+        val newUsers = arrayListOf<User>()
         userReference.orderByChild("displayName").addListenerForSingleValueEvent(object: ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                 snapshot.children.forEach { childSnapshot ->
                     val user = childSnapshot.getValue(User::class.java)
                     if (user != null) {
-                        users.add(user)
+                        newUsers.add(user)
                     }
                 }
                 // Sort users by display name
-                users.sortedWith(compareBy { it.displayName }).forEach { user ->
-                    userAdapter.users.add(user)
-                    allUsers.add(user)
-                }
+                userAdapter.users = ArrayList(newUsers.sortedWith(compareBy { it.displayName }))
+                allUsers = userAdapter.users
+
                 userAdapter.notifyDataSetChanged()
                 listener.onPostExecute()
             }

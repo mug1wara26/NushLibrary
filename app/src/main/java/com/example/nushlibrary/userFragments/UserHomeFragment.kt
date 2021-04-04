@@ -42,7 +42,6 @@ class UserHomeFragment: Fragment() {
         reorderButton.setOnClickListener {
             ReorderBooksDialogFragment(checkedOrderId, checkedDirectionId, object: ReorderBooksDialogFragment.GetOrderOnDismiss{
                 override fun onDismiss(orderId: Int, ascending: Boolean) {
-                    val newBooks = arrayListOf<Book>()
                     // Set default checked radio button
                     checkedOrderId = orderId
                     checkedDirectionId =
@@ -62,10 +61,7 @@ class UserHomeFragment: Fragment() {
                         if (orderId == R.id.reorder_book_due_date) comparatorDueDate
                         else comparatorTitle
 
-                    bookAdapter.books.sortedWith(bookComparator)
-                        .forEach { book ->
-                            newBooks.add(book)
-                        }
+                    val newBooks = ArrayList(bookAdapter.books.sortedWith(bookComparator))
 
                     // Set book adapter
                     bookAdapter.books = newBooks
@@ -101,9 +97,7 @@ class UserHomeFragment: Fragment() {
         bookAdapter.books.clear()
         getBooksById(mainUser.booksBorrowed, object: GetBooksOnPostExecute{
             override fun onPostExecute(books: ArrayList<Book>) {
-                books.sortedWith(compareBy { it.borrowedTime }).forEach { book ->
-                    bookAdapter.books.add(book)
-                }
+                bookAdapter.books = ArrayList(books.sortedWith(compareBy { it.borrowedTime }))
                 bookAdapter.notifyDataSetChanged()
             }
         })

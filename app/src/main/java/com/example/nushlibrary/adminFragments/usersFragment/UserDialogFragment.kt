@@ -43,9 +43,8 @@ class UserDialogFragment(val user: User): DialogFragment() {
         val bookAdapter = BooksRecyclerAdapter(requireActivity().supportFragmentManager, user = user)
         getBooksById(user.booksBorrowed, object: GetBooksOnPostExecute{
             override fun onPostExecute(books: ArrayList<Book>) {
-                books.sortedWith(compareBy{ it.borrowedTime }).forEach { book ->
-                    bookAdapter.books.add(book)
-                }
+                bookAdapter.books = ArrayList(books.sortedWith(compareBy{ it.borrowedTime }))
+
                 booksBorrowedRecyclerView.adapter = bookAdapter
             }
         })

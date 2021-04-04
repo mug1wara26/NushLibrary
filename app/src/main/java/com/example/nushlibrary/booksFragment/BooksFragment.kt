@@ -72,10 +72,8 @@ class BooksFragment: Fragment() {
 
                             // Sort books by title
                             booksAdapter.books.clear()
-                            // Cant type cast for some reason bleh
-                            newBooksList.sortedWith(compareBy { it.title }).forEach {
-                                booksAdapter.books.add(it)
-                            }
+
+                            booksAdapter.books = ArrayList(newBooksList.sortedWith(compareBy { it.title }))
                             booksAdapter.notifyDataSetChanged()
 
                             searchableBooks = booksAdapter.books
