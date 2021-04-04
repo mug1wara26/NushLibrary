@@ -1,8 +1,10 @@
 package com.example.nushlibrary
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
@@ -55,7 +57,12 @@ class UserActivity: AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setupDrawerContent(navigationView: NavigationView) {
+        val headerView = navigationView.getHeaderView(0)
+        // Set header to show user display name
+        headerView.findViewById<TextView>(R.id.nav_view_display_name).text = "Hi, ${mainUser.displayName}"
+
         navigationView.setNavigationItemSelectedListener { menuItem ->
             if (menuItem.itemId == R.id.logOut) {
                 // Sign out user
@@ -65,7 +72,7 @@ class UserActivity: AppCompatActivity() {
                 startActivity(intent)
             }
             else selectDrawerItem(menuItem)
-            // I didn't know you could just return true like this what
+            // I didn't know you could just return like this woah
             true
         }
     }

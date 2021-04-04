@@ -17,7 +17,7 @@ import com.google.firebase.ktx.Firebase
 val database = Firebase.database.getReferenceFromUrl("https://nush-library-default-rtdb.firebaseio.com/")
 val userReference = database.child("users")
 val bookReference = database.child("books")
-var mainUser = User(admin = true)
+lateinit var mainUser: User
 class MainActivity : AppCompatActivity() {
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
