@@ -17,7 +17,7 @@ import com.google.firebase.ktx.Firebase
 val database = Firebase.database.getReferenceFromUrl("https://nush-library-default-rtdb.firebaseio.com/")
 val userReference = database.child("users")
 val bookReference = database.child("books")
-var user = User(admin = true)
+var mainUser = User(admin = true)
 class MainActivity : AppCompatActivity() {
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,7 +46,7 @@ class MainActivity : AppCompatActivity() {
                                     override fun onDataChange(snapshot: DataSnapshot) {
                                         // Check if user exists in database
                                         if (!snapshot.exists()) {
-                                            user = User(
+                                            mainUser = User(
                                                 firebaseUser.uid,
                                                 firebaseUser.email!!,
                                                 firebaseUser.displayName!!,
@@ -55,7 +55,7 @@ class MainActivity : AppCompatActivity() {
                                                 arrayListOf(),
                                                 false
                                             )
-                                            userReference.child(firebaseUser.uid).setValue(user)
+                                            userReference.child(firebaseUser.uid).setValue(mainUser)
 
 
                                             // Immediately go to UserActivity since user is definitely not admin
@@ -67,9 +67,9 @@ class MainActivity : AppCompatActivity() {
                                         }
                                         // User exists
                                         else {
-                                            user = snapshot.getValue(User::class.java)!!
+                                            mainUser = snapshot.getValue(User::class.java)!!
                                             // If user is admin, start AdminActivity, else start UserActivity
-                                            if (user.admin) {
+                                            if (mainUser.admin) {
                                                 val intent = Intent(
                                                     applicationContext,
                                                     AdminActivity::class.java

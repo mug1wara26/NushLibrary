@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.nushlibrary.R
 import com.example.nushlibrary.User
 import com.example.nushlibrary.adminFragments.bookRecyclerView.DUE_TIME
-import com.example.nushlibrary.user
 
 const val DAYS_IN_MILLIS = 1000 * 60 * 60 * 24
 class UserRecyclerAdapter(val supportFragmentManager: FragmentManager): RecyclerView.Adapter<UserRecyclerAdapter.ViewHolder>() {

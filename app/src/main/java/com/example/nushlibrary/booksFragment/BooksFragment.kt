@@ -61,12 +61,12 @@ class BooksFragment: Fragment() {
 
                                 // Checks if the checkbox is checked, if user has borrowed the book and the current book list does not already contain the book
                                 if (isBooksBorrowedChecked
-                                    && user.booksBorrowed.contains(book.id)
+                                    && mainUser.booksBorrowed.contains(book.id)
                                     && !newBooksList.contains(book)) newBooksList.add(book)
 
                                 // Checks if the checkbox is checked, if user has added the book to their to read list and the current book list does not already contain the book
                                 if (isToReadChecked
-                                    && user.toReadList.contains(book.id)
+                                    && mainUser.toReadList.contains(book.id)
                                     && !newBooksList.contains(book)) newBooksList.add(book)
                             }
 

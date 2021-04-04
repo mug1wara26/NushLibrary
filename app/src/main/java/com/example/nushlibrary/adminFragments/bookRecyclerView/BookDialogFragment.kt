@@ -89,7 +89,7 @@ class BookDialogFragment(val book: Book): DialogFragment() {
 
         setExpandableView(arrowButtonDescription, expandableDescriptionCardView, descriptionTextView)
 
-        if (user.admin) {
+        if (mainUser.admin) {
             // Show a recycler view of users that borrowed this book
             val arrowButtonUsers: ImageButton = view.findViewById(R.id.arrow_button_users)
             val expandableUsersCardView: CardView = view.findViewById(R.id.dialog_book_expandable_users)
@@ -118,7 +118,7 @@ class BookDialogFragment(val book: Book): DialogFragment() {
             toReadButton.visibility = View.VISIBLE
 
             // Disable the button if user has already borrowed the book
-            if (user.booksBorrowed.contains(book.id)) {
+            if (mainUser.booksBorrowed.contains(book.id)) {
                 borrowButton.isEnabled = false
                 borrowButton.alpha = 0.3F
             }
@@ -127,19 +127,19 @@ class BookDialogFragment(val book: Book): DialogFragment() {
                 borrowButtonOnClick(view, borrowButton)
             }
             toReadButton.setOnClickListener {
-                if (!user.toReadList.contains(book.id)) {
-                    user.toReadList.add(book.id)
+                if (!mainUser.toReadList.contains(book.id)) {
+                    mainUser.toReadList.add(book.id)
                     toReadButton.alpha = 0.3F
                     Toast.makeText(context, "Added to your to read list", Toast.LENGTH_SHORT).show()
                 }
                 else {
-                    user.toReadList.remove(book.id)
+                    mainUser.toReadList.remove(book.id)
                     toReadButton.alpha = 1F
                     Toast.makeText(context, "Removed from your to read list", Toast.LENGTH_SHORT).show()
                 }
 
 
-                userReference.child(user.id).child("toReadList").setValue(user.toReadList)
+                userReference.child(mainUser.id).child("toReadList").setValue(mainUser.toReadList)
             }
         }
 
@@ -156,15 +156,15 @@ class BookDialogFragment(val book: Book): DialogFragment() {
         if (!isBorrowBookThreadLocked) {
             isBorrowBookThreadLocked = true
             if (book.number > 0) {
-                if (!user.booksBorrowed.contains(book.id)) {
+                if (!mainUser.booksBorrowed.contains(book.id)) {
                     val timeStamp = System.currentTimeMillis()
                     // Add book to user books borrowed
-                    user.booksBorrowed.add(book.id)
-                    userReference.child(user.id).child("booksBorrowed")
-                        .setValue(user.booksBorrowed)
+                    mainUser.booksBorrowed.add(book.id)
+                    userReference.child(mainUser.id).child("booksBorrowed")
+                        .setValue(mainUser.booksBorrowed)
                     // Add book borrowed timestamp to user
-                    user.booksBorrowedTimeStamp.add(timeStamp)
-                    userReference.child(user.id).child("booksBorrowedTimeStamp").setValue(user.booksBorrowedTimeStamp)
+                    mainUser.booksBorrowedTimeStamp.add(timeStamp)
+                    userReference.child(mainUser.id).child("booksBorrowedTimeStamp").setValue(mainUser.booksBorrowedTimeStamp)
 
                     // Decrease book number
                     book.number--
@@ -177,7 +177,7 @@ class BookDialogFragment(val book: Book): DialogFragment() {
                     bookReference.child(book.id).child("borrowedTime").setValue(book.borrowedTime)
 
                     // Add user to borrowedBy field in user
-                    book.borrowedBy.add(user.id)
+                    book.borrowedBy.add(mainUser.id)
                     bookReference.child(book.id).child("borrowedBy").setValue(book.borrowedBy)
 
                     Toast.makeText(context, "Successfully borrowed book", Toast.LENGTH_SHORT)

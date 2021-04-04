@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.nushlibrary.R
 import com.example.nushlibrary.adminFragments.addBookDialogFragment.GenreRecyclerAdapter
 import com.example.nushlibrary.adminFragments.addBookDialogFragment.setExpandableView
-import com.example.nushlibrary.user
+import com.example.nushlibrary.mainUser
 import com.google.android.material.textfield.TextInputEditText
 
 class FilterBookDialogFragment(private val listener: GetFilterOnDismiss): DialogFragment() {
@@ -52,7 +52,7 @@ class FilterBookDialogFragment(private val listener: GetFilterOnDismiss): Dialog
 
         setExpandableView(arrowButton, expandableCardViewGenre, genreRecyclerView)
 
-        if (!user.admin){
+        if (!mainUser.admin){
             // set the checkbox to visible is user is non admin
             val filterUserLayout: ConstraintLayout = view.findViewById(R.id.layout_filter_user)
             filterUserLayout.visibility = View.VISIBLE

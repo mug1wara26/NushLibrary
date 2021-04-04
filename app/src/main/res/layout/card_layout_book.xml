@@ -62,9 +62,23 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/edit"
-            android:visibility="gone"
+            android:backgroundTint="@color/white"
+            android:textColor="@color/black"
             app:layout_constraintTop_toBottomOf="@id/card_layout_book_authors"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            android:visibility="gone"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/remove_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/remove"
+            android:backgroundTint="@color/white"
+            android:textColor="@color/black"
+            app:layout_constraintTop_toBottomOf="@id/card_layout_book_authors"
+            app:layout_constraintStart_toEndOf="@id/edit_button"
+            android:layout_marginStart="10dp"
+            android:visibility="gone" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

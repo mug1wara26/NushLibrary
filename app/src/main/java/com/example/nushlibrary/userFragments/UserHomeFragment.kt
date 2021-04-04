@@ -14,7 +14,7 @@ import com.example.nushlibrary.R
 import com.example.nushlibrary.adminFragments.bookRecyclerView.BooksRecyclerAdapter
 import com.example.nushlibrary.bookReference
 import com.example.nushlibrary.booksFragment.searchForBook
-import com.example.nushlibrary.user
+import com.example.nushlibrary.mainUser
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -32,7 +32,7 @@ class UserHomeFragment: Fragment() {
 
         showBooks(bookAdapter)
         val noBooksTextView: TextView = view.findViewById(R.id.no_books_borrowed_textview)
-        if (user.booksBorrowed.size == 0) noBooksTextView.visibility = View.VISIBLE
+        if (mainUser.booksBorrowed.size == 0) noBooksTextView.visibility = View.VISIBLE
 
         // Set the default checked radio button
         var checkedOrderId = R.id.reorder_book_due_date
@@ -99,7 +99,7 @@ class UserHomeFragment: Fragment() {
 
     private fun showBooks(bookAdapter: BooksRecyclerAdapter) {
         bookAdapter.books.clear()
-        getBooksById(user.booksBorrowed, object: GetBooksOnPostExecute{
+        getBooksById(mainUser.booksBorrowed, object: GetBooksOnPostExecute{
             override fun onPostExecute(books: ArrayList<Book>) {
                 books.sortedWith(compareBy { it.borrowedTime }).forEach { book ->
                     bookAdapter.books.add(book)
