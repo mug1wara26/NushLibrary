@@ -49,7 +49,7 @@ class MainActivity : AppCompatActivity() {
                                             mainUser = User(
                                                 firebaseUser.uid,
                                                 firebaseUser.email!!,
-                                                firebaseUser.displayName!!,
+                                                firebaseUser.displayName!!.substring(0, 30),
                                                 arrayListOf(),
                                                 arrayListOf(),
                                                 arrayListOf(),

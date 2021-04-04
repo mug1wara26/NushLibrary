@@ -52,4 +52,6 @@
     <string name="add">Add</string>
     <string name="user_id">User ID</string>
     <string name="copy_id">Copy ID</string>
+    <string name="cancel">Cancel</string>
+    <string name="edit_display_name_warning">Display name can only contain lowercase letters, uppercase letters and spaces and must be at most 30 characters</string>
 </resources>
