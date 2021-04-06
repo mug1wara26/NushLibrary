@@ -54,4 +54,11 @@
     <string name="copy_id">Copy ID</string>
     <string name="cancel">Cancel</string>
     <string name="edit_display_name_warning">Display name can only contain lowercase letters, uppercase letters and spaces and must be at most 30 characters</string>
+    <string name="report_problem">Report problem</string>
+    <string name="submit">Submit</string>
+    <string name="report_input_hint">Please explain your problem thoroughly and list steps to recreate the problem (minimum 100 characters)</string>
+    <string name="requests_reports">Requests/Reports</string>
+    <string name="read">Read</string>
+    <string name="accept_request">Accept request</string>
+    <string name="deny_request">Deny request</string>
 </resources>

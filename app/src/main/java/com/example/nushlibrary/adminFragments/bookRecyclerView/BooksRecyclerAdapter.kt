@@ -22,7 +22,11 @@ import kotlin.collections.ArrayList
 
 // 14 weeks in milliseconds
 const val DUE_TIME = 1000 * 60 * 60 * 24 * 14
-class BooksRecyclerAdapter(val supportFragmentManager: FragmentManager, private val user: User? = null, private val inBookFragment: Boolean = false): RecyclerView.Adapter<BooksRecyclerAdapter.ViewHolder>() {
+class BooksRecyclerAdapter(
+    val supportFragmentManager: FragmentManager,
+    private val user: User? = null,
+    private val inBookFragment: Boolean = false): RecyclerView.Adapter<BooksRecyclerAdapter.ViewHolder>() {
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val v: View =
             LayoutInflater.from(parent.context).inflate(R.layout.card_layout_book, parent, false)
@@ -87,7 +91,7 @@ class BooksRecyclerAdapter(val supportFragmentManager: FragmentManager, private 
         // This value is only passed if the recycler view is in a user dialog fragment
         if (user != null) holder.removeBtn.visibility = View.VISIBLE
         // This value tells us if we are in BookFragment
-        if (inBookFragment) holder.addBtn.visibility = View.VISIBLE
+        if (inBookFragment && mainUser.admin) holder.addBtn.visibility = View.VISIBLE
 
         // Set it to null first so it doesn't display wrong thumbnail
         holder.thumbnail.setImageBitmap(null)

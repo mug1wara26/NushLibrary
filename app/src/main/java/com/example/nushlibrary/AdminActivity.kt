@@ -11,7 +11,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.example.nushlibrary.adminFragments.AdminHomeFragment
-import com.example.nushlibrary.adminFragments.AdminSettingsFragment
+import com.example.nushlibrary.adminFragments.requestsReportFragment.AdminRequestReportFragment
 import com.example.nushlibrary.adminFragments.usersFragment.AdminUsersFragment
 import com.example.nushlibrary.booksFragment.BooksFragment
 import com.google.android.material.navigation.NavigationView
@@ -79,7 +79,7 @@ class AdminActivity: AppCompatActivity() {
             R.id.home -> AdminHomeFragment::class.java
             R.id.users -> AdminUsersFragment::class.java
             R.id.books -> BooksFragment::class.java
-            R.id.settings -> AdminSettingsFragment::class.java
+            R.id.report -> AdminRequestReportFragment::class.java
             else -> AdminHomeFragment::class.java
         }
 

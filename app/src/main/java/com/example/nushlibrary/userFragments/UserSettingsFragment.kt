@@ -6,12 +6,11 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.example.nushlibrary.R
-import com.example.nushlibrary.mainUser
-import com.example.nushlibrary.userReference
+import com.example.nushlibrary.*
 import com.google.android.material.textfield.TextInputEditText
 
 class UserSettingsFragment: Fragment() {
@@ -26,7 +25,7 @@ class UserSettingsFragment: Fragment() {
         val editNameButton: TextView = view.findViewById(R.id.edit_display_name_button)
         val cancelEditNameButton: TextView = view.findViewById(R.id.cancel_edit_display_name_button)
 
-        fun disabledButtons() {
+        fun disabledEditButtons() {
             editNameButton.isEnabled = false
             editNameButton.alpha = 0.3F
             cancelEditNameButton.isEnabled = false
@@ -46,11 +45,11 @@ class UserSettingsFragment: Fragment() {
                         }
                         else {
                             editNameWarning.visibility = View.VISIBLE
-                            disabledButtons()
+                            disabledEditButtons()
                         }
                     } else {
                         editNameWarning.visibility = View.GONE
-                        disabledButtons()
+                        disabledEditButtons()
                     }
                 }
             }
@@ -60,13 +59,43 @@ class UserSettingsFragment: Fragment() {
 
         editNameButton.setOnClickListener {
             val newDisplayName = editNameInput.text.toString()
-            // Change display name for user
-            mainUser.displayName = newDisplayName
-            userReference.child(mainUser.id).child("displayName").setValue(newDisplayName)
-            // Set text in textInputEditText
-            editNameInput.setText(newDisplayName)
 
-            Toast.makeText(context, "Successfully edited name", Toast.LENGTH_SHORT).show()
+            val timeStamp = System.currentTimeMillis()
+            val request = Request(mainUser.id, newDisplayName, timeStamp)
+            database.child("requests").child(mainUser.id).setValue(request)
+
+            Toast.makeText(context, "Edit name request has been made", Toast.LENGTH_SHORT).show()
+        }
+
+        cancelEditNameButton.setOnClickListener {
+            editNameInput.setText(mainUser.displayName)
+        }
+
+        // Code to handle reports
+        val reportButton: Button = view.findViewById(R.id.submit_report_button)
+        val reportInput: TextInputEditText = view.findViewById(R.id.report_input)
+
+        reportInput.addTextChangedListener(object: TextWatcher{
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val characterLimit = s.toString().length in 100..500
+
+                reportButton.isEnabled = characterLimit
+                if (characterLimit) reportButton.alpha = 1F
+                else reportButton.alpha = 0.3F
+            }
+
+            override fun afterTextChanged(s: Editable?) {}; override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+        })
+
+        reportButton.setOnClickListener {
+            val reportString = reportInput.text.toString()
+
+            val timeStamp = System.currentTimeMillis()
+            val report = Report(mainUser.id, reportString, timeStamp)
+            database.child("reports").child(mainUser.id).setValue(report)
+            reportInput.text = null
+
+            Toast.makeText(context, "Sent report to admin", Toast.LENGTH_SHORT).show()
         }
 
         return view

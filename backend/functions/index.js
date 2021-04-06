@@ -1,7 +1,16 @@
 const functions = require("firebase-functions");
 const admin = require('firebase-admin');
 const https = require('https');
+const nodemailer = require('nodemailer');
 admin.initializeApp();
+
+let mailTransport = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: functions.config().email.user,
+        pass: functions.config().email.pass
+    }
+});
 
 // // Create and Deploy Your First Cloud Functions
 // // https://firebase.google.com/docs/functions/write-firebase-functions
@@ -39,3 +48,40 @@ exports.makeUppercase = functions.firestore.document('/messages/{documentId}')
         // Setting an 'uppercase' field in Firestore document returns a Promise.
         return snap.ref.set({uppercase}, {merge: true});
     });
+
+exports.sendMail = functions.https.onCall((data, context) => {
+    console(JSON.stringify(data))
+    const recipientEmail = data['recipientEmail'];
+    console.log('recipientEmail: ' + recipientEmail);
+    const mailType = data['type']
+    console.log('mailType: ' + mailType)
+
+    const mailOptions = {
+        from: 'Node <aloysiusgsq@gmail.com>',
+        to: recipientEmail
+    };
+
+    if (mailType === "request") {
+        mailOptions.subject = 'Your request to change username has been processed';
+        const accepted = data['accepted']
+        if (accepted === true) {
+                mailOptions.html =
+                    `<p style="font-size: 16px;">Request accepted</p>
+                    ` // email content in HTML
+        }
+        else {
+            mailOptions.html =
+                `<p style="font-size: 16px;">Request denied</p>
+                ` // email content in HTML
+        }
+    }
+
+    return mailTransport.sendMail(mailOptions).then(() => {
+        console.log('email sent to:', recipientEmail);
+        return new Promise(((resolve, reject) => {
+            return resolve({
+                result: 'email sent to: ' + recipientEmail
+            });
+        }));
+    });
+});
