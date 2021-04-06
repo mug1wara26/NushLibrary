@@ -12,11 +12,13 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
+import com.google.firebase.functions.ktx.functions
 import com.google.firebase.ktx.Firebase
 
 val database = Firebase.database.getReferenceFromUrl("https://nush-library-default-rtdb.firebaseio.com/")
 val userReference = database.child("users")
 val bookReference = database.child("books")
+val functions = Firebase.functions
 lateinit var mainUser: User
 class MainActivity : AppCompatActivity() {
     @SuppressLint("SetTextI18n")

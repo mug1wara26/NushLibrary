@@ -34,6 +34,29 @@ class RequestRecyclerAdapter(val context: Context): RecyclerView.Adapter<Request
                 notifyDataSetChanged()
 
                 Toast.makeText(context, "Accepted request", Toast.LENGTH_SHORT).show()
+
+                userReference.child(request.id).addListenerForSingleValueEvent(object: ValueEventListener{
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val recipientEmail = snapshot.child("email").getValue(String::class.java)
+
+                        // Send email with firebase functions
+                        val data = hashMapOf(
+                            "recipientEmail" to recipientEmail,
+                            "mailType" to "request",
+                            "accepted" to true
+                        )
+
+                        functions
+                            .getHttpsCallable("sendMail")
+                            .call(data)
+                            .continueWith { task ->
+                                val result = task.result?.data as String
+                                println(result)
+                            }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {}
+                })
             }
 
             denyRequestButton.setOnClickListener {
@@ -60,7 +83,7 @@ class RequestRecyclerAdapter(val context: Context): RecyclerView.Adapter<Request
         holder.requestByTextView.text = null
         holder.requestTextView.text = null
 
-        database.addListenerForSingleValueEvent(object : ValueEventListener {
+        userReference.child(request.id).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val user = snapshot.getValue(User::class.java)
                 holder.requestByTextView.text = "Request by ${user?.displayName}"
