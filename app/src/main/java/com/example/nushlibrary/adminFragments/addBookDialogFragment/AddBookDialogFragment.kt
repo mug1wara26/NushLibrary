@@ -14,7 +14,7 @@ import androidx.core.view.children
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.nushlibrary.Book
+import com.example.nushlibrary.dataClasses.Book
 import com.example.nushlibrary.R
 import com.example.nushlibrary.database
 import com.google.android.material.textfield.TextInputEditText

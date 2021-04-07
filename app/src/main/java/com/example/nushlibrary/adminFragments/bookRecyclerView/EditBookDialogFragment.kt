@@ -10,12 +10,15 @@ import androidx.cardview.widget.CardView
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.nushlibrary.Book
-import com.example.nushlibrary.R
+import com.example.nushlibrary.*
 import com.example.nushlibrary.adminFragments.addBookDialogFragment.GenreRecyclerAdapter
 import com.example.nushlibrary.adminFragments.addBookDialogFragment.setExpandableView
-import com.example.nushlibrary.database
+import com.example.nushlibrary.dataClasses.Book
+import com.example.nushlibrary.dataClasses.User
 import com.google.android.material.textfield.TextInputEditText
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
 
 class EditBookDialogFragment(private val book: Book, private val booksAdapter: BooksRecyclerAdapter): DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -52,14 +55,30 @@ class EditBookDialogFragment(private val book: Book, private val booksAdapter: B
                 dialog.dismiss()
             }
             .setNeutralButton("Delete") { _, _ ->
-                // Delete book from all recycler adapter
-                val id = book.id
-                booksAdapter.books.removeIf {
-                    it.id == book.id
-                }
-                booksAdapter.notifyDataSetChanged()
+                // Remove book from database
+                val bookId = book.id
+                database.child("books").child(bookId).removeValue()
 
-                database.child("books").child(id).removeValue()
+                // Remove book from users
+                val borrowedUsers = book.borrowedUsers
+                userReference.addListenerForSingleValueEvent(object: ValueEventListener{
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        borrowedUsers.forEach{ borrowedUser ->
+                            val user = snapshot.child(borrowedUser.id).getValue(User::class.java)
+
+                            user?.booksBorrowed?.remove(bookId)
+                            user?.booksBorrowedTimeStamp?.remove(borrowedUser.timeStamp)
+                        }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {}
+                })
+
+                // Delete book from recycler adapter
+                val position = booksAdapter.books.indexOf(book)
+                booksAdapter.books.remove(book)
+                booksAdapter.notifyItemChanged(position)
+
 
                 Toast.makeText(context, "Successfully deleted book", Toast.LENGTH_SHORT).show()
             }
@@ -94,15 +113,15 @@ class EditBookDialogFragment(private val book: Book, private val booksAdapter: B
                     title,
                     description,
                     publisher,
-                    genreAdapter.selectedGenres,
+                    genre = genreAdapter.selectedGenres,
                     book.thumbnail,
-                    number,
-                    0
+                    number
                 )
 
                 // Change book arraylist
-                booksAdapter.books[booksAdapter.books.indexOf(book)] = newBook
-                booksAdapter.notifyDataSetChanged()
+                val position = booksAdapter.books.indexOf(book)
+                booksAdapter.books[position] = newBook
+                booksAdapter.notifyItemChanged(position)
 
                 // Change book in database
                 database.child("books").child(book.id).setValue(newBook)

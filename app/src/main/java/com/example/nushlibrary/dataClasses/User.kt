@@ -1,4 +1,4 @@
-package com.example.nushlibrary
+package com.example.nushlibrary.dataClasses
 
 data class User(
     val id: String = "",

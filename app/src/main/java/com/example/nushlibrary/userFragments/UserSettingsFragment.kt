@@ -11,6 +11,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.nushlibrary.*
+import com.example.nushlibrary.dataClasses.Report
+import com.example.nushlibrary.dataClasses.Request
 import com.google.android.material.textfield.TextInputEditText
 
 class UserSettingsFragment: Fragment() {

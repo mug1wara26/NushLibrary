@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.nushlibrary.*
 import com.example.nushlibrary.adminFragments.bookRecyclerView.BooksRecyclerAdapter
+import com.example.nushlibrary.dataClasses.Book
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -69,10 +70,6 @@ class BooksFragment: Fragment() {
                                     && mainUser.toReadList.contains(book.id)
                                     && !newBooksList.contains(book)) newBooksList.add(book)
                             }
-
-                            // Sort books by title
-                            booksAdapter.books.clear()
-
                             booksAdapter.books = ArrayList(newBooksList.sortedWith(compareBy { it.title }))
                             booksAdapter.notifyDataSetChanged()
 
@@ -133,7 +130,6 @@ class BooksFragment: Fragment() {
 
                     override fun onCancelled(error: DatabaseError) {
                         Toast.makeText(context, "Database error", Toast.LENGTH_SHORT).show()
-                        booksAdapter.notifyDataSetChanged()
                     }
                 })
         }

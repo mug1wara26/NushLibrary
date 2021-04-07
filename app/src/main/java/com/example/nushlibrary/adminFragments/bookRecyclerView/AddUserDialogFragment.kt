@@ -7,9 +7,9 @@ import android.content.Context
 import android.os.Bundle
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
-import com.example.nushlibrary.Book
+import com.example.nushlibrary.dataClasses.Book
 import com.example.nushlibrary.R
-import com.example.nushlibrary.User
+import com.example.nushlibrary.dataClasses.User
 import com.example.nushlibrary.userReference
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.database.DataSnapshot

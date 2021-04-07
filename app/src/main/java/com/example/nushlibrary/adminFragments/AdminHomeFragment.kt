@@ -8,7 +8,7 @@ import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.nushlibrary.Book
+import com.example.nushlibrary.dataClasses.Book
 import com.example.nushlibrary.R
 import com.example.nushlibrary.adminFragments.addBookDialogFragment.AddBookDialogFragment
 import com.example.nushlibrary.adminFragments.bookRecyclerView.BooksRecyclerAdapter
@@ -28,7 +28,7 @@ class AdminHomeFragment: Fragment() {
                 override fun onDismiss(book: Book?) {
                     if (book != null) {
                         recentlyAddedBooksAdapter.books.add(book)
-                        recentlyAddedBooksAdapter.notifyDataSetChanged()
+                        recentlyAddedBooksAdapter.notifyItemChanged(recentlyAddedBooksAdapter.itemCount - 1)
                     }
                 }
 

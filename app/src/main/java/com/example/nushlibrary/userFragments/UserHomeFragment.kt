@@ -9,7 +9,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.nushlibrary.Book
+import com.example.nushlibrary.dataClasses.Book
 import com.example.nushlibrary.R
 import com.example.nushlibrary.adminFragments.bookRecyclerView.BooksRecyclerAdapter
 import com.example.nushlibrary.bookReference
@@ -50,8 +50,16 @@ class UserHomeFragment: Fragment() {
 
                     // Set whether the books are sorted ascending or descending
                     val comparatorDueDate =
-                        if (ascending) compareBy<Book> { it.borrowedTime }
-                        else compareByDescending { it.borrowedTime }
+                        if (ascending) compareBy<Book> {
+                            it.borrowedUsers.filter { borrowedUser ->
+                                borrowedUser.id == mainUser.id
+                            }[0].timeStamp
+                        }
+                        else compareByDescending {
+                            it.borrowedUsers.filter { borrowedUser ->
+                                borrowedUser.id == mainUser.id
+                            }[0].timeStamp
+                        }
                     val comparatorTitle =
                         if (ascending) compareBy<Book> { it.title }
                         else compareByDescending { it.title }
@@ -97,7 +105,12 @@ class UserHomeFragment: Fragment() {
         bookAdapter.books.clear()
         getBooksById(mainUser.booksBorrowed, object: GetBooksOnPostExecute{
             override fun onPostExecute(books: ArrayList<Book>) {
-                bookAdapter.books = ArrayList(books.sortedWith(compareBy { it.borrowedTime }))
+                bookAdapter.books = ArrayList(books.sortedWith(compareBy {
+                    it.borrowedUsers.filter { borrowedUser ->
+                        borrowedUser.id == mainUser.id
+                    }[0].timeStamp
+                }))
+
                 bookAdapter.notifyDataSetChanged()
             }
         })

@@ -10,6 +10,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.nushlibrary.*
+import com.example.nushlibrary.dataClasses.Report
+import com.example.nushlibrary.dataClasses.User
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
@@ -28,7 +30,7 @@ class ReportsRecyclerAdapter(private val context: Context): RecyclerView.Adapter
 
                 database.child("reports").child(report.id).setValue(null)
                 reports.remove(report)
-                notifyDataSetChanged()
+                notifyItemChanged(adapterPosition)
 
                 Toast.makeText(context, "Cleared report", Toast.LENGTH_SHORT).show()
             }

@@ -4,9 +4,8 @@ import android.os.AsyncTask
 import com.beust.klaxon.JsonArray
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
-import com.example.nushlibrary.Book
+import com.example.nushlibrary.dataClasses.Book
 import com.example.nushlibrary.bookReference
-import com.example.nushlibrary.database
 import java.net.HttpURLConnection
 import java.net.URL
 

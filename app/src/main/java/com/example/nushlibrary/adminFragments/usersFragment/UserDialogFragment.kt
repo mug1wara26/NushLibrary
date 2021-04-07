@@ -10,9 +10,9 @@ import androidx.cardview.widget.CardView
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.nushlibrary.Book
+import com.example.nushlibrary.dataClasses.Book
 import com.example.nushlibrary.R
-import com.example.nushlibrary.User
+import com.example.nushlibrary.dataClasses.User
 import com.example.nushlibrary.adminFragments.addBookDialogFragment.setExpandableView
 import com.example.nushlibrary.adminFragments.bookRecyclerView.BooksRecyclerAdapter
 import com.example.nushlibrary.userFragments.GetBooksOnPostExecute
@@ -43,7 +43,12 @@ class UserDialogFragment(val user: User): DialogFragment() {
         val bookAdapter = BooksRecyclerAdapter(requireActivity().supportFragmentManager, user = user)
         getBooksById(user.booksBorrowed, object: GetBooksOnPostExecute{
             override fun onPostExecute(books: ArrayList<Book>) {
-                bookAdapter.books = ArrayList(books.sortedWith(compareBy{ it.borrowedTime }))
+                // Basically what this does is it gets the correct user and compares it by timestamp
+                bookAdapter.books = ArrayList(books.sortedWith(compareBy{
+                    it.borrowedUsers.filter { borrowedUser ->
+                        borrowedUser.id == user.id
+                    }[0].timeStamp
+                }))
 
                 booksBorrowedRecyclerView.adapter = bookAdapter
             }

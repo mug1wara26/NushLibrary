@@ -13,8 +13,8 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.nushlibrary.R
-import com.example.nushlibrary.Report
-import com.example.nushlibrary.Request
+import com.example.nushlibrary.dataClasses.Report
+import com.example.nushlibrary.dataClasses.Request
 import com.example.nushlibrary.adminFragments.addBookDialogFragment.setExpandableView
 import com.example.nushlibrary.database
 import com.google.firebase.database.DataSnapshot

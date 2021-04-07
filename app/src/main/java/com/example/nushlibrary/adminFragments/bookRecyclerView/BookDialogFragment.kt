@@ -14,6 +14,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.nushlibrary.*
 import com.example.nushlibrary.adminFragments.addBookDialogFragment.setExpandableView
 import com.example.nushlibrary.adminFragments.usersFragment.UserRecyclerAdapter
+import com.example.nushlibrary.dataClasses.Book
+import com.example.nushlibrary.dataClasses.BorrowedUser
+import com.example.nushlibrary.dataClasses.User
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
@@ -103,7 +106,7 @@ class BookDialogFragment(val book: Book): DialogFragment() {
             borrowedByRecyclerView.layoutManager = LinearLayoutManager(context)
             val usersAdapter = UserRecyclerAdapter(requireActivity().supportFragmentManager, requireContext())
 
-            getUsersById(book.borrowedBy, object: GetUsersOnPostExecute{
+            getUsersById(book.borrowedUsers, object: GetUsersOnPostExecute{
                 override fun onPostExecute(users: ArrayList<User>) {
                     usersAdapter.users = users
                     borrowedByRecyclerView.adapter = usersAdapter
@@ -167,12 +170,13 @@ class BookDialogFragment(val book: Book): DialogFragment() {
     interface GetUsersOnPostExecute {
         fun onPostExecute(users: ArrayList<User>)
     }
-    private fun getUsersById(usersId: ArrayList<String>, listener: GetUsersOnPostExecute) {
+    private fun getUsersById(borrowedUsers: ArrayList<BorrowedUser>, listener: GetUsersOnPostExecute) {
         val users = arrayListOf<User>()
         userReference.addListenerForSingleValueEvent(object: ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
-                usersId.forEach { id ->
-                    val user = snapshot.child(id).getValue(User::class.java)
+                borrowedUsers.forEach { borrowedUser ->
+                    val user = snapshot.child(borrowedUser.id).getValue(User::class.java)
+
                     if (user != null) {
                         users.add(user)
                     }
@@ -204,8 +208,7 @@ fun borrowBook(book: Book, user: User): Boolean {
 
                 // Add user to book
                 book.number--
-                book.borrowedTime = timeStamp
-                book.borrowedBy.add(user.id)
+                book.borrowedUsers.add(BorrowedUser(user.id, timeStamp))
                 // Update book in database
                 bookReference.child(book.id).setValue(book)
 

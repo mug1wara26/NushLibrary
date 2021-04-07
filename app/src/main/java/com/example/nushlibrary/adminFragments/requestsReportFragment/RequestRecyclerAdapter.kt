@@ -10,6 +10,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.nushlibrary.*
+import com.example.nushlibrary.dataClasses.Request
+import com.example.nushlibrary.dataClasses.User
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
@@ -31,7 +33,7 @@ class RequestRecyclerAdapter(val context: Context): RecyclerView.Adapter<Request
 
                 database.child("requests").child(request.id).setValue(null)
                 requests.remove(request)
-                notifyDataSetChanged()
+                notifyItemChanged(adapterPosition)
 
                 Toast.makeText(context, "Accepted request", Toast.LENGTH_SHORT).show()
 
@@ -63,7 +65,7 @@ class RequestRecyclerAdapter(val context: Context): RecyclerView.Adapter<Request
                 val request = requests[adapterPosition]
 
                 requests.remove(request)
-                notifyDataSetChanged()
+                notifyItemChanged(adapterPosition)
 
                 Toast.makeText(context, "Request denied", Toast.LENGTH_SHORT).show()
             }

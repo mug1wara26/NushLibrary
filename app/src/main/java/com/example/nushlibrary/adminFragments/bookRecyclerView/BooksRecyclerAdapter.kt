@@ -14,7 +14,8 @@ import android.widget.Toast
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.nushlibrary.*
-import com.example.nushlibrary.adminFragments.usersFragment.AdminUsersFragment
+import com.example.nushlibrary.dataClasses.Book
+import com.example.nushlibrary.dataClasses.User
 import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.*
@@ -60,16 +61,19 @@ class BooksRecyclerAdapter(
 
                 // Remove the book from the recycler view
                 books.remove(book)
-                notifyDataSetChanged()
+                notifyItemChanged(adapterPosition)
                 // Remove the book from the user
                 user.booksBorrowed.remove(book.id)
-                user.booksBorrowedTimeStamp.remove(book.borrowedTime)
+
+                val borrowedTime = book.borrowedUsers.filter { it.id == user.id }[0].timeStamp
+                user.booksBorrowedTimeStamp.remove(borrowedTime)
                 // Update user in database
                 userReference.child(user.id).setValue(user)
 
                 // Remove the user from the book
-                book.borrowedBy.remove(user.id)
-                book.borrowedTime = null
+                book.borrowedUsers.removeIf {
+                    it.id == user.id
+                }
                 book.number++
                 // Update book in database
                 bookReference.child(book.id).setValue(book)
@@ -85,17 +89,18 @@ class BooksRecyclerAdapter(
 
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.title.text = books[position].title
+        val book = books[position]
+        holder.title.text = book.title
 
         if (mainUser.admin) holder.editBtn.visibility = View.VISIBLE
-        // This value is only passed if the recycler view is in a user dialog fragment
+        // This value is only passed if the recycler view is in a user dialog fragment which only the admin can see
         if (user != null) holder.removeBtn.visibility = View.VISIBLE
         // This value tells us if we are in BookFragment
         if (inBookFragment && mainUser.admin) holder.addBtn.visibility = View.VISIBLE
 
         // Set it to null first so it doesn't display wrong thumbnail
         holder.thumbnail.setImageBitmap(null)
-        val thumbnail = books[position].thumbnail
+        val thumbnail = book.thumbnail
         if (thumbnail != null)
             ImageLoadTask(thumbnail, object : ImageLoadTask.AsyncResponse {
                 override fun processFinish(output: Bitmap?) {
@@ -106,7 +111,7 @@ class BooksRecyclerAdapter(
 
         var authorsString = ""
         var authorNumber = 0
-        books[position].authors.forEach {
+        book.authors.forEach {
             if (authorNumber != 0) {
                 authorsString += " and "
             }
@@ -114,10 +119,13 @@ class BooksRecyclerAdapter(
             authorsString += it
             authorNumber++
         }
-        
         holder.authors.text = authorsString
-        val borrowedTime = books[position].borrowedTime
-        if (!mainUser.admin && borrowedTime != null && borrowedTime != 0L) {
+
+
+        if (!mainUser.admin && user?.booksBorrowed?.contains(book.id) == true) {
+            val borrowedUsers = book.borrowedUsers
+            val borrowedTime = borrowedUsers.filter { it.id == user.id }[0].timeStamp
+
             val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH)
 
             val dueDate = Date(borrowedTime + DUE_TIME)

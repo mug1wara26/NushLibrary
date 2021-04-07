@@ -1,4 +1,4 @@
-package com.example.nushlibrary
+package com.example.nushlibrary.dataClasses
 
 data class Book(
     val id: String = "",
@@ -9,6 +9,5 @@ data class Book(
     val genre: ArrayList<*> = arrayListOf<String>(),
     val thumbnail: String? = null,
     var number: Int = 0,
-    var borrowedTime: Long? = null,
-    val borrowedBy: ArrayList<String> = arrayListOf()
+    var borrowedUsers: ArrayList<BorrowedUser> = arrayListOf()
 )
