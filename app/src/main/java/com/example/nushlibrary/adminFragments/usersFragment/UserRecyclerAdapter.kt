@@ -37,7 +37,7 @@ class UserRecyclerAdapter(val supportFragmentManager: FragmentManager, val conte
 
         init {
             itemView.setOnClickListener {
-                UserDialogFragment(users[adapterPosition]).show(supportFragmentManager, "User")
+                UserDialogFragment(users[adapterPosition], this@UserRecyclerAdapter).show(supportFragmentManager, "User")
             }
             copyIdBtn.setOnClickListener {
                 val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
@@ -60,8 +60,8 @@ class UserRecyclerAdapter(val supportFragmentManager: FragmentManager, val conte
 
         val daysFromDue = getDaysFromDue(user)
         if (daysFromDue != null) {
-            if (daysFromDue >= 0) holder.daysFromDue.text = "Days from book due: $daysFromDue"
-            else holder.daysFromDue.text = "Days overdue: ${daysFromDue * -1}"
+            holder.daysFromDue.text = if (isOverdue(user)) "Days overdue: ${daysFromDue * -1}"
+            else "Days from book due: $daysFromDue"
             holder.daysFromDue.visibility = View.VISIBLE
         }
     }
@@ -84,4 +84,15 @@ fun getDaysFromDue(user: User): Long? {
         millisFromDue / DAYS_IN_MILLIS
     }
     else null
+}
+
+fun isOverdue(user: User): Boolean{
+    // Sorts a list that stores time stamps of when the user borrowed a book and get the earliest one
+    val earliestTimeStamp = user.booksBorrowedTimeStamp.sorted()[0]
+
+    // Get number of milliseconds from the due time stamp
+    val dueTimeStamp = earliestTimeStamp + DUE_TIME
+    val millisFromDue = dueTimeStamp - System.currentTimeMillis()
+
+    return millisFromDue < 0
 }

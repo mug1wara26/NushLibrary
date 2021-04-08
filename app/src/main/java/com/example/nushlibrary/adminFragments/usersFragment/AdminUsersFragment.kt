@@ -53,7 +53,7 @@ class AdminUsersFragment: Fragment() {
                                 allUsers.forEach { user ->
                                     val daysFromDue = getDaysFromDue(user)
                                     if (daysFromDue != null
-                                        && daysFromDue < 0
+                                        && isOverdue(user)
                                         && !newUsers.contains(user)) newUsers.add(user)
                                 }
                             }
@@ -62,7 +62,7 @@ class AdminUsersFragment: Fragment() {
                                 allUsers.forEach { user ->
                                     val daysFromDue = getDaysFromDue(user)
                                     if ((daysFromDue == null
-                                        || daysFromDue > 0)
+                                        || !isOverdue(user))
                                         && !newUsers.contains(user)) newUsers.add(user)
                                 }
                             }

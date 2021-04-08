@@ -50,26 +50,25 @@ class BooksFragment: Fragment() {
                     showBook(booksAdapter, object: OnPostExecute{
                         override fun onPostExecute() {
                             // Filter for users borrowed books or to read
-                            val newBooksList = arrayListOf<Book>()
-                            booksAdapter.books.forEach { book ->
-                                genreFilter.forEach { genre ->
-                                    if (book.genre.contains(genre)) newBooksList.add(book)
+                            val newBooksList = booksAdapter.books.filter { book ->
+                                var genreFilterBoolean = false
+                                var authorFilterBoolean = false
+                                val isBookBorrowed = isBooksBorrowedChecked && mainUser.booksBorrowed.contains(book.id)
+                                val isToRead = isToReadChecked && mainUser.toReadList.contains(book.id)
+
+                                genreFilter.forEach genre@{ genre ->
+                                    genreFilterBoolean = book.genre.contains(genre)
+                                    if (genreFilterBoolean) return@genre
                                 }
 
-                                authorsFilter.forEach { author ->
-                                    if (book.authors.contains(author) && !newBooksList.contains(book)) newBooksList.add(book)
+                                authorsFilter.forEach genre@{ author ->
+                                    authorFilterBoolean = book.genre.contains(author)
+                                    if (authorFilterBoolean) return@genre
                                 }
 
-                                // Checks if the checkbox is checked, if user has borrowed the book and the current book list does not already contain the book
-                                if (isBooksBorrowedChecked
-                                    && mainUser.booksBorrowed.contains(book.id)
-                                    && !newBooksList.contains(book)) newBooksList.add(book)
-
-                                // Checks if the checkbox is checked, if user has added the book to their to read list and the current book list does not already contain the book
-                                if (isToReadChecked
-                                    && mainUser.toReadList.contains(book.id)
-                                    && !newBooksList.contains(book)) newBooksList.add(book)
+                                genreFilterBoolean || authorFilterBoolean || isBookBorrowed || isToRead
                             }
+
                             booksAdapter.books = ArrayList(newBooksList.sortedWith(compareBy { it.title }))
                             booksAdapter.notifyDataSetChanged()
 

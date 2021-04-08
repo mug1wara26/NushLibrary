@@ -1,8 +1,9 @@
 package com.example.nushlibrary.adminFragments.bookRecyclerView
 
 import android.annotation.SuppressLint
-import android.app.AlertDialog
-import android.app.Dialog
+import android.app.*
+import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.View
@@ -20,9 +21,12 @@ import com.example.nushlibrary.dataClasses.User
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
+import java.util.*
+import kotlin.collections.ArrayList
 
 @SuppressLint("SetTextI18n")
 var isBorrowBookThreadLocked = false
+const val NOTIFY_ID = 100
 class BookDialogFragment(val book: Book): DialogFragment() {
     @SuppressLint("SetTextI18n")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -128,7 +132,7 @@ class BookDialogFragment(val book: Book): DialogFragment() {
             }
 
             borrowButton.setOnClickListener {
-                val result = borrowBook(book, mainUser)
+                val result = borrowBook(book, mainUser, requireContext())
                 if (result) {
                     Toast.makeText(context, "Successfully borrowed book", Toast.LENGTH_SHORT).show()
 
@@ -192,7 +196,7 @@ class BookDialogFragment(val book: Book): DialogFragment() {
 }
 
 @SuppressLint("SetTextI18n")
-fun borrowBook(book: Book, user: User): Boolean {
+fun borrowBook(book: Book, user: User, context: Context): Boolean {
     // Lock thread to avoid race condition
     if (!isBorrowBookThreadLocked) {
         isBorrowBookThreadLocked = true
@@ -212,6 +216,9 @@ fun borrowBook(book: Book, user: User): Boolean {
                 // Update book in database
                 bookReference.child(book.id).setValue(book)
 
+                // Set notifications for this book
+                notifyUser(context, timeStamp + DUE_TIME)
+
                 // Unlock thread
                 isBorrowBookThreadLocked = false
 
@@ -220,4 +227,33 @@ fun borrowBook(book: Book, user: User): Boolean {
         }
     }
     return false
+}
+
+fun notifyUser(
+    context: Context,
+    dueDate: Long,
+    daysBeforeDue: Long = 3,
+    daysAfterDue: Long = 5,
+    calendar: Calendar = Calendar.getInstance().apply {
+        // 7 am
+        timeInMillis = System.currentTimeMillis()
+        timeZone = TimeZone.getTimeZone("Asia/Singapore")
+        set(Calendar.HOUR_OF_DAY, 9)
+    }) {
+    val alarmMgr = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+    val notifyIntent = Intent(context, NotificationPublisher::class.java)
+    notifyIntent.putExtra("due-date", dueDate)
+    notifyIntent.putExtra("notif-id", NOTIFY_ID)
+    notifyIntent.putExtra("days-before-due", daysBeforeDue)
+    notifyIntent.putExtra("days-after-due", daysAfterDue)
+
+    val pendingIntent = PendingIntent.getBroadcast(context, 0, notifyIntent, 0)
+
+    // setRepeating() lets you specify a precise custom interval--in this case, every day
+    alarmMgr.setRepeating(
+        AlarmManager.RTC_WAKEUP,
+        calendar.timeInMillis,
+        1000 * 60 * 60 * 24,
+        pendingIntent
+    )
 }

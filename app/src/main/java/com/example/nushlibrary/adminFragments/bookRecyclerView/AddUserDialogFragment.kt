@@ -44,7 +44,7 @@ class AddUserDialogFragment(private val book: Book): DialogFragment() {
 
                                 // Add book to user
                                 if (user != null) {
-                                    val result = borrowBook(book, user)
+                                    val result = borrowBook(book, user, context)
 
                                     if (result) showToast("Successfully added book to user")
                                     else showToast("Unable to add book to user")

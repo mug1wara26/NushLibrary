@@ -77,7 +77,7 @@ class EditBookDialogFragment(private val book: Book, private val booksAdapter: B
                 // Delete book from recycler adapter
                 val position = booksAdapter.books.indexOf(book)
                 booksAdapter.books.remove(book)
-                booksAdapter.notifyItemChanged(position)
+                booksAdapter.notifyItemRemoved(position)
 
 
                 Toast.makeText(context, "Successfully deleted book", Toast.LENGTH_SHORT).show()

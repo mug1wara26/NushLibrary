@@ -18,7 +18,7 @@ import com.example.nushlibrary.adminFragments.bookRecyclerView.BooksRecyclerAdap
 import com.example.nushlibrary.userFragments.GetBooksOnPostExecute
 import com.example.nushlibrary.userFragments.getBooksById
 
-class UserDialogFragment(val user: User): DialogFragment() {
+class UserDialogFragment(val user: User, val userAdapter: UserRecyclerAdapter): DialogFragment() {
     @SuppressLint("InflateParams", "SetTextI18n")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val builder = AlertDialog.Builder(requireActivity())
@@ -40,7 +40,10 @@ class UserDialogFragment(val user: User): DialogFragment() {
         // Add to the recycler view
         booksBorrowedRecyclerView.layoutManager = LinearLayoutManager(context)
 
-        val bookAdapter = BooksRecyclerAdapter(requireActivity().supportFragmentManager, user = user)
+        val bookAdapter = BooksRecyclerAdapter(requireActivity().supportFragmentManager,
+            user = user,
+            userAdapter = userAdapter)
+
         getBooksById(user.booksBorrowed, object: GetBooksOnPostExecute{
             override fun onPostExecute(books: ArrayList<Book>) {
                 // Basically what this does is it gets the correct user and compares it by timestamp

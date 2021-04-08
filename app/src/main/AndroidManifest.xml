@@ -20,6 +20,9 @@
         </activity>
         <activity android:name=".UserActivity">
         </activity>
+        <receiver
+            android:name=".NotificationPublisher">
+        </receiver>
     </application>
 
 </manifest>

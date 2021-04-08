@@ -14,6 +14,7 @@ import android.widget.Toast
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.nushlibrary.*
+import com.example.nushlibrary.adminFragments.usersFragment.UserRecyclerAdapter
 import com.example.nushlibrary.dataClasses.Book
 import com.example.nushlibrary.dataClasses.User
 import java.net.URL
@@ -26,7 +27,9 @@ const val DUE_TIME = 1000 * 60 * 60 * 24 * 14
 class BooksRecyclerAdapter(
     val supportFragmentManager: FragmentManager,
     private val user: User? = null,
-    private val inBookFragment: Boolean = false): RecyclerView.Adapter<BooksRecyclerAdapter.ViewHolder>() {
+    private val inBookFragment: Boolean = false,
+    private val userAdapter: UserRecyclerAdapter? = null
+): RecyclerView.Adapter<BooksRecyclerAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val v: View =
@@ -61,7 +64,6 @@ class BooksRecyclerAdapter(
 
                 // Remove the book from the recycler view
                 books.remove(book)
-                notifyItemChanged(adapterPosition)
                 // Remove the book from the user
                 user.booksBorrowed.remove(book.id)
 
@@ -77,6 +79,9 @@ class BooksRecyclerAdapter(
                 book.number++
                 // Update book in database
                 bookReference.child(book.id).setValue(book)
+
+                notifyItemRemoved(adapterPosition)
+                userAdapter?.notifyDataSetChanged()
 
                 // Notify user
                 Toast.makeText(itemView.context, "Removed ${book.title} from ${user.displayName} borrowed books list", Toast.LENGTH_LONG).show()
