@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -15,6 +16,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import me.xdrop.fuzzywuzzy.FuzzySearch
+import kotlin.math.roundToInt
 
 class AdminUsersFragment: Fragment() {
     // This variable is used when searching
@@ -28,7 +30,8 @@ class AdminUsersFragment: Fragment() {
         val userAdapter = UserRecyclerAdapter(requireActivity().supportFragmentManager, requireContext())
         userRecyclerView.adapter = userAdapter
 
-        showUsers(userAdapter)
+        val progressBar: ProgressBar = view.findViewById(R.id.load_users)
+        showUsers(userAdapter, progressBar)
 
         val filterButton: ImageButton = view.findViewById(R.id.admin_users_filter_button)
         filterButton.setOnClickListener {
@@ -117,7 +120,7 @@ class AdminUsersFragment: Fragment() {
 
         val refreshButton: ImageButton = view.findViewById(R.id.admin_users_refresh_button)
         refreshButton.setOnClickListener {
-            showUsers(userAdapter, object: OnPostExecute{
+            showUsers(userAdapter, progressBar, object: OnPostExecute{
                 override fun onPostExecute() {
                     searchInput.text = null
                 }
@@ -138,9 +141,12 @@ class AdminUsersFragment: Fragment() {
 
     private fun showUsers(
         userAdapter: UserRecyclerAdapter,
+        progressBar: ProgressBar,
         listener: OnPostExecute = object : OnPostExecute {
             override fun onPostExecute() { /* Do nothing */ }
         }) {
+        progressBar.visibility = View.VISIBLE
+
         val newUsers = arrayListOf<User>()
         userReference.orderByChild("displayName").addListenerForSingleValueEvent(object: ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -156,6 +162,7 @@ class AdminUsersFragment: Fragment() {
 
                 userAdapter.notifyDataSetChanged()
                 listener.onPostExecute()
+                progressBar.visibility = View.GONE
             }
 
             override fun onCancelled(error: DatabaseError) {}

@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -30,7 +31,9 @@ class UserHomeFragment: Fragment() {
         val bookAdapter = BooksRecyclerAdapter(requireActivity().supportFragmentManager)
         borrowedBooksRecyclerView.adapter = bookAdapter
 
-        showBooks(bookAdapter)
+        val progressBar: ProgressBar = view.findViewById(R.id.load_fragment_user_home)
+        showBooks(bookAdapter, progressBar)
+
         val noBooksTextView: TextView = view.findViewById(R.id.no_books_borrowed_textview)
         if (mainUser.booksBorrowed.size == 0) noBooksTextView.visibility = View.VISIBLE
 
@@ -81,7 +84,7 @@ class UserHomeFragment: Fragment() {
         val searchInput: TextInputEditText = view.findViewById(R.id.input_search)
         val refreshButton: ImageButton =  view.findViewById(R.id.user_home_refresh_button)
         refreshButton.setOnClickListener {
-            showBooks(bookAdapter)
+            showBooks(bookAdapter, progressBar)
             // Set default checked radio buttons
             checkedOrderId = R.id.reorder_book_due_date
             checkedDirectionId = R.id.reorder_book_ascending
@@ -93,7 +96,7 @@ class UserHomeFragment: Fragment() {
         searchButton.setOnClickListener {
             val title = searchInput.text.toString()
             if (title.isNotEmpty()) {
-                bookAdapter.books = searchForBook(bookAdapter.books, title)
+                bookAdapter.books = searchForBook(bookAdapter.books, title, progressBar)
                 bookAdapter.notifyDataSetChanged()
             }
         }
@@ -101,7 +104,9 @@ class UserHomeFragment: Fragment() {
         return view
     }
 
-    private fun showBooks(bookAdapter: BooksRecyclerAdapter) {
+    private fun showBooks(bookAdapter: BooksRecyclerAdapter, progressBar: ProgressBar) {
+        progressBar.visibility = View.VISIBLE
+
         bookAdapter.books.clear()
         getBooksById(mainUser.booksBorrowed, object: GetBooksOnPostExecute{
             override fun onPostExecute(books: ArrayList<Book>) {
@@ -112,6 +117,7 @@ class UserHomeFragment: Fragment() {
                 }))
 
                 bookAdapter.notifyDataSetChanged()
+                progressBar.visibility = View.GONE
             }
         })
 

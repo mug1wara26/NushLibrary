@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -32,8 +33,9 @@ class BooksFragment: Fragment() {
         booksRecyclerView.adapter = booksAdapter
 
         var searchableBooks = arrayListOf<Book>()
+        val progressBar: ProgressBar = view.findViewById(R.id.load_fragment_books)
 
-        showBook(booksAdapter, object: OnPostExecute{
+        showBook(booksAdapter, progressBar, object: OnPostExecute{
             override fun onPostExecute() {
                 searchableBooks = booksAdapter.books
             }
@@ -47,7 +49,7 @@ class BooksFragment: Fragment() {
                     authorsFilter: ArrayList<String>,
                     isBooksBorrowedChecked: Boolean,
                     isToReadChecked: Boolean) {
-                    showBook(booksAdapter, object: OnPostExecute{
+                    showBook(booksAdapter, progressBar, object: OnPostExecute{
                         override fun onPostExecute() {
                             // Filter for users borrowed books or to read
                             val newBooksList = booksAdapter.books.filter { book ->
@@ -83,7 +85,7 @@ class BooksFragment: Fragment() {
 
         val refreshButton: ImageButton = view.findViewById(R.id.refresh_button)
         refreshButton.setOnClickListener {
-            showBook(booksAdapter, object: OnPostExecute{
+            showBook(booksAdapter, progressBar, object: OnPostExecute{
                 override fun onPostExecute() {
                     searchableBooks = booksAdapter.books
                     searchInput.text = null
@@ -95,7 +97,7 @@ class BooksFragment: Fragment() {
         searchButton.setOnClickListener {
             val title = searchInput.text.toString()
             if (title.isNotEmpty()) {
-                booksAdapter.books = searchForBook(searchableBooks, title)
+                booksAdapter.books = searchForBook(searchableBooks, title, progressBar)
                 booksAdapter.notifyDataSetChanged()
             }
         }
@@ -105,11 +107,14 @@ class BooksFragment: Fragment() {
 
     private fun showBook(
         booksAdapter: BooksRecyclerAdapter,
+        progressBar: ProgressBar,
         listener: OnPostExecute = object: OnPostExecute{
             override fun onPostExecute() {/*  */}
     }) {
         if (!isThreadLocked) {
             isThreadLocked = true
+            progressBar.visibility = View.VISIBLE
+
             val books = arrayListOf<Book>()
             bookReference.orderByChild("title")
                 .addListenerForSingleValueEvent(object : ValueEventListener {
@@ -124,6 +129,7 @@ class BooksFragment: Fragment() {
                         booksAdapter.books = books
                         listener.onPostExecute()
                         booksAdapter.notifyDataSetChanged()
+                        progressBar.visibility = View.GONE
                         isThreadLocked = false
                     }
 
@@ -139,19 +145,20 @@ class BooksFragment: Fragment() {
     }
 }
 
-fun searchForBook(books: ArrayList<Book>, title: String): ArrayList<Book> {
+fun searchForBook(books: ArrayList<Book>, title: String, progressBar: ProgressBar): ArrayList<Book> {
+    progressBar.visibility = View.VISIBLE
     val titles = arrayListOf<String>()
 
     for (book in books) {
         if (book.title != null) titles.add(book.title)
     }
 
-    println(FuzzySearch.extractSorted(title, titles))
     val sortedTitles = FuzzySearch.extractSorted(title, titles, 50)
     val sortedBooks = arrayListOf<Book>()
     sortedTitles.forEach {
         sortedBooks.add(books[it.index])
     }
 
+    progressBar.visibility = View.GONE
     return sortedBooks
 }

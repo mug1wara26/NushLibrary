@@ -4,7 +4,9 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.Dialog
 import android.os.Bundle
+import android.view.View
 import android.widget.ImageButton
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.DialogFragment
@@ -18,7 +20,7 @@ import com.example.nushlibrary.adminFragments.bookRecyclerView.BooksRecyclerAdap
 import com.example.nushlibrary.userFragments.GetBooksOnPostExecute
 import com.example.nushlibrary.userFragments.getBooksById
 
-class UserDialogFragment(val user: User, val userAdapter: UserRecyclerAdapter): DialogFragment() {
+class UserDialogFragment(val user: User, private val userAdapter: UserRecyclerAdapter): DialogFragment() {
     @SuppressLint("InflateParams", "SetTextI18n")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val builder = AlertDialog.Builder(requireActivity())
@@ -44,6 +46,9 @@ class UserDialogFragment(val user: User, val userAdapter: UserRecyclerAdapter): 
             user = user,
             userAdapter = userAdapter)
 
+        val progressBar: ProgressBar = view.findViewById(R.id.load_dialog_user)
+        progressBar.visibility = View.VISIBLE
+
         getBooksById(user.booksBorrowed, object: GetBooksOnPostExecute{
             override fun onPostExecute(books: ArrayList<Book>) {
                 // Basically what this does is it gets the correct user and compares it by timestamp
@@ -54,6 +59,7 @@ class UserDialogFragment(val user: User, val userAdapter: UserRecyclerAdapter): 
                 }))
 
                 booksBorrowedRecyclerView.adapter = bookAdapter
+                progressBar.visibility = View.GONE
             }
         })
 

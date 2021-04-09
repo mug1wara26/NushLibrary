@@ -3,7 +3,9 @@ package com.example.nushlibrary
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.nushlibrary.dataClasses.User
@@ -22,17 +24,24 @@ val bookReference = database.child("books")
 val functions = Firebase.functions
 lateinit var mainUser: User
 class MainActivity : AppCompatActivity() {
+    lateinit var logInBtn: Button
+    lateinit var progressBar: ProgressBar
+
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         // Start log in on click
-        val logInBtn: Button = findViewById(R.id.logInButton)
+        logInBtn = findViewById(R.id.logInButton)
+        progressBar = findViewById(R.id.load_log_in)
+
         logInBtn.setOnClickListener {
             logInBtn.isEnabled = false
             logInBtn.alpha = 0.6F
 
+            progressBar.visibility = View.VISIBLE
+            
             // Set the provider to microsoft
             val provider: OAuthProvider.Builder = OAuthProvider.newBuilder("microsoft.com")
 
@@ -60,13 +69,9 @@ class MainActivity : AppCompatActivity() {
                                             )
                                             userReference.child(firebaseUser.uid).setValue(mainUser)
 
-
                                             // Immediately go to UserActivity since user is definitely not admin
                                             val intent = Intent(applicationContext, UserActivity::class.java)
-                                            startActivity(intent)
-                                            // Re-enables the log in button in case user presses back button
-                                            logInBtn.isEnabled = true
-                                            logInBtn.alpha = 1F
+                                            logIn(intent)
                                         }
                                         // User exists
                                         else {
@@ -77,17 +82,14 @@ class MainActivity : AppCompatActivity() {
                                                     applicationContext,
                                                     AdminActivity::class.java
                                                 )
-                                                startActivity(intent)
+                                                logIn(intent)
                                             } else {
                                                 val intent = Intent(
                                                     applicationContext,
                                                     UserActivity::class.java
                                                 )
-                                                startActivity(intent)
+                                                logIn(intent)
                                             }
-                                            // Re-enables the log in button in case user presses back button
-                                            logInBtn.isEnabled = true
-                                            logInBtn.alpha = 1F
                                         }
                                     }
 
@@ -99,9 +101,22 @@ class MainActivity : AppCompatActivity() {
                 .addOnFailureListener {e ->
                     Toast.makeText(this, "An unknown error occurred, try again", Toast.LENGTH_SHORT).show()
                     println("error: ${e.message}")
-                    logInBtn.isEnabled = true
-                    logInBtn.alpha = 1F
+
                 }
         }
+        reEnableComponents()
+    }
+
+    private fun logIn(intent: Intent) {
+        reEnableComponents()
+        startActivity(intent)
+    }
+
+    private fun reEnableComponents() {
+        // Re-enables the log in button in case user presses back button
+        // Removes loading bar
+        logInBtn.isEnabled = true
+        logInBtn.alpha = 1F
+        progressBar.visibility = View.GONE
     }
 }

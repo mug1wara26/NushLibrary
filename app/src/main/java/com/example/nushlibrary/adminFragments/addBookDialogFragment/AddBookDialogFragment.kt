@@ -85,7 +85,7 @@ class AddBookDialogFragment(private val listener: GetBookOnDismiss): DialogFragm
                     val isbn = isbnInput.text.toString()
                     val number = numberInput.text.toString()
 
-                    createBookWithISBN(isbn, number, fragmentContext)
+                    createBookWithISBN(isbn, number, fragmentContext, view)
                 }
                 else {
                     val titleInput: TextInputEditText = view.findViewById(R.id.manual_title_input)
@@ -141,8 +141,11 @@ class AddBookDialogFragment(private val listener: GetBookOnDismiss): DialogFragm
         enabledCardView.alpha = 1F
     }
 
-    private fun createBookWithISBN(isbn: String, number: String, context: Context?) {
+    private fun createBookWithISBN(isbn: String, number: String, context: Context?, view: View) {
         if (isbn.isNotEmpty() && number.isNotEmpty()) {
+            val progressBar: ProgressBar = view.findViewById(R.id.load_add_book)
+            progressBar.visibility = View.VISIBLE
+
             GetBookByISBN(
                 genreAdapter.selectedGenres,
                 isbn,
@@ -168,6 +171,8 @@ class AddBookDialogFragment(private val listener: GetBookOnDismiss): DialogFragm
                                 "Could not get data from ISBN, please use the manual option.",
                                 Toast.LENGTH_LONG
                             ).show()
+
+                        progressBar.visibility = View.GONE
                     }
                 }).execute()
         }
