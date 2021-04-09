@@ -61,4 +61,11 @@
     <string name="read">Read</string>
     <string name="accept_request">Accept request</string>
     <string name="deny_request">Deny request</string>
+    <string name="enable_notifications">Enable notifications</string>
+    <string name="days_before_due_text_view">Days before due date to start reminders</string>
+    <string name="days_before_reminding">Days before reminding</string>
+    <string name="days_after_due_text_view">Days after due date to start reminders</string>
+    <string name="set">Set</string>
+    <string name="days_after_reminding">Days after reminding</string>
+    <string name="set_time">Set time</string>
 </resources>

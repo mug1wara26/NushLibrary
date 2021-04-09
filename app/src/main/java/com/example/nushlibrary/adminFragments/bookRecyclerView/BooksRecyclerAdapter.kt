@@ -126,10 +126,9 @@ class BooksRecyclerAdapter(
         }
         holder.authors.text = authorsString
 
-
-        if (!mainUser.admin && user?.booksBorrowed?.contains(book.id) == true) {
+        if (!mainUser.admin && mainUser.booksBorrowed.contains(book.id)) {
             val borrowedUsers = book.borrowedUsers
-            val borrowedTime = borrowedUsers.filter { it.id == user.id }[0].timeStamp
+            val borrowedTime = borrowedUsers.filter { it.id == mainUser.id }[0].timeStamp
 
             val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH)
 

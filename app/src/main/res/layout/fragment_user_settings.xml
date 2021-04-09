@@ -1,149 +1,213 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_margin="10dp">
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/edit_display_name_card_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        android:layout_margin="10dp">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/edit_display_name_card_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/display_name_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/display_name"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"/>
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edit_display_name_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/display_name_text_view"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:maxLines="1"/>
+
+                <TextView
+                    android:id="@+id/edit_display_name_warning"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#FF0000"
+                    android:text="@string/edit_display_name_warning"
+                    android:textSize="10sp"
+                    app:layout_constraintTop_toBottomOf="@id/edit_display_name_input"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:visibility="gone"
+                    tools:ignore="SmallSp" />
+
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/edit_display_name_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/edit"
+                    android:textColor="@color/black"
+                    android:backgroundTint="@color/white"
+                    app:layout_constraintTop_toBottomOf="@id/edit_display_name_warning"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:enabled="false"
+                    android:alpha="0.3" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/cancel_edit_display_name_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/cancel"
+                    android:textColor="@color/black"
+                    android:backgroundTint="@color/white"
+                    app:layout_constraintTop_toBottomOf="@id/edit_display_name_warning"
+                    app:layout_constraintEnd_toStartOf="@id/edit_display_name_button"
+                    android:layout_marginEnd="10dp"
+                    android:enabled="false"
+                    android:alpha="0.3" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/report_problem_card_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/edit_display_name_card_view"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="10dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/report_problem_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/report_problem"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"/>
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/report_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/report_input_hint"
+                    app:layout_constraintTop_toBottomOf="@id/report_problem_text_view"
+                    app:layout_constraintStart_toStartOf="parent"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/submit_report_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/submit"
+                    android:textColor="@color/black"
+                    android:backgroundTint="@color/white"
+                    app:layout_constraintTop_toBottomOf="@id/report_input"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:enabled="false"
+                    android:alpha="0.3" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
+
+
+        <CheckBox
+            android:id="@+id/enable_notifications_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/enable_notifications"
+            app:layout_constraintTop_toBottomOf="@id/report_problem_card_view"
+            app:layout_constraintStart_toStartOf="parent"
+            android:checked="true"/>
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/enable_notifications_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/enable_notifications_checkbox"
+            app:layout_constraintStart_toStartOf="parent">
 
             <TextView
-                android:id="@+id/display_name_text_view"
+                android:id="@+id/days_before_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/display_name"
+                android:text="@string/days_before_due_text_view"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"/>
+                app:layout_constraintStart_toStartOf="parent" />
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edit_display_name_input"
-                android:layout_width="match_parent"
+                android:id="@+id/days_before_due_input"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/display_name_text_view"
+                android:hint="@string/days_before_reminding"
+                app:layout_constraintTop_toBottomOf="@id/days_before_text_view"
                 app:layout_constraintStart_toStartOf="parent"
-                android:maxLines="1"/>
+                android:inputType="number"/>
 
             <TextView
-                android:id="@+id/edit_display_name_warning"
+                android:id="@+id/days_after_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#FF0000"
-                android:text="@string/edit_display_name_warning"
-                android:textSize="10sp"
-                app:layout_constraintTop_toBottomOf="@id/edit_display_name_input"
+                android:text="@string/days_after_due_text_view"
+                app:layout_constraintTop_toBottomOf="@id/days_before_due_input"
                 app:layout_constraintStart_toStartOf="parent"
-                android:visibility="gone"
-                tools:ignore="SmallSp" />
+                android:layout_marginTop="5dp"/>
 
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/days_after_due_input"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="@string/days_after_reminding"
+                app:layout_constraintTop_toBottomOf="@id/days_after_text_view"
+                app:layout_constraintStart_toStartOf="parent"
+                android:inputType="number"/>
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/edit_display_name_button"
+                android:id="@+id/set_notif_time_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/edit"
+                android:text="@string/set_time"
                 android:textColor="@color/black"
                 android:backgroundTint="@color/white"
-                app:layout_constraintTop_toBottomOf="@id/edit_display_name_warning"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:enabled="false"
-                android:alpha="0.3" />
+                app:layout_constraintTop_toBottomOf="@id/days_after_due_input"
+                app:layout_constraintStart_toStartOf="parent" />
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/cancel_edit_display_name_button"
+                android:id="@+id/set_notification_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/set"
+                android:textColor="@color/black"
+                android:backgroundTint="@color/white"
+                app:layout_constraintTop_toBottomOf="@id/days_after_due_input"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/cancel_set_notification_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/cancel"
                 android:textColor="@color/black"
                 android:backgroundTint="@color/white"
-                app:layout_constraintTop_toBottomOf="@id/edit_display_name_warning"
-                app:layout_constraintEnd_toStartOf="@id/edit_display_name_button"
-                android:layout_marginEnd="10dp"
-                android:enabled="false"
-                android:alpha="0.3" />
+                app:layout_constraintTop_toBottomOf="@id/days_after_due_input"
+                app:layout_constraintEnd_toStartOf="@id/set_notification_button"
+                android:layout_marginEnd="5dp"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.cardview.widget.CardView>
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/report_problem_card_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/expandable_card_view_notification"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="10dp">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:id="@+id/report_problem_text_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/report_problem"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"/>
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/report_input"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/report_input_hint"
-                app:layout_constraintTop_toBottomOf="@id/report_problem_text_view"
-                app:layout_constraintStart_toStartOf="parent"/>
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/submit_report_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/submit"
-                android:textColor="@color/black"
-                android:backgroundTint="@color/white"
-                app:layout_constraintTop_toBottomOf="@id/report_input"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:enabled="false"
-                android:alpha="0.3" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.cardview.widget.CardView>
-
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/expandable_card_view_notification"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/edit_display_name_card_view"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <include
-                layout="@layout/layout_expandable_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.cardview.widget.CardView>
-
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

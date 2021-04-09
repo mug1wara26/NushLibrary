@@ -27,6 +27,9 @@ import kotlin.collections.ArrayList
 @SuppressLint("SetTextI18n")
 var isBorrowBookThreadLocked = false
 const val NOTIFY_ID = 100
+var daysBeforeDue = 3
+var daysAfterDue = 5
+var pendingIntent: PendingIntent? = null
 class BookDialogFragment(val book: Book): DialogFragment() {
     @SuppressLint("SetTextI18n")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -216,8 +219,8 @@ fun borrowBook(book: Book, user: User, context: Context): Boolean {
                 // Update book in database
                 bookReference.child(book.id).setValue(book)
 
-                // Set notifications for this book
-                notifyUser(context, timeStamp + DUE_TIME)
+                // Update notifications
+                notifyUser(context)
 
                 // Unlock thread
                 isBorrowBookThreadLocked = false
@@ -229,31 +232,44 @@ fun borrowBook(book: Book, user: User, context: Context): Boolean {
     return false
 }
 
+// Notify user only for the book that is due the earliest
+// This function is called everytime the user borrows a book just to update it
 fun notifyUser(
     context: Context,
-    dueDate: Long,
-    daysBeforeDue: Long = 3,
-    daysAfterDue: Long = 5,
     calendar: Calendar = Calendar.getInstance().apply {
         // 7 am
         timeInMillis = System.currentTimeMillis()
         timeZone = TimeZone.getTimeZone("Asia/Singapore")
-        set(Calendar.HOUR_OF_DAY, 9)
+        set(Calendar.HOUR_OF_DAY, 7)
     }) {
     val alarmMgr = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-    val notifyIntent = Intent(context, NotificationPublisher::class.java)
-    notifyIntent.putExtra("due-date", dueDate)
-    notifyIntent.putExtra("notif-id", NOTIFY_ID)
-    notifyIntent.putExtra("days-before-due", daysBeforeDue)
-    notifyIntent.putExtra("days-after-due", daysAfterDue)
 
-    val pendingIntent = PendingIntent.getBroadcast(context, 0, notifyIntent, 0)
+    // Check if user has any borrowed books
+    if (mainUser.booksBorrowed.isNotEmpty()) {
+        // Sorts a list that stores time stamps of when the user borrowed a book and get the earliest one
+        val earliestTimeStamp = mainUser.booksBorrowedTimeStamp.sorted()[0]
+        // Get due date
+        val dueDate = earliestTimeStamp + DUE_TIME
+        // Cancel any existing pending intent
 
-    // setRepeating() lets you specify a precise custom interval--in this case, every day
-    alarmMgr.setRepeating(
-        AlarmManager.RTC_WAKEUP,
-        calendar.timeInMillis,
-        1000 * 60 * 60 * 24,
-        pendingIntent
-    )
+        if (pendingIntent != null) {
+            alarmMgr.cancel(pendingIntent)
+        }
+
+        val notifyIntent = Intent(context, NotificationPublisher::class.java)
+        notifyIntent.putExtra("due-date", dueDate)
+        notifyIntent.putExtra("notif-id", NOTIFY_ID)
+        notifyIntent.putExtra("days-before-due", daysBeforeDue)
+        notifyIntent.putExtra("days-after-due", daysAfterDue)
+
+        pendingIntent = PendingIntent.getBroadcast(context, 0, notifyIntent, 0)
+
+        // setRepeating() lets you specify a precise custom interval--in this case, every day
+        alarmMgr.setRepeating(
+            AlarmManager.RTC_WAKEUP,
+            calendar.timeInMillis,
+            1000 * 60 * 60 * 24,
+            pendingIntent
+        )
+    }
 }
