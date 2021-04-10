@@ -22,7 +22,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
-class AddBookDialogFragment(private val listener: GetBookOnDismiss): DialogFragment() {
+class AddBookDialogFragment(private val progressBar: ProgressBar, private val listener: GetBookOnDismiss): DialogFragment() {
     private val genreAdapter = GenreRecyclerAdapter()
     var book: Book? = null
     // Callback interface on dismiss to use book object
@@ -85,7 +85,7 @@ class AddBookDialogFragment(private val listener: GetBookOnDismiss): DialogFragm
                     val isbn = isbnInput.text.toString()
                     val number = numberInput.text.toString()
 
-                    createBookWithISBN(isbn, number, fragmentContext, view)
+                    createBookWithISBN(isbn, number, fragmentContext)
                 }
                 else {
                     val titleInput: TextInputEditText = view.findViewById(R.id.manual_title_input)
@@ -141,9 +141,8 @@ class AddBookDialogFragment(private val listener: GetBookOnDismiss): DialogFragm
         enabledCardView.alpha = 1F
     }
 
-    private fun createBookWithISBN(isbn: String, number: String, context: Context?, view: View) {
+    private fun createBookWithISBN(isbn: String, number: String, context: Context?) {
         if (isbn.isNotEmpty() && number.isNotEmpty()) {
-            val progressBar: ProgressBar = view.findViewById(R.id.load_add_book)
             progressBar.visibility = View.VISIBLE
 
             GetBookByISBN(
