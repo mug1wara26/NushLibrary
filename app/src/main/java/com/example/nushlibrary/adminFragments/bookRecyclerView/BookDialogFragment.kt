@@ -244,32 +244,17 @@ fun notifyUser(
     }) {
     val alarmMgr = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
-    // Check if user has any borrowed books
-    if (mainUser.booksBorrowed.isNotEmpty()) {
-        // Sorts a list that stores time stamps of when the user borrowed a book and get the earliest one
-        val earliestTimeStamp = mainUser.booksBorrowedTimeStamp.sorted()[0]
-        // Get due date
-        val dueDate = earliestTimeStamp + DUE_TIME
-        // Cancel any existing pending intent
 
-        if (pendingIntent != null) {
-            alarmMgr.cancel(pendingIntent)
-        }
+    val notifyIntent = Intent(context, NotificationPublisher::class.java)
+    notifyIntent.putExtra("user-id", mainUser.id)
 
-        val notifyIntent = Intent(context, NotificationPublisher::class.java)
-        notifyIntent.putExtra("due-date", dueDate)
-        notifyIntent.putExtra("notif-id", NOTIFY_ID)
-        notifyIntent.putExtra("days-before-due", daysBeforeDue)
-        notifyIntent.putExtra("days-after-due", daysAfterDue)
+    pendingIntent = PendingIntent.getBroadcast(context, 0, notifyIntent, 0)
 
-        pendingIntent = PendingIntent.getBroadcast(context, 0, notifyIntent, 0)
-
-        // setRepeating() lets you specify a precise custom interval--in this case, every day
-        alarmMgr.setRepeating(
-            AlarmManager.RTC_WAKEUP,
-            calendar.timeInMillis,
-            1000 * 60 * 60 * 24,
-            pendingIntent
-        )
-    }
+    // setRepeating() lets you specify a precise custom interval--in this case, every day
+    alarmMgr.setRepeating(
+        AlarmManager.RTC_WAKEUP,
+        calendar.timeInMillis,
+        1000 * 60 * 60 * 24,
+        pendingIntent
+    )
 }

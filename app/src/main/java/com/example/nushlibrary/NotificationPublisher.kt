@@ -7,39 +7,79 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import com.example.nushlibrary.adminFragments.bookRecyclerView.DUE_TIME
+import com.example.nushlibrary.adminFragments.bookRecyclerView.NOTIFY_ID
+import com.example.nushlibrary.adminFragments.bookRecyclerView.daysAfterDue
+import com.example.nushlibrary.adminFragments.bookRecyclerView.daysBeforeDue
 import com.example.nushlibrary.adminFragments.usersFragment.DAYS_IN_MILLIS
+import com.example.nushlibrary.dataClasses.User
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
 
 class NotificationPublisher: BroadcastReceiver() {
+    interface GetDueDateOnPostExecute {
+        fun onPostExecute(dueDateTimeStamp: Long)
+    }
+
     override fun onReceive(context: Context?, intent: Intent?) {
         val notificationManager = context!!.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        val dueDate: Long = intent!!.getLongExtra("due-date", 0)
-        val id = intent.getIntExtra("notif-id", 0)
-        val daysBeforeDue = intent.getIntExtra("days-before-due", 3)
-        val daysAfterDue = intent.getIntExtra("days-after-due", 5)
         println("Received")
         createNotificationChannel(notificationManager)
 
-        if (dueDate != 0L) {
-            val notification = Notification.Builder(context, "com.example.nushlibrary")
-            with(notification) {
-                setContentTitle("Reminder to return book")
-                setSmallIcon(android.R.drawable.ic_dialog_info)
-                setChannelId("com.example.nushlibrary")
-            }
+        val userId = intent?.getStringExtra("user-id")
 
-            val millisFromDue = dueDate - System.currentTimeMillis()
-            val daysFromDue = millisFromDue / DAYS_IN_MILLIS
+        getDueDate(userId, object: GetDueDateOnPostExecute{
+            override fun onPostExecute(dueDateTimeStamp: Long) {
+                if (dueDateTimeStamp != 0L) {
+                    val notification = Notification.Builder(context, "com.example.nushlibrary")
+                    var notify = false
 
-            if (millisFromDue > 0) {
-                if (daysFromDue <= daysBeforeDue)
-                    notification.setContentText("Your book is due in $daysFromDue days")
-            }
-            else {
-                if (daysFromDue * -1 <= daysAfterDue)
-                    notification.setContentText("Your book is overdue by ${daysFromDue * -1} days")
-            }
+                    with(notification) {
+                        setContentTitle("Reminder to return book")
+                        setSmallIcon(android.R.drawable.ic_dialog_info)
+                        setChannelId("com.example.nushlibrary")
+                    }
 
-            notificationManager.notify(id, notification.build())
+                    val millisFromDue = dueDateTimeStamp - System.currentTimeMillis()
+                    val daysFromDue = millisFromDue / DAYS_IN_MILLIS
+
+                    if (millisFromDue > 0) {
+                        if (daysFromDue <= daysBeforeDue){
+                            notify = true
+                            notification.setContentText("Your book is due in $daysFromDue days")
+                        }
+                    }
+                    else {
+                        if (daysFromDue * -1 <= daysAfterDue) {
+                            notify = true
+                            notification.setContentText("Your book is overdue by ${daysFromDue * -1} days")
+                        }
+                    }
+
+                    if (notify) notificationManager.notify(NOTIFY_ID, notification.build())
+                }
+            }
+        })
+    }
+
+    private fun getDueDate(userId: String?, listener: GetDueDateOnPostExecute) {
+        if (userId != null) {
+            userReference.child(userId).addListenerForSingleValueEvent(object: ValueEventListener{
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val user = snapshot.getValue(User::class.java)
+
+                    if (user != null) {
+                        if (user.booksBorrowedTimeStamp.size != 0) {
+                            val earliestTimeStamp = user.booksBorrowedTimeStamp.sortedWith(compareBy { it })[0]
+
+                            listener.onPostExecute(earliestTimeStamp + DUE_TIME)
+                        }
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {}
+            })
         }
     }
 
