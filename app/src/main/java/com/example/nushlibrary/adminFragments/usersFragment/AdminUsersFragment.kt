@@ -176,7 +176,6 @@ class AdminUsersFragment: Fragment() {
             displayNames.add(user.displayName)
         }
 
-        println(FuzzySearch.extractSorted(displayName, displayNames))
         val sortedNames = FuzzySearch.extractSorted(displayName, displayNames, 50)
         val sortedUsers = arrayListOf<User>()
 
