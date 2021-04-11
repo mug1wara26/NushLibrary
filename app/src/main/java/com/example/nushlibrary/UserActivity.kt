@@ -13,6 +13,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.example.nushlibrary.adminFragments.AdminHomeFragment
+import com.example.nushlibrary.adminFragments.bookRecyclerView.notifyUser
 import com.example.nushlibrary.booksFragment.BooksFragment
 import com.example.nushlibrary.userFragments.UserHomeFragment
 import com.example.nushlibrary.userFragments.UserSettingsFragment
@@ -26,6 +27,10 @@ class UserActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user)
+
+
+        // Set up notifications for user
+        notifyUser(applicationContext)
 
         // Set a Toolbar to replace the ActionBar
         val toolbar: Toolbar = findViewById(R.id.toolbar)

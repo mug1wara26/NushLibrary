@@ -10,6 +10,7 @@ import androidx.core.view.get
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import com.example.nushlibrary.adminFragments.AdminBorrowingFragment
 import com.example.nushlibrary.adminFragments.AdminHomeFragment
 import com.example.nushlibrary.adminFragments.requestsReportFragment.AdminRequestReportFragment
 import com.example.nushlibrary.adminFragments.usersFragment.AdminUsersFragment
@@ -79,6 +80,7 @@ class AdminActivity: AppCompatActivity() {
             R.id.home -> AdminHomeFragment::class.java
             R.id.users -> AdminUsersFragment::class.java
             R.id.books -> BooksFragment::class.java
+            R.id.borrowing -> AdminBorrowingFragment::class.java
             R.id.report -> AdminRequestReportFragment::class.java
             else -> AdminHomeFragment::class.java
         }

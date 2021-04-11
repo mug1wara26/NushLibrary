@@ -51,7 +51,7 @@ open class GetBookByISBN(
         // Total items will either be 1 or 0 as there is only 1 book for every valid isbn
         if(jsonObject["totalItems"] == 1) {
             val authors = getValueFromPath(jsonObject, "items.volumeInfo.authors") as ArrayList<*>
-            val title = getValueFromPath(jsonObject, "items.volumeInfo.title") as String?
+            val title = getValueFromPath(jsonObject, "items.volumeInfo.title") as String
             val description = getValueFromPath(jsonObject, "items.volumeInfo.description") as String?
             val publisher = getValueFromPath(jsonObject, "items.volumeInfo.publisher") as String?
             val thumbnail = getValueFromPath(jsonObject, "items.volumeInfo.imageLinks.thumbnail") as String?

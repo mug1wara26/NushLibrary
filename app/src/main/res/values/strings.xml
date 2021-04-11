@@ -68,4 +68,7 @@
     <string name="set">Set</string>
     <string name="days_after_reminding">Days after reminding</string>
     <string name="set_time">Set time</string>
+    <string name="borrowing">Borrowing</string>
+    <string name="accept_borrow">Accept borrow</string>
+    <string name="deny_borrow">Deny borrow</string>
 </resources>

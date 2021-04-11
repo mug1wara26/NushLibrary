@@ -7,5 +7,6 @@ data class User(
     val booksBorrowedTimeStamp: ArrayList<Long> = arrayListOf(),
     val booksBorrowed: ArrayList<String> = arrayListOf(),
     val toReadList: ArrayList<String> = arrayListOf(),
+    val booksBorrowedQueue: ArrayList<String> = arrayListOf(),
     val admin: Boolean = false) {
 }

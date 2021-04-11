@@ -128,25 +128,24 @@ class BookDialogFragment(val book: Book): DialogFragment() {
             borrowButton.visibility = View.VISIBLE
             toReadButton.visibility = View.VISIBLE
 
-            // Disable the button if user has already borrowed the book
-            if (mainUser.booksBorrowed.contains(book.id)) {
+            // Disable the button if user has already borrowed the book or there are no books left
+            if (mainUser.booksBorrowed.contains(book.id) || mainUser.booksBorrowedQueue.contains(book.id) || book.number == 0) {
                 borrowButton.isEnabled = false
                 borrowButton.alpha = 0.3F
             }
 
             borrowButton.setOnClickListener {
-                val result = borrowBook(book, mainUser, requireContext())
-                if (result) {
-                    Toast.makeText(context, "Successfully borrowed book", Toast.LENGTH_SHORT).show()
+                if (book.number > 0) {
+                    database.child("borrowing").child(mainUser.id).setValue(mainUser)
 
-                    // Update number of books left and borrow button
-                    view.findViewById<TextView>(R.id.dialog_book_number).text =
-                        "Number of books left: ${book.number}"
+                    Toast.makeText(
+                        context,
+                        "Made request to borrow book, please go to the library to pick it up",
+                        Toast.LENGTH_LONG
+                    ).show()
+
                     borrowButton.isEnabled = false
                     borrowButton.alpha = 0.3F
-                }
-                else {
-                    Toast.makeText(context, "Unable to borrow book", Toast.LENGTH_SHORT).show()
                 }
             }
             toReadButton.setOnClickListener {
@@ -199,7 +198,7 @@ class BookDialogFragment(val book: Book): DialogFragment() {
 }
 
 @SuppressLint("SetTextI18n")
-fun borrowBook(book: Book, user: User, context: Context): Boolean {
+fun borrowBook(book: Book, user: User): Boolean {
     // Lock thread to avoid race condition
     if (!isBorrowBookThreadLocked) {
         isBorrowBookThreadLocked = true
@@ -218,9 +217,6 @@ fun borrowBook(book: Book, user: User, context: Context): Boolean {
                 book.borrowedUsers.add(BorrowedUser(user.id, timeStamp))
                 // Update book in database
                 bookReference.child(book.id).setValue(book)
-
-                // Update notifications
-                notifyUser(context)
 
                 // Unlock thread
                 isBorrowBookThreadLocked = false
