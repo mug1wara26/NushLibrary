@@ -62,10 +62,7 @@ class MainActivity : AppCompatActivity() {
                                                 firebaseUser.uid,
                                                 firebaseUser.email!!,
                                                 firebaseUser.displayName!!.substring(0, 30),
-                                                arrayListOf(),
-                                                arrayListOf(),
-                                                arrayListOf(),
-                                                false
+                                                admin = false
                                             )
                                             userReference.child(firebaseUser.uid).setValue(mainUser)
 

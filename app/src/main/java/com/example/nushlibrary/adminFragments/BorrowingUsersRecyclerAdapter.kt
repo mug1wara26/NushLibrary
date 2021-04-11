@@ -15,6 +15,7 @@ import com.example.nushlibrary.dataClasses.Book
 import com.example.nushlibrary.dataClasses.BorrowingUser
 import com.example.nushlibrary.dataClasses.User
 import com.example.nushlibrary.database
+import com.example.nushlibrary.userReference
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
@@ -27,7 +28,7 @@ class BorrowingUsersRecyclerAdapter(val context: Context): RecyclerView.Adapter<
         val displayName: TextView = itemView.findViewById(R.id.borrowing_user_name)
         val bookToBorrow: TextView = itemView.findViewById(R.id.book_to_borrow)
         private val acceptBorrowButton: ImageButton = itemView.findViewById(R.id.accept_borrow_button)
-        val denyBorrowButton: ImageButton = itemView.findViewById(R.id.deny_borrow_button)
+        private val denyBorrowButton: ImageButton = itemView.findViewById(R.id.deny_borrow_button)
 
         init {
             acceptBorrowButton.setOnClickListener {
@@ -42,14 +43,11 @@ class BorrowingUsersRecyclerAdapter(val context: Context): RecyclerView.Adapter<
                             val result = borrowBook(book, user)
 
                             if (result) {
-                                user.booksBorrowedQueue.remove(borrowingUser.bookId)
-                                if (user.booksBorrowedQueue.size != 0) database.child("borrowing").child(borrowingUser.userId).setValue(user)
-                                else database.child("borrowing").child(borrowingUser.userId).removeValue()
-
-                                borrowingUsers.remove(borrowingUser)
+                                // Remove book from user queue
+                                removeUserFromQueue(user, borrowingUser)
                                 notifyItemRemoved(adapterPosition)
 
-                                Toast.makeText(context, "Added book to user's borrowed book list", Toast.LENGTH_LONG).show()
+                                Toast.makeText(context, "Accepted user request to borrow book", Toast.LENGTH_SHORT).show()
                             }
                             else {
                                 Toast.makeText(context, "Was unable to add book to user's borrowed book list", Toast.LENGTH_LONG).show()
@@ -63,12 +61,40 @@ class BorrowingUsersRecyclerAdapter(val context: Context): RecyclerView.Adapter<
                     override fun onCancelled(error: DatabaseError) {}
                 })
             }
+
+            denyBorrowButton.setOnClickListener {
+                val borrowingUser = borrowingUsers[adapterPosition]
+
+                userReference.child(borrowingUser.userId).addListenerForSingleValueEvent(object: ValueEventListener{
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val user = snapshot.getValue(User::class.java)
+
+                        if (user != null) {
+                            removeUserFromQueue(user, borrowingUser)
+                            notifyItemRemoved(adapterPosition)
+
+                            Toast.makeText(context, "Removed user request to borrow book", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {}
+                })
+            }
         }
+    }
+
+    fun removeUserFromQueue(user: User, borrowingUser: BorrowingUser) {
+        user.booksBorrowedQueue.remove(borrowingUser.bookId)
+        if (user.booksBorrowedQueue.size != 0) database.child("borrowing").child(user.id).setValue(user)
+        else database.child("borrowing").child(user.id).removeValue()
+        userReference.child(user.id).setValue(user)
+
+        borrowingUsers.remove(borrowingUser)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val v: View =
-            LayoutInflater.from(parent.context).inflate(R.layout.card_layout_user, parent, false)
+            LayoutInflater.from(parent.context).inflate(R.layout.card_layout_borrowing_user, parent, false)
         return ViewHolder(v)
     }
 

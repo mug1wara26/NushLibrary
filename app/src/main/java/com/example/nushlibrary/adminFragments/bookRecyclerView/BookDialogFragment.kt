@@ -136,7 +136,9 @@ class BookDialogFragment(val book: Book): DialogFragment() {
 
             borrowButton.setOnClickListener {
                 if (book.number > 0) {
+                    mainUser.booksBorrowedQueue.add(book.id)
                     database.child("borrowing").child(mainUser.id).setValue(mainUser)
+                    userReference.child(mainUser.id).setValue(mainUser)
 
                     Toast.makeText(
                         context,

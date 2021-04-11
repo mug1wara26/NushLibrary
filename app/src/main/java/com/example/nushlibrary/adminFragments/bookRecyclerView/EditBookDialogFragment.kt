@@ -91,7 +91,7 @@ class EditBookDialogFragment(private val book: Book, private val booksAdapter: B
                     else text.toString()
                 }
 
-                val title = getText(R.id.manual_title_input, book.title) as String?
+                val title = getText(R.id.manual_title_input, book.title) as String
 
                 var authors = getText(R.id.manual_author_input, book.authors)
 
