@@ -14,7 +14,7 @@
             android:title="@string/requests_reports"
             android:icon="@drawable/icon_report" />
         <item android:id="@+id/borrowing"
-            android:title="@string/borrowing"
+            android:title="@string/borrow_queue"
             android:icon="@drawable/icon_borrowing_people" />
         <item android:id="@+id/logOut"
             android:title="@string/log_out"

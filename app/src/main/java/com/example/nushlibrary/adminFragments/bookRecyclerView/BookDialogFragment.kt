@@ -128,6 +128,8 @@ class BookDialogFragment(val book: Book): DialogFragment() {
             borrowButton.visibility = View.VISIBLE
             toReadButton.visibility = View.VISIBLE
 
+            if (mainUser.toReadList.contains(book.id)) toReadButton.alpha = 0.3F
+
             // Disable the button if user has already borrowed the book or there are no books left
             if (mainUser.booksBorrowed.contains(book.id) || mainUser.booksBorrowedQueue.contains(book.id) || book.number == 0) {
                 borrowButton.isEnabled = false

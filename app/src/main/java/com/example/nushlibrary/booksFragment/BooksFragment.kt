@@ -150,11 +150,13 @@ fun searchForBook(books: ArrayList<Book>, title: String, progressBar: ProgressBa
     val titles = arrayListOf<String>()
 
     for (book in books) {
-        if (book.title != null) titles.add(book.title)
+        titles.add(book.title)
     }
 
+    // Get list of titles with a score of 50
     val sortedTitles = FuzzySearch.extractSorted(title, titles, 50)
     val sortedBooks = arrayListOf<Book>()
+    // Create a list of sorted books using the index of sorted titles
     sortedTitles.forEach {
         sortedBooks.add(books[it.index])
     }

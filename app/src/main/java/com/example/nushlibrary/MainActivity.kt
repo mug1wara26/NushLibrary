@@ -94,14 +94,14 @@ class MainActivity : AppCompatActivity() {
                                 })
                         } else Toast.makeText(this, "Your email must be from nushigh or nus", Toast.LENGTH_SHORT).show()
                     } else Toast.makeText(this, "Log in error occurred, try again", Toast.LENGTH_SHORT).show()
+                    reEnableComponents()
                 }
                 .addOnFailureListener {e ->
                     Toast.makeText(this, "An unknown error occurred, try again", Toast.LENGTH_SHORT).show()
-                    println("error: ${e.message}")
+                    reEnableComponents()
 
                 }
         }
-        reEnableComponents()
     }
 
     private fun logIn(intent: Intent) {

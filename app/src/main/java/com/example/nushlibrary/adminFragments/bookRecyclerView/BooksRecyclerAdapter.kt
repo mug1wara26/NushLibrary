@@ -126,6 +126,7 @@ class BooksRecyclerAdapter(
         }
         holder.authors.text = authorsString
 
+        holder.dueDate.text = null
         if (!mainUser.admin && mainUser.booksBorrowed.contains(book.id)) {
             val borrowedUsers = book.borrowedUsers
             val borrowedTime = borrowedUsers.filter { it.id == mainUser.id }[0].timeStamp

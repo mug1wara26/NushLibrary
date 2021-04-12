@@ -71,4 +71,5 @@
     <string name="borrowing">Borrowing</string>
     <string name="accept_borrow">Accept borrow</string>
     <string name="deny_borrow">Deny borrow</string>
+    <string name="borrow_queue">Borrow queue</string>
 </resources>

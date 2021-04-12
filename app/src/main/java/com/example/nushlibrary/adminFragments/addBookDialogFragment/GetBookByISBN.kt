@@ -57,7 +57,16 @@ open class GetBookByISBN(
             val thumbnail = getValueFromPath(jsonObject, "items.volumeInfo.imageLinks.thumbnail") as String?
 
             // Create book object and add it to database
-            book = Book(isbn, authors, title, description, publisher, genre, thumbnail, number)
+            book = Book(
+                isbn,
+                authors,
+                title,
+                description,
+                publisher,
+                genre,
+                thumbnail,
+                number
+            )
             bookReference.child(isbn).setValue(book)
         }
 
