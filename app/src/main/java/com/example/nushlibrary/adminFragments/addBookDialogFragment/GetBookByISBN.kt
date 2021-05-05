@@ -38,9 +38,7 @@ open class GetBookByISBN(
             requestMethod = "GET"  // optional default is GET
 
             inputStream.bufferedReader().use {
-                it.lines().forEach { line ->
-                    json += "$line\n"
-                }
+                json = it.lines().joinToString(separator = "\n")
             }
         }
 
